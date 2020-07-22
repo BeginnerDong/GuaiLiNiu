@@ -1,0 +1,274 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path" : "pages/startPage/startPage",
+			"style" : {
+				"navigationStyle":"custom"
+			}
+		}
+        ,{
+            "path": "pages/index/index",
+            "style": {
+            	"navigationBarTitleText": "怪力牛运动",//设置页面标题文字
+            	"onReachBottomDistance":100
+            }
+        }
+        ,{
+            "path" : "pages/login/login",
+            "style" : {
+							"navigationBarTitleText": "登录"
+						}
+        }
+        ,{
+            "path" : "pages/leagueClass/leagueClass",
+            "style" : {
+							"navigationBarTitleText": "团课"
+						}
+        }
+        ,{
+            "path" : "pages/sijiao-store/sijiao-store",
+            "style" : {
+							"navigationBarTitleText": "门店"
+						}
+        }
+        ,{
+            "path" : "pages/storeDetail/storeDetail",
+            "style" : {
+							"navigationStyle":"custom"
+						}
+        }
+        ,{
+            "path" : "pages/limitedTime/limitedTime",
+            "style" : {
+							"navigationBarTitleText": "限时优惠"
+						}
+        }
+        ,{
+            "path" : "pages/limitedTime-may/limitedTime-may",
+            "style" : {
+							"navigationBarTitleText": "立即购买"
+						}
+        }
+        ,{
+            "path" : "pages/leagueClass-detail/leagueClass-detail",
+            "style" : {
+							"navigationStyle":"custom"
+						}
+        }
+        ,{
+            "path" : "pages/leagueClass-order/leagueClass-order",
+            "style" : {
+							"navigationBarTitleText": "提交订单"
+						}
+        }
+        ,{
+            "path" : "pages/payLeagueClass/payLeagueClass",
+            "style" : {
+							"navigationBarTitleText": "付费团课"
+						}
+        }
+        ,{
+            "path" : "pages/payLeagueClass-order/payLeagueClass-order",
+            "style" : {
+							"navigationBarTitleText": "提交订单"
+						}
+        }
+        ,{
+            "path" : "pages/payLeagueClass-coupon/payLeagueClass-coupon",
+            "style" : {
+							"navigationBarTitleText": "优惠券列表"
+						}
+        }
+        ,{
+            "path" : "pages/store/store",
+            "style" : {
+							"navigationBarTitleText": "西安市"
+						}
+        }
+        ,{
+            "path" : "pages/sijiao/sijiao",
+            "style" : {
+							"navigationBarTitleText": "私教"
+						}
+        }
+        ,{
+            "path" : "pages/sijiao-course/sijiao-course",
+            "style" : {
+							"navigationBarTitleText": "课程"
+						}
+        }
+        ,{
+            "path" : "pages/sijiao-order/sijiao-order",
+            "style" : {
+							"navigationBarTitleText": "提交订单"
+						}
+        }
+        ,{
+            "path" : "pages/sijiao-detail/sijiao-detail",
+            "style" : {
+							"navigationBarTitleText": "详情",
+							"navigationBarBackgroundColor": "#eee"
+						}
+        }
+        ,{
+            "path" : "pages/sijiao-courses/sijiao-courses",
+            "style" : {
+							"navigationBarTitleText": "所属课程"
+						}
+        }
+        ,{
+            "path" : "pages/sijiao-classDetail/sijiao-classDetail",
+            "style" : {
+							"navigationBarTitleText": "详情"
+						}
+        }
+        ,{
+            "path" : "pages/store-sijiao/store-sijiao",
+            "style" : {
+							"navigationBarTitleText": "私教"
+						}
+        }
+        ,{
+            "path" : "pages/user/user",
+            "style" : {
+							"navigationStyle":"custom"
+						}
+        }
+        ,{
+            "path" : "pages/user-leagueClass/user-leagueClass",
+            "style" : {
+							"navigationBarTitleText": "我的团课"
+						}
+        }
+        ,{
+            "path" : "pages/user-appointCoach/user-appointCoach",
+            "style" : {
+							"navigationBarTitleText": "预约教练"
+						}
+        }
+        ,{
+            "path" : "pages/user-comment/user-comment",
+            "style" : {
+							"navigationBarTitleText": "评价"
+						}
+        }
+        ,{
+            "path" : "pages/user-sijiao/user-sijiao",
+            "style" : {
+							"navigationBarTitleText": "我的私教"
+						}
+        }
+        ,{
+            "path" : "pages/user-sijiaoTime/user-sijiaoTime",
+            "style" : {
+							"navigationBarTitleText": "预约时间"
+						}
+        }
+        ,{
+            "path" : "pages/user-commentDetail/user-commentDetail",
+            "style" : {
+							"navigationBarTitleText": "评价详情"
+						}
+        }
+        ,{
+            "path" : "pages/user-coupon/user-coupon",
+            "style" : {
+							"navigationBarTitleText": "优惠券"
+						}
+        }
+        ,{
+            "path" : "pages/coupon/coupon",
+            "style" : {
+							"navigationBarTitleText": "优惠券"
+						}
+        }
+        ,{
+            "path" : "pages/VIP/VIP",
+            "style" : {
+							"navigationBarTitleText": "会员",
+							"navigationBarBackgroundColor": "#A47B4C",
+							"navigationBarTextStyle": "white"
+						}
+        }
+        ,{
+            "path" : "pages/VIP-information/VIP-information",
+            "style" : {
+							"navigationBarTitleText": "会员信息"
+						}
+        }
+        ,{
+            "path" : "pages/joinUS/joinUS",
+            "style" : {
+							"navigationBarTitleText": "加盟我们"
+						}
+        }
+        ,{
+            "path" : "pages/user-sijiaoEntrance/user-sijiaoEntrance",
+            "style" : {
+							"navigationStyle":"custom"
+						}
+        }
+        ,{
+            "path" : "pages/user-VIP/user-VIP",
+            "style" : {
+							"navigationBarTitleText": "我的会员"
+						}
+        }
+        ,{
+            "path" : "pages/user-appointment/user-appointment",
+            "style" : {
+							"navigationBarTitleText": "我的预约"
+						}
+        }
+        ,{
+            "path" : "pages/experienceCoupon/experienceCoupon",
+            "style" : {
+							"navigationBarTitleText": "体验券"
+						}
+        }
+        ,{
+            "path" : "pages/experienceInfor/experienceInfor",
+            "style" : {
+							"navigationBarTitleText": "录入信息"
+						}
+        }
+        ,{
+            "path" : "pages/experienceUser/experienceUser",
+            "style" : {
+							"navigationBarTitleText": "我的体验券",
+							"navigationBarBackgroundColor": "#A47B4C",
+							"navigationBarTextStyle": "white"
+						}
+        }
+        ,{
+            "path" : "pages/aboutUS/aboutUS",
+            "style" : {
+							"navigationBarTitleText": "关于我们"
+						}
+        }
+        ,{
+            "path" : "pages/face/face",
+            "style" : {
+							"navigationBarTitleText": "人脸识别"
+						}
+        }
+        ,{
+            "path" : "pages/faceApply/faceApply",
+            "style" : {}
+        }
+    ],
+	"globalStyle": {
+		//"navigationStyle":"custom",
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "",
+		"navigationBarBackgroundColor": "#FFFFFF"
+	},
+	"condition": { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [{
+			"name": "", //模式名称
+			"path": "", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}]
+	}
+}
