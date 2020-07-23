@@ -58,6 +58,16 @@
 			<view class="carBtn">立即预约</view>
 		</view>
 		
+		<view class="bg-mask" v-show="is_show">
+			<view class="bg-white radius20 mx-4 flexY xy">
+				<view class="font-30 text-center py-3">《怪力牛会员购买服务协议》</view>
+				<view class="px-3 mb-3 flex-1 flexY">
+					1、都必须为为和促进OK了
+				</view>
+				<view class="text-center colorf py-3 Mgb" @click="isShow">确定</view>
+			</view>
+		</view>
+		
 	</view>
 </template>
 
@@ -65,11 +75,15 @@
 	export default {
 		data() {
 			return {
-				Router:this.$Router
+				Router:this.$Router,
+				is_show:false
 			}
 		},
 		methods: {
-			
+			isShow(){
+				const self = this;
+				self.is_show = !self.is_show
+			}
 		}
 	}
 </script>

@@ -254,7 +254,15 @@
         }
         ,{
             "path" : "pages/faceApply/faceApply",
-            "style" : {}
+            "style" : {
+							"navigationBarTitleText": "申请删除"
+						}
+        }
+        ,{
+            "path" : "pages/ruleDetail/ruleDetail",
+            "style" : {
+							"navigationBarTitleText": "规则详情"
+						}
         }
     ],
 	"globalStyle": {

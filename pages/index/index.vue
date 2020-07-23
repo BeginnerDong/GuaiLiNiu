@@ -35,7 +35,7 @@
 			<view class="p-r line-h px-3">
 				<view class="d-flex a-start j-sb">
 					<view class="font-30 font-w py-3">门店列表</view>
-					<view class="font-22 p-1 b-e1 radius">逛逛其他店</view>
+					<view class="font-22 p-1 b-e1 radius" @click="Router.navigateTo({route:{path:'/pages/store/store'}})">逛逛其他店</view>
 				</view>
 				<view @click="Router.navigateTo({route:{path:'/pages/storeDetail/storeDetail'}})">
 					<view class="flex py-3">
@@ -69,7 +69,7 @@
 				<view class="pt-2">
 					<view class="font-30 py-3 flex1">
 						<view class="font-w">门店课程</view>
-						<view class="flex">
+						<view class="flex" @click="Router.navigateTo({route:{path:'/pages/sijiao-course/sijiao-course'}})">
 							<view class="font-26 color9 pr-2">全部</view>
 							<image src="../../static/images/the order-icon3.png" class="R-icon"></image>
 						</view>

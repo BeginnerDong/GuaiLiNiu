@@ -2,6 +2,10 @@
 	<view>
 		
 		<view class="p-r">
+			<view class="backBox" @click="Router.back({route:{dalta:-1}})">
+				<image src="../../static/images/back-icon1.png" class="back"></image>
+			</view>
+			
 			<image src="../../static/images/about-img.png" class="userBg"></image>
 			<view class="p-aXY">
 				<view>

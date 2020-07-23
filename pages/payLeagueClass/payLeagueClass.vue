@@ -37,7 +37,7 @@
 			<view class="px-1">西安外事学院</view>
 			<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：2.21KM</view>
 		</view>
-		<view class="shadow radius20 m-a p-r mb-3 tkBox" @click="Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail'}})">
+		<view class="shadow radius20 m-a p-r mb-3 tkBox" @click="Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=1'}})">
 			<image src="../../static/images/sijiao-img.png" class="kcImg"></image>
 			<view class="px-2 py-3">
 				<view class="font-30 flex1">

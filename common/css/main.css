@@ -76,7 +76,8 @@ uni-button:after{border: 0;}
 .shadowM{box-shadow: 0 0 6rpx 0 rgba(0,0,0,0.15);}
 
 /* 返回按钮 */
-
+.backBox{position: absolute;top: 30rpx;left: 0;padding: 20rpx;z-index: 100;}
+.back{width: 40rpx;height: 40rpx;}
 
 /* 按钮 */
 .btnAuto{background-color: #FF633A;text-align: center;color: #fff;font-size: 30rpx;line-height: 80rpx;border-radius: 10rpx;margin: 0 auto;}

@@ -33,7 +33,7 @@
 			<view class="flex py-4 font-24">
 				<image src="../../static/images/the order-icon4.png" class="wh30 mr-2"></image>
 				<!-- <image src="../../static/images/the order-icon5.png" class="wh30 mr-2"></image> -->
-				<view>同意 <text class="colorB">《怪力牛运动会员服务协议》</text></view>
+				<view>同意 <text class="colorB" @click="isShow">《怪力牛运动会员服务协议》</text></view>
 			</view>
 		</view>
 		
@@ -43,6 +43,16 @@
 			<view class="carBtn">立即预约</view>
 		</view>
 		
+		<view class="bg-mask" v-show="is_show">
+			<view class="bg-white radius20 mx-4 flexY xy">
+				<view class="font-30 text-center py-3">《怪力牛会员购买服务协议》</view>
+				<view class="px-3 mb-3 flex-1 flexY">
+					1、都必须为为和促进OK了
+				</view>
+				<view class="text-center colorf py-3 Mgb" @click="isShow">确定</view>
+			</view>
+		</view>
+		
 	</view>
 </template>
 
@@ -50,11 +60,14 @@
 	export default {
 		data() {
 			return {
-				
+				is_show:false
 			}
 		},
 		methods: {
-			
+			isShow(){
+				const self = this;
+				self.is_show = !self.is_show
+			}
 		}
 	}
 </script>
@@ -64,4 +77,5 @@ page{background-color: #f5f5f5;}
 </style>
 <style scoped>
 .colorB{color: #63D1F8;}
+.xy{height: 1000rpx;margin-top: 15%;}
 </style>

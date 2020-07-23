@@ -1,26 +1,31 @@
 <template>
 	<view class="h-100">
 		
-		<view class="font-24 flex1 px-2 bg-white store">
-			
-			<view class="flex-1 flex1 my-2">
-				<image src="../../static/images/stores-img.png" class="storeImg"></image>
-				<view class="flex3 pl-2 flex-1">
-					<view class="flex">
-						<view class="font-34">西安外事学院</view>
-						<view class="font-20 colorf p-r sq">
-							<image src="../../static/images/home-icon5.png" class="sq-icon"></image>
-							<view class="top-0 p-a t-indent10 line-h-md">社区店</view>
+		<view class="font-24 px-2 bg-white storeBox">
+			<view class="store">
+				<view class="my-2 flex1">
+					<image src="../../static/images/stores-img.png" class="storeImg"></image>
+					<view class="flex3 pl-2 flex-1">
+						<view class="flex">
+							<view class="font-34">西安外事学院</view>
+							<view class="font-20 colorf p-r sq">
+								<image src="../../static/images/home-icon5.png" class="sq-icon"></image>
+								<view class="top-0 p-a t-indent10 line-h-md">社区店</view>
+							</view>
 						</view>
+						<view class="color6 avoidOverflow dz">西安市雁塔区鱼斗路61号左岸春天A座101002室2楼</view>
+						<view>距离：2.23KM</view>
 					</view>
-					<view class="color6 avoidOverflow dz">西安市雁塔区鱼斗路61号左岸春天A座101002室2楼</view>
-					<view>距离：2.23KM</view>
+					<image src="../../static/images/stores-icon1.png" class="wh33 zz"></image>
 				</view>
-				<image src="../../static/images/stores-icon1.png" class="wh33 zz"></image>
 			</view>
-			
 		</view>
 		
+		<view class="flex0 mt-5 py-4 color9">
+			<view class="line"></view>
+			<view class="px-4">我是有底线的</view>
+			<view class="line"></view>
+		</view>
 		
 		
 	</view>
@@ -42,8 +47,10 @@
 page{height: 100%;}
 </style>
 <style scoped>
+.storeBox{min-height: 80%;}
 .storeImg{width: 230rpx;height: 160rpx;}
 .store .dz{width: 400rpx;padding: 20rpx 0;}
 .sq{top: -10rpx;right: -10rpx;}
 .zz{margin-top: 100rpx;}
+.line{height: 2rpx;background-color: #e1e1e1;width: 100rpx;}
 </style>

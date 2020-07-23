@@ -2,11 +2,17 @@
 	<view>
 		
 		<!-- banner -->
-		<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" indicator-active-color="#fff" class="banner">
-			<swiper-item>
-				<image src="../../static/images/pay for courses-img.png" ></image>
-			</swiper-item>
-		</swiper>
+		<view class="p-r">
+			<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" indicator-active-color="#fff" class="banner">
+				<swiper-item>
+					<image src="../../static/images/pay for courses-img.png" ></image>
+				</swiper-item>
+			</swiper>
+			
+			<view class="backBox" @click="Router.back({route:{dalta:-1}})">
+				<image src="../../static/images/back-icon.png" class="back"></image>
+			</view>
+		</view>
 		
 		<view class="content bg-white radius30-T px-2 p-r content">
 			<view class="pb-4 bB-f5">
@@ -28,7 +34,7 @@
 				</view>
 				
 				<!-- 付费团课展示 -->
-				<view class="font-20 pt-3"><text class="font-36 font-w price">220</text>/9课时</view>
+				<view class="font-20 pt-3" v-show="type==1"><text class="font-36 font-w price">220</text>/9课时</view>
 			</view>
 			
 			<view class="font-26 pt-4 ">
@@ -123,7 +129,7 @@
 								<view>4.评价</view>
 							</view>
 						</view>
-						<view class="flex4 colorM pl-5 p-r GZ">
+						<view class="flex4 colorM pl-5 p-r GZ" @click="Router.navigateTo({route:{path:'/pages/ruleDetail/ruleDetail'}})">
 							<image src="../../static/images/pay for courses-icon9.png" class="lcIcon5"></image>
 							<view>规则详情</view>
 						</view>
@@ -182,8 +188,13 @@
 			return {
 				Router:this.$Router,
 				navCurr:0,
-				is_show:false
+				is_show:false,
+				type:0
 			}
+		},
+		onLoad(option){
+			const self = this;
+			self.type = option.type;
 		},
 		methods: {
 			changeNav(i){
