@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view :style="sb_show?'height:100%;overflow:hidden':''">
 		
 		<!-- banner -->
 		<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" indicator-active-color="#fff" class="banner">
@@ -41,7 +41,7 @@
 			<view class="pb-4 bB-f5">
 				<view class="flex1">
 					<view class="font-w t-indent20 line-h pt-4 pb-3 tit">门店详情</view>
-					<view class="color6 flex1">
+					<view class="color6 flex1" @click="isShow(2)">
 						<view>查看全部</view>
 						<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
 					</view>
@@ -73,7 +73,7 @@
 			<view class="pb-4 bB-f5">
 				<view class="flex1">
 					<view class="font-w t-indent20 line-h pt-4 pb-3 tit">门店私教</view>
-					<view class="color6 flex1">
+					<view class="color6 flex1" @click="Router.navigateTo({route:{path:'/pages/store-sijiao/store-sijiao'}})">
 						<view>查看全部</view>
 						<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
 					</view>
@@ -120,7 +120,7 @@
 		</view>
 		
 		<!-- 客服 -->
-		<image src="../../static/images/stores details-icon1.png" class="kfImg" @click="kfShow"></image>
+		<image src="../../static/images/stores details-icon1.png" class="kfImg" @click="isShow(1)"></image>
 		<!-- 客服弹窗 -->
 		<view class="bg-mask" v-show="kf_show">
 			<view class="p-r kf">
@@ -136,7 +136,32 @@
 						<view>联系方式：<br/>欢迎来到怪力牛运动外事学院店，本店24小时营业，疫情期间请做好个人防护，如有问题请联系微店长  15562362356（微信同号）</view>
 					</view>
 				</view>
-				<image src="../../static/images/stores details-icon20.png" class="wh30 m-4 xx" @click="kfShow"></image>
+				<image src="../../static/images/stores details-icon20.png" class="wh30 m-4 xx" @click="isShow(1)"></image>
+			</view>
+		</view>
+		
+		<!-- 门店详情全部 -->
+		<view class="bg-mask" v-show="sb_show">
+			<view class="bg-white radius30-T p-a bottom-0 storeAll">
+				<view class="p-r flexY h-100">
+					<view class="font-34 pt-4 text-center">服务设备</view>
+					
+					<view class="py-3 font-30 font-w px-4">器械设备</view>
+					<view class="px-5 flex flex-wrap">
+						<view class="flex4 font-24 color6 mb-3 bb" v-for="v in 7">
+							<image src="../../static/images/stores details-icon10.png" class="wh100 mb-2"></image>
+							<view>跑步机</view>
+						</view>
+					</view>
+					<view class="py-3 font-30 font-w px-4">基础服务</view>
+					<view class="px-5 flex flex-wrap">
+						<view class="flex4 font-24 color6 mb-3 bb" v-for="v in 7">
+							<image src="../../static/images/stores details-icon10.png" class="wh100 mb-2"></image>
+							<view>跑步机</view>
+						</view>
+					</view>
+				</view>
+				<image src="../../static/images/stores details-icon21.png" class="wh30 p-a m-2 right-0 z-index100 top-0" @click="isShow(2)"></image>
 			</view>
 		</view>
 		
@@ -150,7 +175,8 @@
 			return {
 				Router:this.$Router,
 				timeCurr:0,
-				kf_show:false
+				kf_show:false,
+				sb_show:false
 			}
 		},
 		methods: {
@@ -158,9 +184,14 @@
 				const self = this;
 				self.timeCurr = i
 			},
-			kfShow(){
+			isShow(type){
 				const self = this;
-				self.kf_show = !self.kf_show;
+				if(type==1){
+					self.kf_show = !self.kf_show;
+				}else if(type == 2){
+					self.sb_show = !self.sb_show;
+				}
+				
 			}
 		}
 	}
@@ -183,4 +214,8 @@
 .kfCon{padding-top: 70rpx;}
 .kfBg{background-color: #FFF9F5;}
 .xx{margin: 100rpx auto;}
+
+.storeAll{height: 90%;width: 100%;}
+.bb{margin-right: 85rpx;}
+.bb:nth-child(4n){margin-right: 0;}
 </style>
