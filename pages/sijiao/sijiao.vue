@@ -5,7 +5,7 @@
 		<view class="py-3 flex1 px-2">
 			<view class="line-h flex">
 				<image src="../../static/images/sijiao-icon0.png" class="dw-icon"></image>
-				<view class="px-1 font-w">西安外事学院</view>
+				<view class="px-1 font-w">{{shopData.name}}</view>
 				<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：2.21KM</view>
 			</view>
 			<view class="flex" @click="Router.navigateTo({route:{path:'/pages/sijiao-store/sijiao-store'}})">
@@ -51,10 +51,58 @@
 	export default {
 		data() {
 			return {
-				Router:this.$Router
+				Router:this.$Router,
+				shopData:{},
+				mainData:[],
+				searchItem:{
+					primary_scope: 30,
+					user_type: 1
+				}
 			}
 		},
+		onLoad(options) {
+			const self = this;
+			self.shopData = uni.getStorageSync('shopData');
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
+			console.log(self.searchItem)
+			self.$Utils.loadAll(['getMainData'], self);
+		},
 		methods: {
+			
+			getMainData(isNew) {
+				const self = this;
+				if (isNew) {
+					self.mainData = [];
+					self.paginate = {
+						count: 0,
+						currentPage: 1,
+						is_page: true,
+						pagesize: 10
+					}
+				};
+				const postData = {};
+				postData.tokenFuncName = 'getProjectToken';
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				// postData.order = {
+				// 	listorder:'desc'
+				// };
+				const callback = (res) => {
+					// if (res.info.data.length > 0) {
+					// 	self.mainData.push.apply(self.mainData, res.info.data);
+					// 	for (var i = 0; i < self.mainData.length; i++) {
+					// 		self.mainData[i].description = self.mainData[i].description.split(',');
+					// 		self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'hm')
+					// 		self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')
+					// 	}
+					// };
+					uni.setStorageSync('canClick', true);
+					console.log('mainData',res)
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.coachUserGet(postData, callback);
+			}
 			
 		}
 	}

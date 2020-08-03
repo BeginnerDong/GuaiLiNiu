@@ -16,7 +16,7 @@
 		
 		<view class="content bg-white radius30-T px-2 p-r content">
 			<view class="pb-4 bB-f5">
-				<view class="flex pt-5 font-40 font-w">时空穿梭</view>
+				<view class="flex pt-5 font-40 font-w">{{mainData.title}}</view>
 				<view class="shareSgin" @click="Router.navigateTo({route:{path:'/pages/limitedTime/limitedTime'}})">
 					<image src="../../static/images/course-icon2.png" class="fx-icon"></image>
 					<view>分享</view>
@@ -27,20 +27,18 @@
 						团操课
 					</view>
 					<view class="flex pl-2">
-						<view class="tag tagY">矫正</view>
-						<view class="tag tagB">提升柔软度</view>
-						<view class="tag tagG">改善身体线条</view>
+						<view class="tag" v-for="(item,index) in mainData.description" :key="index">{{item}}</view>
 					</view>
 				</view>
 				
 				<!-- 付费团课展示 -->
-				<view class="font-20 pt-3" v-show="type==1"><text class="font-36 font-w price">220</text>/9课时</view>
+				<view class="font-20 pt-3" v-show="type==1"><text class="font-36 font-w price">{{mainData.price}}</text>/{{mainData.score}}课时</view>
 			</view>
 			
 			<view class="font-26 pt-4 ">
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay for courses-icon1.png" class="rq-icon mt"></image>
-					<view class="flex-1 pl-2">适合人群：矫正、想要提升柔软度、改善身体线条、减肥、长期久坐、不爱运动的人群</view>
+					<view class="flex-1 pl-2">适合人群：{{mainData.fit}}</view>
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay for courses-icon2.png" class="wh30 mt"></image>
@@ -48,7 +46,7 @@
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay for courses-icon3.png" class="dw-icon mt"></image>
-					<view class="flex-1 pl-2">适合人群：矫正、想要提升柔软度、改善身体线条、减肥、长期久坐、不爱运动的人群</view>
+					<view class="flex-1 pl-2">{{shopData.address}}</view>
 				</view>
 			</view>
 		</view>
@@ -59,7 +57,7 @@
 			<view class="flex1 pt-3">
 				<image src="../../static/images/pay for courses-img1.png" class="jlImg"></image>
 				<view class="flex-1 pl-2">
-					<view class="pb-3"><text class="font-30 pr-2 font-w">张思雨</text> 15684792384</view>
+					<view class="pb-3"><text class="font-30 pr-2 font-w">{{mainData.coach[0].name}}</text> {{mainData.coach[0].phone}}</view>
 					<view class="font-24 color6">
 						<view>中国健美先回CCBA专业健身教练认证</view>
 						<view>中国健美先回CCBA专业健身教练认证</view>
@@ -84,10 +82,8 @@
 						<view class="pl-1">课程内容</view>
 					</view>
 					<view class="font-26 pt-3">
-						<view>
-							人五河士道室内装修三级导航珠江新城世纪新城能解决可视电话三级导航收单据号是抠脚大汉卡是大货车可视对讲上课时间是拉KDJ可视对讲了卡SJD可视对讲卡萨丁就
-						</view>
-						<image src="../../static/images/pay for courses-img2.png" class="conImg"></image>
+						<view v-html="mainData.content"></view>
+						<!-- <image src="../../static/images/pay for courses-img2.png" class="conImg"></image> -->
 					</view>
 				</view>
 				
@@ -95,12 +91,10 @@
 					<view class="flex p-r tit">
 						<image src="../../static/images/pay-courses-icon5.png" class="numImg"></image>
 						<view class="font-40 colorf p-r px-4">02</view>
-						<view class="pl-1">课程内容</view>
+						<view class="pl-1">课程规则</view>
 					</view>
 					<view class="font-26 pt-3">
-						<view>
-							人五河士道室内装修三级导航珠江新城世纪新城能解决可视电话三级导航收单据号是抠脚大汉卡是大货车可视对讲上课时间是拉KDJ可视对讲了卡SJD可视对讲卡萨丁就
-						</view>
+						<view v-html="mainData.rule"></view>
 					</view>
 				</view>
 				
@@ -159,7 +153,7 @@
 		
 		<view style="height: 200rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1">
-			<view class="font-26">已预约0/5人，还差<text class="colorR">3</text>人开课</view>
+			<view class="font-26">已预约0/{{mainData.max}}人，还差<text class="colorR">{{mainData.standard}}</text>人开课</view>
 			<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})">立即预约</view>
 		</view>
 		
@@ -190,12 +184,14 @@
 				navCurr:0,
 				is_show:false,
 				type:0,
-				mainData:{}
+				mainData:{},
+				shopData:{}
 			}
 		},
 		onLoad(option){
 			const self = this;
 			self.mainData = uni.getStorageSync('leagueClassDetail');
+			self.shopData = uni.getStorageSync('shopData');
 			self.type = option.type;
 		},
 		methods: {

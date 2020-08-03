@@ -61,7 +61,7 @@
 			<view class="px-1">{{shopData.name?shopData.name:''}}</view>
 			<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：2.21KM</view>
 		</view>
-		<view class="shadow radius20 m-a p-r mb-3 tkBox" 
+		<view class="shadow radius20 m-a p-r mb-3 overflow-h tkBox" 
 		 @click="goToDetail(item)"
 		 v-for="(item,index) in mainData" :key="index" :data-id="item.id"
 		 >
@@ -99,6 +99,7 @@
 		onLoad(options) {
 			const self = this;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.shopData = uni.getStorageSync('shopData');
 			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
 			self.$Utils.loadAll(['getMainData'], self);
 		},

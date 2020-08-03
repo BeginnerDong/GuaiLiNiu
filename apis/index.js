@@ -44,6 +44,19 @@ export default {
 		};
 		http.HTTP(allParams);
 	},
+	
+	coachUserGet(param, callback) {
+	
+		var allParams = {
+			url: 'Base/User/get',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
 
 	registerSuper(param, callback) {
 

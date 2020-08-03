@@ -34,21 +34,19 @@
 		
 		<view class="line-h px-2 py-3 flex">
 			<image src="../../static/images/sijiao-icon0.png" class="dw-icon"></image>
-			<view class="px-1">西安外事学院</view>
+			<view class="px-1">{{shopData.name}}</view>
 			<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：2.21KM</view>
 		</view>
-		<view class="shadow radius20 m-a p-r mb-3 tkBox" @click="Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=1'}})">
+		<view class="shadow radius20 m-a p-r mb-3 tkBox" v-for="(item,index) in mainData" :key="index" @click="goToDetail(item)">
 			<image src="../../static/images/sijiao-img.png" class="kcImg"></image>
 			<view class="px-2 py-3">
 				<view class="font-30 flex1">
-					<view class="font-w">减脂训练营·中上</view>
-					<view><text class="price font-w">220</text>/9课时</view>
+					<view class="font-w">{{item.title}}</view>
+					<view><text class="price font-w">{{item.price}}</text>/{{item.score}}课时</view>
 				</view>
-				<view class="font-24 py-2">Auger | 20:00~20:45</view>
+				<view class="font-24 py-2">{{item.coach[0].name}} | {{item.start_time}}~{{item.end_time}}</view>
 				<view class="flex">
-					<view class="tag tagY">矫正</view>
-					<view class="tag tagB">提升柔软度</view>
-					<view class="tag tagG">改善身体线条</view>
+					<view class="tag tagY" v-for="(v,i) in item.description" :key="i">{{v}}</view>
 				</view>
 			</view>
 			<view class="font-20 colorf kcSgin">差一个人开课</view>
@@ -64,6 +62,7 @@
 				Router:this.$Router,
 				class_show:false,
 				mainData:[],
+				shopData:{},
 				searchItem:{
 					thirdapp_id:2,
 					type:1,
@@ -75,9 +74,16 @@
 			const self = this;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
+			self.shopData = uni.getStorageSync('shopData');
 			self.$Utils.loadAll(['getMainData'], self);
 		},
 		methods: {
+			
+			goToDetail(item){
+				const self = this;
+				uni.setStorageSync('leagueClassDetail',item);
+				self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=1'}});
+			},
 			
 			getMainData(isNew) {
 				const self = this;
@@ -113,11 +119,12 @@
 						self.mainData.push.apply(self.mainData, res.info.data);
 						for (var i = 0; i < self.mainData.length; i++) {
 							self.mainData[i].description = self.mainData[i].description.split(',');
-							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'yy-hh-mm')
+							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'hm')
 							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')
 						}
 					};
 					uni.setStorageSync('canClick', true);
+					console.log('mainData',self.mainData)
 					self.$Utils.finishFunc('getMainData');
 				};
 				self.$apis.productGet(postData, callback);

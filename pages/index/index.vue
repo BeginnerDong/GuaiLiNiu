@@ -78,7 +78,7 @@
 						</view>
 					</view>
 					<view class="line-h flexX py-1">
-						<view class="shadowM radius10 flex-shrink mr-3 p-r"  v-for="(item,index) in classData" :key="index">
+						<view class="shadowM radius10 flex-shrink overflow-h mr-3 p-r"  v-for="(item,index) in classData" :key="index">
 							<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="kcImg"></image>
 							<view class="p-3">
 								<view class="font-30 font-w">{{item.title?item.title:''}}</view>
@@ -197,7 +197,7 @@
 				var callback = function(res){
 					if(res.info.data.length>0){
 						uni.setStorageSync('shopData', res.info.data[0]);
-						
+						self.shopData = uni.getStorageSync('shopData');
 						self.getActiveData();
 						self.getCoachData();
 						self.getClassData()
