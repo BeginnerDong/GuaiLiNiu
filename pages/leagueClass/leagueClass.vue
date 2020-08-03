@@ -62,7 +62,7 @@
 			<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：2.21KM</view>
 		</view>
 		<view class="shadow radius20 m-a p-r mb-3 tkBox" 
-		 @click="Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}})"
+		 @click="goToDetail(item)"
 		 v-for="(item,index) in mainData" :key="index" :data-id="item.id"
 		 >
 			<image  :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="kcImg"></image>
@@ -89,7 +89,9 @@
 				shopData:{},
 				mainData:[],
 				searchItem:{
-					thirdapp_id:2
+					thirdapp_id:2,
+					type:1,
+					course_type:1
 				}
 			}
 		},
@@ -97,11 +99,17 @@
 		onLoad(options) {
 			const self = this;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
-			self.searchItem.shop_no = options.shop_no;
-			self.$Utils.loadAll(['getMainData','getShopData'], self);
+			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
+			self.$Utils.loadAll(['getMainData'], self);
 		},
 		
 		methods: {
+			
+			goToDetail(item){
+				const self = this;
+				uni.setStorageSync('leagueClassDetail',item);
+				self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}});
+			},
 			
 			getShopData() {
 				var self = this;
@@ -109,7 +117,7 @@
 				//postData.tokenFuncName = 'getProjectToken';
 				postData.searchItem = {
 					thirdapp_id:2,
-					user_no:self.searchItem.shop_no
+					
 				};
 				var callback = function(res){
 					if(res.info.data.length>0){

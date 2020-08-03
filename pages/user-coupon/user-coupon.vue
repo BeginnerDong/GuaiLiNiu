@@ -53,10 +53,48 @@
 	export default {
 		data() {
 			return {
-				navCurr:0
+				navCurr:0,
+				mainData:[],
+				searchItem:{
+					thirdapp_id: 2
+				}
 			}
 		},
+		onLoad(options) {
+			const self = this;
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.$Utils.loadAll(['getMainData'], self);
+		},
 		methods: {
+			
+			getMainData(isNew) {
+				const self = this;
+				if (isNew) {
+					self.mainData = [];
+					self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+				};
+				const postData = {};
+				//postData.tokenFuncName = 'getProjectToken';
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				postData.order = {
+					'create_time':'desc'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+						/* for (var i = 0; i < self.mainData.length; i++) {
+							self.mainData[i].description = self.mainData[i].description.split(',');
+							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'hm')
+							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')
+						} */
+					};
+					uni.setStorageSync('canClick', true);
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.couponGet(postData, callback);
+			},
+			
 			changeNav(i){
 				const self = this;
 				self.navCurr = i

@@ -175,13 +175,13 @@
 				const self = this;
 				uni.getLocation({
 					type:'wgs84',
-					success() {
-						self.getShopData()
+					success(res) {
+						self.getShopData(res.longitude,res.latitude)
 					}
 				})
 			},
 			
-			getShopData() {
+			getShopData(longitude,latitude) {
 				var self = this;
 				const postData = {};
 				postData.tokenFuncName = 'getProjectToken';
@@ -189,9 +189,15 @@
 					thirdapp_id:2,
 					user_type:1
 				};
+				postData.order = {
+					distance:'asc',
+					longitude:longitude,
+					latitude:latitude
+				};
 				var callback = function(res){
 					if(res.info.data.length>0){
-						self.shopData = res.info.data[0];
+						uni.setStorageSync('shopData', res.info.data[0]);
+						
 						self.getActiveData();
 						self.getCoachData();
 						self.getClassData()
@@ -219,7 +225,7 @@
 				postData.searchItem = {
 					thirdapp_id:2,
 					type:1,
-					shop_no:self.shopData.user_no
+					shop_no:uni.getStorageSync('shopData').user_no
 				};
 				postData.getAfter = {
 					coach:{
@@ -256,7 +262,7 @@
 				postData.searchItem = {
 					thirdapp_id:2,
 					menu_id:2,
-					user_no:self.shopData.user_no
+					user_no:uni.getStorageSync('shopData').user_no
 				};
 				var callback = function(res){
 					if(res.info.data.length>0){
@@ -271,7 +277,7 @@
 				const postData = {};
 				postData.searchItem = {
 					thirdapp_id:2,
-					shop_no:self.shopData.user_no
+					shop_no:uni.getStorageSync('shopData').user_no
 				};
 				postData.getAfter = {
 					class:{

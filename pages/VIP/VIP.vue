@@ -97,14 +97,39 @@
 		data() {
 			return {
 				tcCurr:0,
-				vip:1
+				vip:1,
+				mainData:[],
+				searchItem:{
+					thirdapp_id: 2,
+					type: 2,
+				}
 			}
 		},
 		onLoad(option){
 			const self = this;
-			self.vip = option.vip
+			self.searchItem.user_no = uni.getStorageSync('shopData')['user_no'];
+			self.$Utils.loadAll(['getMainData'], self);
 		},
 		methods: {
+			
+			getMainData() {
+				const self = this;
+				
+				const postData = {};
+				//postData.tokenFuncName = 'getProjectToken';
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				
+				
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+					};
+					uni.setStorageSync('canClick', true);
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.productGet(postData, callback);
+			},
+			
 			changeTc(i){
 				const self = this;
 				self.tcCurr = i;

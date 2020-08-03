@@ -440,6 +440,18 @@ export default {
 		};
 		http.HTTP(allParams);
 	},
+	
+	couponGet(param, callback) {
+		var allParams = {
+			url: 'Common/Coupon/get',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
 
 	orderGet(param, callback) {
 		var allParams = {

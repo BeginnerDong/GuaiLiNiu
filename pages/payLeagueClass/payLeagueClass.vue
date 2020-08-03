@@ -62,10 +62,67 @@
 		data() {
 			return {
 				Router:this.$Router,
-				class_show:false
+				class_show:false,
+				mainData:[],
+				searchItem:{
+					thirdapp_id:2,
+					type:1,
+					course_type:2
+				}
 			}
 		},
+		onLoad(options) {
+			const self = this;
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
+			self.$Utils.loadAll(['getMainData'], self);
+		},
 		methods: {
+			
+			getMainData(isNew) {
+				const self = this;
+				if (isNew) {
+					self.mainData = [];
+					self.paginate = {
+						count: 0,
+						currentPage: 1,
+						is_page: true,
+						pagesize: 10
+					}
+				};
+				const postData = {};
+				//postData.tokenFuncName = 'getProjectToken';
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				postData.order = {
+					listorder:'desc'
+				};
+				postData.getAfter = {
+					coach:{
+						tableName:'Coach',
+						middleKey:'coach_no',
+						key:'user_no',
+						searchItem:{
+							status:1
+						},
+						condition:'='
+					}
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+						for (var i = 0; i < self.mainData.length; i++) {
+							self.mainData[i].description = self.mainData[i].description.split(',');
+							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'yy-hh-mm')
+							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')
+						}
+					};
+					uni.setStorageSync('canClick', true);
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.productGet(postData, callback);
+			},
+			
 			Show(){
 				const self = this;
 				self.class_show = !self.class_show;

@@ -189,11 +189,13 @@
 				Router:this.$Router,
 				navCurr:0,
 				is_show:false,
-				type:0
+				type:0,
+				mainData:{}
 			}
 		},
 		onLoad(option){
 			const self = this;
+			self.mainData = uni.getStorageSync('leagueClassDetail');
 			self.type = option.type;
 		},
 		methods: {
