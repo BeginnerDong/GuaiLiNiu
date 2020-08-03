@@ -1,17 +1,19 @@
 <template>
 	<view :style="sb_show?'height:100%;overflow:hidden':''">
-		
+		<view class="backBox" @click="Router.back({route:{dalta:-1}})">
+			<image src="../../static/images/back-icon.png" class="back"></image>
+		</view>
 		<!-- banner -->
 		<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" indicator-active-color="#fff" class="banner">
-			<swiper-item>
-				<image src="../../static/images/stores details-img.png" ></image>
+			<swiper-item v-for="(item,index) in mainData.bannerImg" :key="index">
+				<image :src="item.url" ></image>
 			</swiper-item>
 		</swiper>
 		
 		<view class="content bg-white radius20-T p-r px-2">
 			<view class="pb-4 bB-f5">
 				<view class="flex pt-5">
-					<view class="font-34">西安外事学院</view>
+					<view class="font-34">{{mainData.name?mainData.name:''}}</view>
 					<view class="font-20 colorf p-r sq">
 						<image src="../../static/images/home-icon5.png" class="sq-icon"></image>
 						<view class="top-0 p-a t-indent10 line-h-md">社区店</view>
@@ -22,10 +24,11 @@
 					<view>分享</view>
 				</view>
 				<view class="font-22 line-h py-2 color9">
-					门店面积 <text class="priceM pl-1">280</text> | 私教面积 <text class="priceM pl-1">50</text>
+					门店面积 <text class="priceM pl-1">{{mainData.total_area?mainData.total_area:''}}</text> | 
+					私教面积 <text class="priceM pl-1">{{mainData.private_area?mainData.private_area:''}}</text>
 				</view>
 				<view class="flex1">
-					<view class="dz avoidOverflow2 font-26 color6">地址：西安市未央区谭家街道永城路230号万科幸福里10号楼1单元202</view>
+					<view class="dz avoidOverflow2 font-26 color6">地址：{{mainData.address?mainData.address:''}}</view>
 					<view class="flex4 font-20 color6">
 						<image src="../../static/images/stores details-icon.png" class="storeDz-icon mb-2"></image>
 						<view>距离13.2KM</view>
@@ -33,9 +36,10 @@
 				</view>
 			</view>
 			
-			<view class="pb-4 bB-f5">
+			<view class="pb-4 bB-f5" v-if="mainData.active.length>0">
 				<view class="font-w t-indent20 line-h pt-4 pb-3 tit">限时特惠</view>
-				<image src="../../static/images/stores details-img3.png" class="storeImg1" @click="Router.navigateTo({route:{path:'/pages/limitedTime/limitedTime'}})"></image>
+				<image :src="mainData.active&&mainData.active[0]&&mainData.active[0].mainImg?mainData.active[0].mainImg[0].url:''" class="storeImg1" 
+				@click="Router.navigateTo({route:{path:'/pages/limitedTime/limitedTime?id='+mainData.active[0].id}})"></image>
 			</view>
 			
 			<view class="pb-4 bB-f5">
@@ -79,11 +83,13 @@
 					</view>
 				</view>
 				<view class="flexX line-h">
-					<view class="flex-shrink p-r mr-3 overflow-h">
-						<image src="../../static/images/sijiao-img.png" class="storeImg2"></image>
-						<view class="font-w py-2">张瑞生</view>
+					<view class="flex-shrink p-r mr-3 overflow-h" v-for="(item,index) of mainData.coach" :key="index"
+					 :data-id="item.id" 
+					@click="Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail?id='+$event.currentTarget.dataset.id}})">
+						<image :src="item.bannerImg&&item.bannerImg[0]?item.bannerImg[0].url:''" class="storeImg2"></image>
+						<view class="font-w py-2">{{item.name?item.name:''}}</view>
 						<view class="flex1">
-							<view class="font-22 color6">极速瘦身、减脂塑形</view>
+							<view class="font-22 color6">{{item.expertise?item.expertise:''}}</view>
 							<view class="font-20 color9">累计 105节</view>
 						</view>
 						<view class="tjSgin">店长推荐</view>
@@ -176,14 +182,73 @@
 				Router:this.$Router,
 				timeCurr:0,
 				kf_show:false,
-				sb_show:false
+				sb_show:false,
+				mainData:{}
 			}
 		},
+		
+		onLoad(options) {
+			const self = this;
+			self.id = options.id;
+			self.$Utils.loadAll(['getMainData'], self);
+		},
+		
+		
 		methods: {
+			
 			changeTime(i){
 				const self = this;
 				self.timeCurr = i
 			},
+			
+			
+			getMainData() {
+				var self = this;
+				const postData = {};
+				postData.searchItem = {
+					thirdapp_id:2,
+					id:self.id
+				};
+				postData.getAfter = {
+					active:{
+						tableName:'Article',
+						middleKey:'user_no',
+						key:'user_no',
+						searchItem:{
+							status:1,
+							menu_id:2
+						},
+						condition:'='
+					},
+					coach:{
+						tableName:'Coach',
+						middleKey:'user_no',
+						key:'shop_no',
+						searchItem:{
+							status:1
+						},
+						condition:'='
+					},
+					product:{
+						tableName:'Product',
+						middleKey:'user_no',
+						key:'shop_no',
+						searchItem:{
+							status:1,
+							type:1
+						},
+						condition:'='	
+					}
+				};
+				var callback = function(res){
+					if(res.info.data.length>0){
+						self.mainData = res.info.data[0];
+					}
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.shopGet(postData, callback);
+			},
+			
 			isShow(type){
 				const self = this;
 				if(type==1){

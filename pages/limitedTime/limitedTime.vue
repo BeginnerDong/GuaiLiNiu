@@ -1,13 +1,23 @@
 <template>
 	<view class="font-26 line-h">
 		
-		<view class="top text-center py-2 colorf">距离活动结束：<text class="font-32">02天12时11分15秒</text></view>
+		<view class="top text-center py-2 colorf">距离活动结束：
+			
+			<countdown-timer ref="countdown" :time="time">
+			    <template v-slot="{day, hour, minute, second}">
+			        <!-- 你的样式部分 Start -->
+			        <text class="font-32">{{day}}天{{hour}}时{{minute}}分{{second}}秒</text>
+			        <!-- 你的样式部分 End -->
+			    </template>     
+			</countdown-timer>
+		</view>
+		
 		<image src="../../static/images/Vpreferential-img.png" class="limitImg"></image>
 		<veiw class="d-flex a-start px-2 mb-5">
 			<image src="../../static/images/preferential-icon.png" class="wh30 mr-2"></image>
 			<view>
-				<view class="font-30 font-w pb-3">西安外事学院</view>
-				<view>活动介绍：原价年卡999直降200，现在只需799</view>
+				<view class="font-30 font-w pb-3">{{mainData.shop&&mainData.shop[0]?mainData.shop[0].name:''}}</view>
+				<view>活动介绍：{{mainData.description?mainData.description:''}}</view>
 			</view>
 		</veiw>
 		
@@ -17,7 +27,7 @@
 				<view class="font-36 px-2">购卡优惠</view>
 				<image src="../../static/images/preferential-icon2.png" class="gk-icon"></image>
 			</view>
-			<view class="font-24 color6 text-center py-3">会员卡仅限西安外事学院店使用</view>
+			<view class="font-24 color6 text-center py-3">会员卡仅限{{mainData.shop&&mainData.shop[0]?mainData.shop[0].name:''}}使用</view>
 			<view class="flex1 px-3">
 				<image src="../../static/images/preferential-img1.png" class="nkImg"></image>
 				<view class="flex-1 pl-2">
@@ -35,7 +45,9 @@
 				<image src="../../static/images/preferential-icon2.png" class="gk-icon"></image>
 			</view>
 			<view class="pt-3 px-3 color6">
-				1.本活动所有用户皆可参加
+				<view   class="content ql-editor" style="padding:0;" v-html="mainData.content">
+					
+				</view>
 			</view>
 		</view>
 		
@@ -46,10 +58,59 @@
 	export default {
 		data() {
 			return {
-				Router:this.$Router
+				Router:this.$Router,
+				mainData:{},
+				time: 0
 			}
 		},
+		
+		onLoad(options) {
+			const self = this;
+			self.id = options.id;
+			self.$Utils.loadAll(['getMainData'], self);
+		},
+		
 		methods: {
+			
+			getMainData() {
+				var self = this;
+				const postData = {};
+				postData.searchItem = {
+					thirdapp_id:2,
+					id:self.id
+				};
+				postData.getAfter = {
+					shop:{
+						tableName:'Shop',
+						middleKey:'user_no',
+						key:'user_no',
+						searchItem:{
+							status:1
+						},
+						condition:'='
+					},
+					card:{
+						tableName:'Product',
+						middleKey:'passage1',
+						key:'product_no',
+						searchItem:{
+							status:1
+						},
+						condition:'='
+					}
+				};
+				var callback = function(res){
+					if(res.info.data.length>0){
+						self.mainData = res.info.data[0]
+						const regex = new RegExp('<img', 'gi');
+						self.mainData.content = self.mainData.content.replace(regex, `<img style="max-width: 100%;"`);
+						self.time = self.mainData.limit_time*1000 - new Date().getTime();
+						//console.log(new Date().getTime()/1000)
+					}
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.articleGet(postData, callback);
+			},
 			
 		}
 	}

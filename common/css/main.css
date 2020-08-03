@@ -136,9 +136,9 @@ uni-button:after{border: 0;}
 
 /* 标签 */
 .tag{color: #fff;font-size: 20rpx;text-align: center;line-height: 1;padding: 8rpx 10rpx;display: inline-block;border-radius: 5rpx;margin-right: 10rpx;}
-.tagY{background-color: #FFD500;}
-.tagB{background-color: #63D1F8;}
-.tagG{background-color: #00AFA4;}
+.tag:nth-child(3n+1){background-color: #FFD500;}
+.tag:nth-child(3n+2){background-color: #63D1F8;}
+.tag:nth-child(3n){background-color: #00AFA4;}
 
 .kcSgin{padding: 12rpx 10rpx;background-color: rgba(0,0,0,0.5);position: absolute;top: 20rpx;left: 20rpx;border-radius: 8rpx;}
 .tjSgin{padding: 8rpx;border-top-left-radius: 10rpx;border-bottom-right-radius: 10rpx;background-color: rgba(0,0,0,0.4);color: #fff;position: absolute;top: 0;left: 0;}

@@ -693,6 +693,9 @@ export default {
 		} else if (type == "hms") {
 			//转时分秒
 			var currentdate = date.getHours() + seperator2 + date.getMinutes() + seperator2 + date.getSeconds();
+		}else if (type == "hm") {
+			//转时分秒
+			var currentdate = date.getHours() + seperator2 + date.getMinutes();
 		}
 		return currentdate;
 	}

@@ -25,7 +25,7 @@
 					uni.redirectTo({
 						url:'/pages/index/index'
 					})
-				},3000)
+				},1000)
 			},
 			fun(){
 				const self = this;

@@ -115,7 +115,7 @@
 		<view style="height: 100rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1">
 			<view class="font-26">已预约0/5人，还差<text class="colorR">3</text>人开课</view>
-			<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})">立即购买</view>
+			<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/sijiao-order/sijiao-order'}})">立即购买</view>
 		</view>
 		
 		

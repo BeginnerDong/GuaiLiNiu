@@ -17,6 +17,33 @@ export default {
 		};
 		http.HTTP(allParams);
 	},
+	
+	
+	shopGet(param, callback) {
+	
+		var allParams = {
+			url: 'Common/Shop/get',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
+	
+	coachGet(param, callback) {
+	
+		var allParams = {
+			url: 'Common/Coach/get',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
 
 	registerSuper(param, callback) {
 

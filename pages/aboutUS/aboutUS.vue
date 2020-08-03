@@ -5,21 +5,22 @@
 			<view class="flex1 bB-f5 py-4">
 				<image src="../../static/images/about us-icon.png" class="wh50"></image>
 				<view class="font-28 color2 flex-1 pl-2">客服微信</view>
-				<view>guailiniu222</view>
+				<view>{{mainData.keywords?mainData.keywords:''}}</view>
 			</view>
 			<view class="flex1 bB-f5 py-4">
 				<image src="../../static/images/about us-icon1.png" class="wh50"></image>
 				<view class="font-28 color2 flex-1 pl-2">联系电话</view>
-				<view>15632847965</view>
+				<view>{{mainData.phone?mainData.phone:''}}</view>
 			</view>
 		</view>
 		<view class="f5Bj-H20"></view>
 		
 		<view class="px-2 py-3">
 			<view>
-				你说的看可视对讲发的拉KD高科技大厦可接受的考搜嫡虑 将山东矿机你的放快待发货待面试开始做电话中山东路看v 倒计时看信访的局数控刀具啊哈斯柯达句话是可视电话就， 上课都没和的科鲁兹三等奖开发框架是快递费就可视对讲 付款后的看的法和奥斯卡开会说的
+				<view   class="content ql-editor" style="padding:0;" v-html="mainData.content">
+					
+				</view>
 			</view>
-			<image src="../../static/images/about us-img.png" class="img mt-3"></image>
 		</view>
 		
 	</view>
@@ -29,10 +30,34 @@
 	export default {
 		data() {
 			return {
-				
+				mainData:{}
 			}
 		},
+		
+		onLoad() {
+			const self = this;
+			self.$Utils.loadAll(['getMainData'], self);
+		},
+		
 		methods: {
+			
+			getMainData() {
+				var self = this;
+				const postData = {};
+				postData.searchItem = {
+					thirdapp_id:2,
+					menu_id:3
+				};
+				var callback = function(res){
+					if(res.info.data.length>0){
+						self.mainData = res.info.data[0]
+						const regex = new RegExp('<img', 'gi');
+						self.mainData.content = self.mainData.content.replace(regex, `<img style="max-width: 100%;"`);
+					}
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.articleGet(postData, callback);
+			},
 			
 		}
 	}

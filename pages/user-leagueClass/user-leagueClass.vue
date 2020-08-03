@@ -36,8 +36,8 @@
 			<view class="font-26 color6 py-3 bB-f5">课程有效期：15天 </view>
 			<!-- 其他 -->
 			<view class="py-3 d-flex j-end">
-				<!-- <view class="btn b-e1" @click="Router.navigateTo({route:{path:'/pages/user-appointCoach/user-appointCoach'}})">立即使用</view> -->
-				<!-- <view class="btn b-e1" @click="Router.navigateTo({route:{path:'/pages/user-comment/user-comment?type=0'}})">立即评价</view> -->
+				<view class="btn b-e1" @click="Router.navigateTo({route:{path:'/pages/user-appointCoach/user-appointCoach'}})">立即使用</view>
+				<view class="btn b-e1" @click="Router.navigateTo({route:{path:'/pages/user-comment/user-comment?type=0'}})">立即评价</view>
 				<view class="btn b-e1" @click="Router.navigateTo({route:{path:'/pages/user-commentDetail/user-commentDetail?type=0'}})">查看评价</view>
 			</view>
 			

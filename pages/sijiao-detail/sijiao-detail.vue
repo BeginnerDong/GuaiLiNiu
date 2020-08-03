@@ -4,17 +4,17 @@
 		<view class="p-r">
 			<image src="../../static/images/sijiao details-img.png" class="sjBg"></image>
 			<view class="flex1 p-2 mb-3 line-h p-aXY">
-				<image src="../../static/images/home-img3.png" class="sjImg"></image>
+				<image :src="mainData.mainImg&&mainData.mainImg[0]?mainData.mainImg[0].url:''" class="sjImg"></image>
 				<view class="p-3 flex-1">
 					<view class="flex">
-						<view class="font-30 font-w pr-2">张思雨</view>
+						<view class="font-30 font-w pr-2">{{mainData.name?mainData.name:''}}</view>
 						<view class="flex" @click="isShow">
 							<image src="../../static/images/home-icon6.png" class="zs-icon"></image>
-							<view class="colorZS font-24 pl-1">专业证书（3）</view>
+							<view class="colorZS font-24 pl-1">专业证书（{{mainData.certificate?mainData.certificate.length:''}}）</view>
 						</view>
 					</view>
-					<view class="py-4">15686957423</view>
-					<view>好评率100% | 累计上80节课</view>
+					<view class="py-4">{{mainData.phone?mainData.phone:''}}</view>
+					<view>好评率{{mainData.good?mainData.good:''}} | 累计上{{mainData.course?mainData.course.num:0}}节课</view>
 				</view>
 			</view>
 		</view>
@@ -22,29 +22,27 @@
 		<view class="pb-4 px-2">
 			<view class="pb-3 font-w t-indent20 font-30 line-h pt-4 tit">教练相册</view>
 			<view class="flexX">
-				<image src="../../static/images/sijiao details-img2.png" class="sjImg1"></image>
+				<image v-for="(item,index) in mainData.albumImg" :key="index" :src="item.url" class="sjImg1"></image>
 			</view>
 		</view>
 		
 		<view class="pb-4 px-2">
 			<view class="pb-3 font-w t-indent20 font-30 line-h tit">自我介绍</view>
 			<view class="shadowM p-3 radius10 font-26">
-				你自己东方红快递费课程VB好歹加了挡风叫代驾看信访局看信访局看打扫房间墨刀上繁花似锦看能吃就树倒猢狲散可视电话咋SD卡和v时代剧华可视电话不打算看三等奖发发沙迪克v和阿啥抵扣卷
+				{{mainData.introduce?mainData.introduce:''}}
 			</view>
 		</view>
 		
 		<view class="pb-4 px-2">
 			<view class="pb-3 font-w t-indent20 font-30 line-h tit">擅长领域</view>
 			<view class="flexX">
-				<view class="tag tagY">矫正</view>
-				<view class="tag tagB">提升柔软度</view>
-				<view class="tag tagG">改善身体线条</view>
+				<view class="tag" v-for="(item,index) of mainData.expertise" :key="index">{{item}}</view>
 			</view>
 		</view>
 		
 		<view class="pb-4 px-2">
 			<view class="pb-3 font-w t-indent20 font-30 line-h tit">服务门店</view>
-			<view class="colorM borderM d-inline-block font-26 px-1 radius">西安外事学院店</view>
+			<view class="colorM borderM d-inline-block font-26 px-1 radius">{{mainData.shop?mainData.shop.name:''}}</view>
 		</view>
 		
 		<view class="pb-1 px-2">
@@ -112,10 +110,65 @@
 		data() {
 			return {
 				Router:this.$Router,
-				is_show:false
+				is_show:false,
+				mainData:{}
 			}
 		},
+		
+		onLoad(options) {
+			const self = this;
+			self.id = options.id;
+			self.$Utils.loadAll(['getMainData'], self);
+		},
+		
 		methods: {
+			
+			getMainData() {
+				var self = this;
+				const postData = {};
+				postData.searchItem = {
+					thirdapp_id:2,
+					id:self.id
+				};
+				postData.getAfter = {
+					shop:{
+						tableName:'Shop',
+						middleKey:'shop_no',
+						key:'user_no',
+						searchItem:{
+							status:1,
+						},
+						condition:'=',
+						info:['name']
+					},
+					course:{
+						tableName:'Course',
+						middleKey:'user_no',
+						key:'user_no',
+						searchItem:{
+							status:1,
+							is_book:1
+						},
+						condition:'=',
+						compute:{
+							num:[
+								'count',
+								'count',
+								{status:1,is_book:1}
+							]
+						}
+					}
+				};
+				var callback = function(res){
+					if(res.info.data.length>0){
+						self.mainData = res.info.data[0];
+						self.mainData.expertise = self.mainData.expertise.split(',')
+					}
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.coachGet(postData, callback);
+			},
+			
 			isShow(){
 				const self = this;
 				self.is_show = !self.is_show;
