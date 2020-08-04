@@ -33,14 +33,15 @@
 			<view class="flex py-4 font-24">
 				<image src="../../static/images/the order-icon4.png" class="wh30 mr-2"></image>
 				<!-- <image src="../../static/images/the order-icon5.png" class="wh30 mr-2"></image> -->
-				<view>同意 <text class="colorB" @click="isShow">《怪力牛运动会员服务协议》</text></view>
+				<view><view @click="!isAgree">同意</view> <text class="colorB" @click="isShow">《怪力牛运动会员服务协议》</text></view>
 			</view>
 		</view>
 		
 		
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 			<view class="font-26">已预约8/12人</view>
-			<view class="carBtn">立即预约</view>
+			<button class="carBtn" open-type="getUserInfo" @click="submit">立即预约</button>
+			<view  ></view>
 		</view>
 		
 		<view class="bg-mask" v-show="is_show">
@@ -60,14 +61,134 @@
 	export default {
 		data() {
 			return {
-				is_show:false
+				is_show:false,
+				isAgree:false,
+				mainData:{}
 			}
+		},
+		onLoad(){
+			const self = this;
+			self.mainData = uni.getStorageSync('orderDetail');
 		},
 		methods: {
 			isShow(){
 				const self = this;
 				self.is_show = !self.is_show
-			}
+			},
+			submit(){
+				const self = this;
+				uni.setStorageSync('canClick', false);
+				var orderList = []
+				orderList.push({product_id:self.mainData.id,count:1,type:1});
+				const callback = (user, res) => {
+					self.addOrder(orderList)
+				};
+				self.$Utils.getAuthSetting(callback);
+			},
+			
+			addOrder(orderList) {
+				const self = this;	
+				const postData = {}; 
+				postData.orderList = self.$Utils.cloneForm(orderList);
+				postData.tokenFuncName = 'getProjectToken';
+				console.log('addOrder',postData);
+				const callback = (res) => {
+					
+					if (res && res.solely_code == 100000) {
+						self.orderId = res.info.id;
+						self.goPay()
+					} else {		
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+						uni.setStorageSync('canClick', true);
+					};		
+				};
+				self.$apis.addOrder(postData, callback);
+			},
+			
+			goPay() {
+				const self = this;
+				const postData = {};
+				console.log('self.mainData.price',self.mainData.price)
+				if(parseFloat(self.mainData.price)>0){
+					postData.wxPay = {
+						price:parseFloat(self.mainData.price)
+					};
+					console.log('postData',postData)
+				}else{
+					postData.otherPay={
+						price:parseFloat(self.mainData.price)
+					};
+				};
+				
+				postData.tokenFuncName = 'getProjectToken',
+				postData.searchItem = {
+					id: self.orderId
+				};
+				postData.payAfter = [];
+				postData.payAfter.push({
+					tableName: 'Order',
+					FuncName: 'update',
+					data: {
+						standard:self.mainData.score
+					},
+					searchItem:{
+						id:self.orderId
+					}
+				});
+				
+				const callback = (res) => {
+					if (res.solely_code == 100000) {
+						uni.setStorageSync('canClick', true);
+						if (res.info) {
+							const payCallback = (payData) => {
+								console.log('payData', payData)
+								if (payData == 1) {
+									uni.showToast({
+										title: '支付成功',
+										duration: 1000,
+										success: function() {
+											
+										}
+									});
+									setTimeout(function() {
+										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+									}, 1000);
+								} else {
+									uni.setStorageSync('canClick', true);
+									uni.showToast({
+										title: '支付失败',
+										duration: 2000
+									});
+								};
+							};
+							self.$Utils.realPay(res.info, payCallback);
+						} else {
+							
+							uni.showToast({
+								title: '支付成功',
+								duration: 1000,
+								success: function() {
+									
+								}
+							});
+							setTimeout(function() {
+								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+							}, 1000);
+						};
+					} else {
+						uni.setStorageSync('canClick', true);
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+					};
+					uni.setStorageSync('canClick', true);
+				};
+				self.$apis.pay(postData, callback);
+			},
 		}
 	}
 </script>

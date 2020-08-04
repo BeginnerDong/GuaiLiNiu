@@ -86,6 +86,18 @@
 				postData.tokenFuncName = 'getProjectToken';
 				postData.paginate = self.$Utils.cloneForm(self.paginate);
 				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				postData.getAfter = {
+					products:{
+						tableName:'Product',
+						middleKey:'user_no',
+						key:'coach_no',
+						condition:'=',
+						searchItem:{
+							status:1
+						},
+						info:['price']
+					}
+				};
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);

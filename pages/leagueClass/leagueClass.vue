@@ -144,6 +144,7 @@
 				const self = this;
 				self.timeCurr1 = i;
 				if(i==0){
+					 
 					self.searchItem.start_time = ['between',
 						[self.chooseTimestap,self.chooseTimestap+24*3600000],
 					];
@@ -159,7 +160,7 @@
 					self.searchItem.start_time = ['between',
 						[self.chooseTimestap+18*3600000,self.chooseTimestap+21*3600000],
 					];
-				}
+				};
 				self.time_show = !self.time_show;
 				self.getMainData(true);
 			},
@@ -169,7 +170,9 @@
 				self.couserType = i;
 				if(i>=0){
 					self.searchItem.category_id = uni.getStorageSync('courseType')[i].id;
-				}
+				}else{
+					delete self.searchItem.category_id;
+				};
 				self.class_show = !self.class_show;
 				self.getMainData(true);
 			},

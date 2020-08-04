@@ -154,7 +154,7 @@
 		<view style="height: 200rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1">
 			<view class="font-26">已预约0/{{mainData.max}}人，还差<text class="colorR">{{mainData.standard}}</text>人开课</view>
-			<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})">立即预约</view>
+			<view class="criBtn" @click="goOrder">立即预约</view>
 		</view>
 		
 		
@@ -195,6 +195,13 @@
 			self.type = option.type;
 		},
 		methods: {
+			
+			goOrder(){
+				const self = this;
+				uni.setStorageSync('orderDetail',self.mainData);
+				self.$Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})
+			},
+			
 			changeNav(i){
 				const self = this;
 				self.navCurr = i
