@@ -14,7 +14,7 @@
 						</view>
 					</view>
 					<view class="py-4">{{mainData.phone?mainData.phone:''}}</view>
-					<view>好评率{{mainData.good?mainData.good:''}} | 累计上{{mainData.course?mainData.course.num:0}}节课</view>
+					<view>好评率{{mainData.good?mainData.good:''}} | 累计上{{mainData.class?mainData.class:0}}节课</view>
 				</view>
 			</view>
 		</view>

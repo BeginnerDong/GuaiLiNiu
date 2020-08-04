@@ -89,7 +89,7 @@
 					</view>
 				</view>
 				
-				<view class="pt-2 pb-3">
+				<view class="pt-2 pb-3 p-r sijiaoBox">
 					<view class="font-30 py-3 flex1">
 						<view class="font-w">推荐私教</view>
 						<view class="flex" @click="Router.navigateTo({route:{path:'/pages/store-sijiao/store-sijiao?shop_no='+shopData.user_no}})">
@@ -119,7 +119,7 @@
 						</view>
 						
 					</view>
-					<view class="criBtn">进入店铺</view>
+					<view class="criBtn p-aX bottom-0">进入店铺</view>
 				</view>
 				
 			</view>
@@ -353,7 +353,7 @@ swiper{height: 250rpx;}
 .banner{width: 710rpx;height: 250rpx;border0-radius:20rpx;overflow: hidden;}
 .banner image{width: 100%;height: 250rpx;}
 .home-icon{width: 112rpx;height: 112rpx;margin-bottom: 20rpx;}
-.homeBg{width: 722rpx;height: 1818rpx;position: absolute;top: 0;left: 0;right: 0;margin: 0 auto;}
+.homeBg{width: 722rpx;height: 1818rpx;position: absolute;top: 0;left: 0;right: 0;margin: 0 auto 280rpx;}
 .sq{top: -10rpx;right: -10rpx;}
 .banner1{width: 650rpx;height: 200rpx;}
 .banner1 image{width: 650rpx;height: 200rpx;}
@@ -362,5 +362,7 @@ swiper{height: 250rpx;}
 .sjImg{width: 160rpx;height: 196rpx;}
 .homeBto{background-color: #3F2E2A;font-size: 24rpx;color: #fff;}
 .criBtn1{width: 110rpx;line-height: 40rpx;border-radius: 20rpx;}
+
+.sijiaoBox{min-height: 800rpx;}
 
 </style>

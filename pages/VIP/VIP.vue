@@ -34,20 +34,12 @@
 					<view class="mt-2 px-2">
 						<view class="font-w py-4">选择套餐</view>
 						<view class="flex1 mb-4 tcBox">
-							<view class="tc b-e1 p-r radius10" :class="tcCurr==0?'on':''" @click="changeTc(0)">
-								<view class="font-24 pb-3">年卡</view>
-								<view class="price font-32">999</view>
-								<image src="../../static/images/members-icon3.png" class="yes" v-show="tcCurr==0"></image>
-							</view>
-							<view class="tc b-e1 p-r radius10" :class="tcCurr==1?'on':''" @click="changeTc(1)">
-								<view class="font-24 pb-3">季卡</view>
-								<view class="price font-32">699</view>
-								<image src="../../static/images/members-icon3.png" class="yes" v-show="tcCurr==1"></image>
-							</view>
-							<view class="tc b-e1 p-r radius10" :class="tcCurr==2?'on':''" @click="changeTc(2)">
-								<view class="font-24 pb-3">月卡</view>
-								<view class="price font-32">299</view>
-								<image src="../../static/images/members-icon3.png" class="yes" v-show="tcCurr==2"></image>
+							<view class="tc b-e1 p-r radius10" 
+							v-for="(item,index) in mainData"
+							:class="tcCurr==index?'on':''" @click="changeTc(index)">
+								<view class="font-24 pb-3">{{item.title}}</view>
+								<view class="price font-32">{{item.price}}</view>
+								<image src="../../static/images/members-icon3.png" class="yes" v-show="tcCurr==index"></image>
 							</view>
 						</view>
 					</view>
@@ -97,7 +89,7 @@
 		data() {
 			return {
 				tcCurr:0,
-				vip:1,
+				vip:0,
 				mainData:[],
 				searchItem:{
 					thirdapp_id: 2,

@@ -26,17 +26,19 @@
 		
 		<view class="px-2 flex1 flex-wrap pb-5">
 			
-			<view class="p-r overflow-h line-h radius10 shadowM mt-3 sj" @click="Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail'}})">
-				<image src="../../static/images/sijiao-img.png" class="sjImg1"></image>
+			<view class="p-r overflow-h line-h radius10 shadowM mt-3 sj" 
+			v-for="(item,index) in mainData"
+			@click="Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail'}})">
+				<image :src="item.mainImg[0].url" class="sjImg1"></image>
 				<view class="px-2">
-					<view class="font-w py-2">张瑞生</view>
+					<view class="font-w py-2">{{item.name}}</view>
 					<view class="flex">
 						<image src="../../static/images/sijiao-icon.png" class="bq-icon"></image>
-						<view class="font-22 color6 pl-1">极速瘦身、减脂塑形</view>
+						<view class="font-22 color6 pl-1">{{item.expertise}}</view>
 					</view>
 					<view class="flex1 py-2">
 						<view class="font-26"><text class="price">220</text>/节</view>
-						<view class="font-20 color9">累计 105节</view>
+						<view class="font-20 color9">累计 {{item.class}}节</view>
 					</view>
 				</view>
 				<view class="sjSgin">1项专业证书</view>
@@ -55,8 +57,7 @@
 				shopData:{},
 				mainData:[],
 				searchItem:{
-					primary_scope: 30,
-					user_type: 1
+					
 				}
 			}
 		},
@@ -85,23 +86,18 @@
 				postData.tokenFuncName = 'getProjectToken';
 				postData.paginate = self.$Utils.cloneForm(self.paginate);
 				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
-				// postData.order = {
-				// 	listorder:'desc'
-				// };
 				const callback = (res) => {
-					// if (res.info.data.length > 0) {
-					// 	self.mainData.push.apply(self.mainData, res.info.data);
-					// 	for (var i = 0; i < self.mainData.length; i++) {
-					// 		self.mainData[i].description = self.mainData[i].description.split(',');
-					// 		self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'hm')
-					// 		self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')
-					// 	}
-					// };
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+						for (var i = 0; i < self.mainData.length; i++) {
+							// self.mainData[i].expertise = self.mainData[i].expertise.split(',')
+						}
+					};
 					uni.setStorageSync('canClick', true);
-					console.log('mainData',res)
+					console.log('mainData',self.mainData)
 					self.$Utils.finishFunc('getMainData');
 				};
-				self.$apis.coachUserGet(postData, callback);
+				self.$apis.coachGet(postData, callback);
 			}
 			
 		}
