@@ -3,7 +3,7 @@
 		
 		<view class="p-r z10 bg-white p-s top-0">
 			<view class="font-26 text-center flex1 p-2 bB-f5 time">
-				<view class="wh80" v-for="(v,i) in timeList" :class="timeCurr==i?'on':''" @click="changeTime(i)">
+				<view class="wh80" v-for="(v,i) in timeList" :key="i" :class="timeCurr==i?'on':''" @click="changeTime(i)">
 					<view class="pt-1">{{week[v.ds]}}</view>
 					<view class="font-20 color6">{{v.m}}.{{v.d}}</view>
 				</view>
@@ -30,20 +30,23 @@
 				<view v-show="time_show" class="pt-4">
 					<view>开课时间</view>
 					<view class="d-flex a-start pt-3">
-						<view class="time1 mr-5 on">全天</view>
+						<view class="time1 mr-5" :class="timeCurr1==0?'on':''" @click="changeTimeCurrent(0)">全天</view>
 						<view class="flex1 flex-wrap flex-1 ml-4">
-							<view class="time1">早上 <text class="color9 font-20 pl-1">07-10点</text></view>
-							<view class="time1">下午 <text class="color9 font-20 pl-1">07-10点</text></view>
-							<view class="time1">晚上 <text class="color9 font-20 pl-1">07-10点</text></view>
+							<view class="time1" :class="timeCurr1==1?'on':''"
+							@click="changeTimeCurrent(1)">早上 <text class="color9 font-20 pl-1">07-10点</text></view>
+							<view class="time1" :class="timeCurr1==2?'on':''"
+							@click="changeTimeCurrent(2)">下午 <text class="color9 font-20 pl-1">12-16点</text></view>
+							<view class="time1" :class="timeCurr1==3?'on':''"
+							@click="changeTimeCurrent(3)">晚上 <text class="color9 font-20 pl-1">18-21点</text></view>
 						</view>
 					</view>
 				</view>
 				<view v-show="class_show" class="pt-4">
 					<view>课程类型</view>
 					<view class="flex pt-3 flex-wrap classBox color6">
-						<view class="time1 on">全部</view>
+						<view class="time1" :class="couserType==-1?'on':''" @click="changeCourseType(-1)">全部</view>
 						<block v-for="(item,index) in courseType" :key="index">
-							<view class="time1">{{item.title}}</view>
+							<view class="time1" :class="couserType==index?'on':''" @click="changeCourseType(index)">{{item.title}}</view>
 						</block>
 						
 						<!-- <view class="time1">塑型</view>
@@ -87,6 +90,8 @@
 			return {
 				Router:this.$Router,
 				timeCurr:0,
+				timeCurr1:0,
+				couserType:-1,
 				time_show:false,
 				class_show:false,
 				shopData:{},
@@ -98,7 +103,7 @@
 					course_type:1
 				},
 				courseType:[],
-				week:['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+				week:['周日','周一','周二','周三','周四','周五','周六'],
 				chooseTimestap:0
 			}
 		},
@@ -117,6 +122,10 @@
 			console.log('self.timeList',self.timeList);
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.shopData = uni.getStorageSync('shopData');
+			self.chooseTimestap = self.timeList[0]['stime'];
+			self.searchItem.start_time = ['between',
+				[self.chooseTimestap,self.chooseTimestap+24*3600000],
+			];
 			
 			self.$Utils.loadAll(['getMainData','getCourseTypeData'], self);
 		},
@@ -126,23 +135,44 @@
 			changeTime(i){
 				const self = this;
 				self.timeCurr = i;
-				self.chooseTimestap = timeList[i]['stime'];
+				self.chooseTimestap = self.timeList[i]['stime'];
 				self.searchItem.start_time = ['between',[self.chooseTimestap,self.chooseTimestap+86400000]];
 				self.getMainData(true);
 			},
 			
 			changeTimeCurrent(i){
 				const self = this;
-				
-				if(i==1){
+				self.timeCurr1 = i;
+				if(i==0){
+					self.searchItem.start_time = ['between',
+						[self.chooseTimestap,self.chooseTimestap+24*3600000],
+					];
+				}else if(i==1){
 					self.searchItem.start_time = ['between',
 						[self.chooseTimestap+7*3600000,self.chooseTimestap+10*3600000],
 					];
+				}else if(i==2){
+					self.searchItem.start_time = ['between',
+						[self.chooseTimestap+12*3600000,self.chooseTimestap+16*3600000],
+					];
+				}else if(i==3){
+					self.searchItem.start_time = ['between',
+						[self.chooseTimestap+18*3600000,self.chooseTimestap+21*3600000],
+					];
 				}
-				
+				self.time_show = !self.time_show;
 				self.getMainData(true);
 			},
 			
+			changeCourseType(i){
+				const self = this;
+				self.couserType = i;
+				if(i>=0){
+					self.searchItem.category_id = uni.getStorageSync('courseType')[i].id;
+				}
+				self.class_show = !self.class_show;
+				self.getMainData(true);
+			},
 			
 			goToDetail(item){
 				const self = this;

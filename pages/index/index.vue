@@ -30,7 +30,7 @@
 		
 		<!-- 门店列表 -->
 		<view class="px-2 p-r">
-			<image src="../../static/images/home-img.png" class="homeBg"></image>
+			<image src="../../static/images/home-img.png" class="homeBg" :style="{marginBottom:is_show?'280rpx':'130rpx'}"></image>
 			
 			<view class="p-r line-h px-3">
 				<view class="d-flex a-start j-sb">
