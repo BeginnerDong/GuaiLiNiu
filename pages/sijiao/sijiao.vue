@@ -14,14 +14,14 @@
 			</view>
 		</view>
 		
-		<view class="flex shadowM mx-2 radius10 py-3 tan">
+		<view class="flex shadowM mx-2 radius10 py-3 tan" @click="Router.navigateTo({route:{path:'/pages/sijiao-course/sijiao-course'}})">
 			<image src="../../static/images/sijiao-icon2.png" class="wh40 mx-2"></image>
 			<view class="color6">优选课程</view>
 			<view class="flex flex-1 pl-5">
 				<view class="time1">减脂</view>
 				<view class="time1">增肌</view>
 			</view>
-			<view class="time1 on" @click="Router.navigateTo({route:{path:'/pages/sijiao-course/sijiao-course'}})">全部</view>
+			<view class="time1 on">全部</view>
 		</view>
 		
 		<view class="px-2 flex1 flex-wrap pb-5">
@@ -37,7 +37,7 @@
 						<view class="font-22 color6 pl-1">{{item.expertise}}</view>
 					</view>
 					<view class="flex1 py-2">
-						<view class="font-26"><text class="price">220</text>/节</view>
+						<view class="font-26"><text class="price">{{item.products.price}}</text>/节</view>
 						<view class="font-20 color9">累计 {{item.class}}节</view>
 					</view>
 				</view>
@@ -66,7 +66,6 @@
 			self.shopData = uni.getStorageSync('shopData');
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
-			console.log(self.searchItem)
 			self.$Utils.loadAll(['getMainData'], self);
 		},
 		methods: {
@@ -107,6 +106,7 @@
 					};
 					uni.setStorageSync('canClick', true);
 					console.log('mainData',self.mainData)
+					// console.log('products',products)
 					self.$Utils.finishFunc('getMainData');
 				};
 				self.$apis.coachGet(postData, callback);

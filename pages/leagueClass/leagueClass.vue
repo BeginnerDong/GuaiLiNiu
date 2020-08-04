@@ -44,9 +44,9 @@
 				<view v-show="class_show" class="pt-4">
 					<view>课程类型</view>
 					<view class="flex pt-3 flex-wrap classBox color6">
-						<view class="time1" :class="couserType==-1?'on':''" @click="changeCourseType(-1)">全部</view>
+						<view class="time1" :class="courseCurr==-1?'on':''" @click="changeCourseType(-1)">全部</view>
 						<block v-for="(item,index) in courseType" :key="index">
-							<view class="time1" :class="couserType==index?'on':''" @click="changeCourseType(index)">{{item.title}}</view>
+							<view class="time1" :class="courseCurr==index?'on':''" @click="changeCourseType(index)">{{item.title}}</view>
 						</block>
 						
 						<!-- <view class="time1">塑型</view>
@@ -79,7 +79,7 @@
 					<view class="tag" v-for="(c_item,c_index) of item.description" :key="c_index">{{c_item}}</view>
 				</view>
 			</view>
-			<view class="font-20 colorf kcSgin">差一个人开课</view>
+			<view class="font-20 colorf kcSgin">差 {{item.standard}} 个人开课</view>
 		</view>
 	</view>
 </template>
@@ -91,7 +91,7 @@
 				Router:this.$Router,
 				timeCurr:0,
 				timeCurr1:0,
-				couserType:-1,
+				courseCurr:-1,
 				time_show:false,
 				class_show:false,
 				shopData:{},
@@ -144,7 +144,6 @@
 				const self = this;
 				self.timeCurr1 = i;
 				if(i==0){
-					 
 					self.searchItem.start_time = ['between',
 						[self.chooseTimestap,self.chooseTimestap+24*3600000],
 					];
@@ -167,7 +166,7 @@
 			
 			changeCourseType(i){
 				const self = this;
-				self.couserType = i;
+				self.courseCurr = i;
 				if(i>=0){
 					self.searchItem.category_id = uni.getStorageSync('courseType')[i].id;
 				}else{

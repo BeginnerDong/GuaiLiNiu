@@ -11,7 +11,7 @@
 			<view class="kc flex-shrink flex4 shadow" v-for="(item,index) in menuData"  
 			:key="item.id"  :class="current==index?'on':''"  @click="change(index)">
 				<view class="bg-white radius-5 wh80 flex0 mb-1">
-					<image src="../../static/images/course-icon-2.png" class="sjkIcon1"></image>
+					<image :src="item.mainImg[0].url" class="sjkIcon1"></image>
 				</view>
 				<view>{{item.title}}</view>
 			</view>
@@ -120,6 +120,7 @@
 					if (res.info.data.length > 0) {
 						self.menuData = res.info.data;
 					}
+					console.log('sijiao',self.menuData)
 					self.$Utils.finishFunc('getMenuData');
 				};
 				self.$apis.labelGet(postData, callback);

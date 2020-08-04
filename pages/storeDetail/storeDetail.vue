@@ -100,26 +100,24 @@
 			<view class="pb-4 bB-f5">
 				<view class="font-w t-indent20 line-h pt-4 pb-3 tit">门店课程</view>
 				<view class="font-26 text-center flex1 p-2 bB-f5 time">
-					<view class="wh80" v-for="(v,i) in 6" :class="timeCurr==i?'on':''" @click="changeTime(i)">
-						<view class="pt-1">今天</view>
-						<view class="font-20 color6">6.24</view>
+					<view class="wh80" v-for="(item,index) in timeList" :key="index" :class="timeCurr==index?'on':''" @click="changeTime(index)">
+						<view class="pt-1">{{week[item.ds]}}</view>
+						<view class="font-20 color6">{{item.m}}.{{item.d}}</view>
 					</view>
 				</view>
-				<view class="shadow radius20 m-a p-r mb-3 tkBox">
-					<image src="../../static/images/sijiao-img.png" class="kcImg"></image>
+				<view class="shadow radius20 m-a p-r mb-3 overflow-h tkBox" v-for="(item,index) in mainData.product" :key="index">
+					<image :src="item.mainImg[0].url" class="kcImg"></image>
 					<view class="px-2 py-3">
 						<view class="font-30 flex1">
-							<view class="font-w">减脂训练营·中上</view>
-							<view><text class="price font-w">220</text>/9课时</view>
+							<view class="font-w">{{item.title}}</view>
+							<view><text class="price font-w">{{item.price}}</text>/{{item.score}}课时</view>
 						</view>
-						<view class="font-24 py-2">Auger | 20:00~20:45</view>
+						<view class="font-24 py-2">Alsue | {{item.start_time}}~{{item.end_time}}</view>
 						<view class="flex">
-							<view class="tag tagY">矫正</view>
-							<view class="tag tagB">提升柔软度</view>
-							<view class="tag tagG">改善身体线条</view>
+							<view class="tag" v-for="(c_item,c_index) of item.description" :key="c_index">{{c_item}}</view>
 						</view>
 					</view>
-					<view class="font-20 colorf kcSgin">差一个人开课</view>
+					<view class="font-20 colorf kcSgin">差{{item.standard}}个人开课</view>
 				</view>
 			</view>
 			
@@ -154,16 +152,16 @@
 					
 					<view class="py-3 font-30 font-w px-4">器械设备</view>
 					<view class="px-5 flex flex-wrap">
-						<view class="flex4 font-24 color6 mb-3 bb" v-for="v in 7">
-							<image src="../../static/images/stores details-icon10.png" class="wh100 mb-2"></image>
-							<view>跑步机</view>
+						<view class="flex4 font-24 color6 mb-3 bb" v-for="(item,index) in equipment" :key="index">
+							<image :src="item.url" class="wh100 mb-2"></image>
+							<view>{{item.name}}</view>
 						</view>
 					</view>
 					<view class="py-3 font-30 font-w px-4">基础服务</view>
 					<view class="px-5 flex flex-wrap">
-						<view class="flex4 font-24 color6 mb-3 bb" v-for="v in 7">
-							<image src="../../static/images/stores details-icon10.png" class="wh100 mb-2"></image>
-							<view>跑步机</view>
+						<view class="flex4 font-24 color6 mb-3 bb" v-for="(item,index) in service" :key="index">
+							<image :src="item.url" class="wh100 mb-2"></image>
+							<view>{{item.name}}</view>
 						</view>
 					</view>
 				</view>
@@ -183,13 +181,44 @@
 				timeCurr:0,
 				kf_show:false,
 				sb_show:false,
-				mainData:{}
+				equipment:[
+					{url:'../../static/images/stores details-icon11.png',name:'固定器械'},
+					{url:'../../static/images/stores details-icon12.png',name:'哑铃'},
+					{url:'../../static/images/stores details-icon13.png',name:'深蹲架'},
+					{url:'../../static/images/stores details-icon14.png',name:'卧推'},
+					{url:'../../static/images/stores details-icon15.png',name:'动感单车'},
+					{url:'../../static/images/stores details-icon16.png',name:'跑步机'},
+					{url:'../../static/images/stores details-icon17.png',name:'瑜伽垫'}
+				],
+				service:[
+					{url:'../../static/images/stores details-icon2.png',name:'无线网络'},
+					{url:'../../static/images/stores details-icon3.png',name:'储物柜'},
+					{url:'../../static/images/stores details-icon4.png',name:'更衣室'},
+					{url:'../../static/images/stores details-icon5.png',name:'饮水机'},
+					{url:'../../static/images/stores details-icon6.png',name:'人脸识别'},
+					{url:'../../static/images/stores details-icon9.png',name:'充电宝'},
+					{url:'../../static/images/stores details-icon10.png',name:'沐浴房'}
+				],
+				mainData:{},
+				timeList:[],
+				week:['周日','周一','周二','周三','周四','周五','周六'],
+				searchItem: {
+					thirdapp_id:2
+				},
+				chooseTimestap:0,
+				start_time:0
 			}
 		},
 		
 		onLoad(options) {
 			const self = this;
 			self.id = options.id;
+			self.timeList = self.$Utils.getFutureDateList(5);
+			console.log('self.timeList',self.timeList);
+			self.chooseTimestap = self.timeList[0]['stime'];
+			self.start_time = ['between',
+				[self.chooseTimestap,self.chooseTimestap+24*3600000],
+			];
 			self.$Utils.loadAll(['getMainData'], self);
 		},
 		
@@ -198,17 +227,18 @@
 			
 			changeTime(i){
 				const self = this;
-				self.timeCurr = i
+				self.timeCurr = i;
+				self.chooseTimestap = self.timeList[i]['stime'];
+				self.start_time = ['between',[self.chooseTimestap,self.chooseTimestap+86400000]];
+				self.getMainData();
 			},
 			
 			
 			getMainData() {
 				var self = this;
 				const postData = {};
-				postData.searchItem = {
-					thirdapp_id:2,
-					id:self.id
-				};
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				postData.searchItem.id = self.id;
 				postData.getAfter = {
 					active:{
 						tableName:'Article',
@@ -235,7 +265,8 @@
 						key:'shop_no',
 						searchItem:{
 							status:1,
-							type:1
+							type:1,
+							start_time:self.start_time
 						},
 						condition:'='	
 					}
@@ -243,7 +274,13 @@
 				var callback = function(res){
 					if(res.info.data.length>0){
 						self.mainData = res.info.data[0];
+						for (var i = 0; i < self.mainData.product.length; i++) {
+							self.mainData.product[i].description = self.mainData.product[i].description.split(',');
+							self.mainData.product[i].start_time = self.$Utils.timeto(parseInt(self.mainData.product[i].start_time),'ymd-hms')
+							self.mainData.product[i].end_time = self.$Utils.timeto(parseInt(self.mainData.product[i].end_time),'ymd-hms')
+						}
 					}
+					console.log('mainData',self.mainData)
 					self.$Utils.finishFunc('getMainData');
 				};
 				self.$apis.shopGet(postData, callback);
@@ -256,8 +293,8 @@
 				}else if(type == 2){
 					self.sb_show = !self.sb_show;
 				}
-				
 			}
+			
 		}
 	}
 </script>

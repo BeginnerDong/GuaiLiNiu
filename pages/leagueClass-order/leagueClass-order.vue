@@ -5,12 +5,10 @@
 			<view class="flex1 py-2 bB-f5">
 				<image src="../../static/images/the order-img.png" class="wh180"></image>
 				<view class="px-2 py-3 flex-1">
-					<view class="font-30 font-w">减脂训练营·中上</view>
-					<view class="font-24 py-2">Auger | 20:00~20:45</view>
+					<view class="font-30 font-w">{{mainData.title}}</view>
+					<view class="font-24 py-2">{{mainData.coach[0].name}} | {{mainData.start_time}}~{{mainData.end_time}}</view>
 					<view class="flex">
-						<view class="tag tagY">矫正</view>
-						<view class="tag tagB">提升柔软度</view>
-						<view class="tag tagG">改善身体线条</view>
+						<view class="tag" v-for="(c_item,c_index) of mainData.description" :key="c_index">{{c_item}}</view>
 					</view>
 				</view>
 			</view>
@@ -20,28 +18,27 @@
 		<view class="mx-2">
 			<view class="py-4 flex1 bB-f5">
 				<view>上课地点</view>
-				<view class="color6">西安外事学院店</view>
+				<view class="color6">{{mainData.shopInfor.address}}</view>
 			</view>
 			<view class="py-4 flex1 bB-f5">
 				<view>教练</view>
-				<view class="color6">张丹</view>
+				<view class="color6">{{mainData.coach[0].name}}</view>
 			</view>
 			<view class="py-4 flex1 bB-f5">
 				<view>课时套餐</view>
-				<view class="color6">（￥200/9课时）</view>
+				<view class="color6">（￥{{mainData.price}}/{{mainData.score}}课时）</view>
 			</view>
 			<view class="flex py-4 font-24">
-				<image src="../../static/images/the order-icon4.png" class="wh30 mr-2"></image>
-				<!-- <image src="../../static/images/the order-icon5.png" class="wh30 mr-2"></image> -->
-				<view><view @click="!isAgree">同意</view> <text class="colorB" @click="isShow">《怪力牛运动会员服务协议》</text></view>
+				<image src="../../static/images/the order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
+				<image src="../../static/images/the order-icon4.png" class="wh30 mr-2" v-else></image>
+				<view><text @click="isShow('agree')">同意</text> <text class="colorB" @click="isShow">《怪力牛运动会员服务协议》</text></view>
 			</view>
 		</view>
 		
 		
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
-			<view class="font-26">已预约8/12人</view>
+			<view class="font-26">已预约0/{{mainData.standard}}人</view>
 			<button class="carBtn" open-type="getUserInfo" @click="submit">立即预约</button>
-			<view  ></view>
 		</view>
 		
 		<view class="bg-mask" v-show="is_show">
@@ -69,21 +66,34 @@
 		onLoad(){
 			const self = this;
 			self.mainData = uni.getStorageSync('orderDetail');
+			console.log('order',self.mainData.shopInfor,self.mainData.coach[0])
 		},
 		methods: {
-			isShow(){
+			isShow(type){
 				const self = this;
-				self.is_show = !self.is_show
+				if(type){
+					self.isAgree = !self.isAgree;
+				}else{
+					self.is_show = !self.is_show
+				}
 			},
 			submit(){
 				const self = this;
 				uni.setStorageSync('canClick', false);
 				var orderList = []
-				orderList.push({product_id:self.mainData.id,count:1,type:1});
-				const callback = (user, res) => {
-					self.addOrder(orderList)
-				};
-				self.$Utils.getAuthSetting(callback);
+				if(self.isAgree){
+					orderList.push({product_id:self.mainData.id,count:1,type:1});
+					const callback = (user, res) => {
+						self.addOrder(orderList)
+					};
+					self.$Utils.getAuthSetting(callback);
+				}else{
+					uni.showModal({
+						title:'',
+						content:'请先同意会员服务协议',
+						showCancel:false
+					})
+				}
 			},
 			
 			addOrder(orderList) {
@@ -112,15 +122,8 @@
 				const self = this;
 				const postData = {};
 				console.log('self.mainData.price',self.mainData.price)
-				if(parseFloat(self.mainData.price)>0){
-					postData.wxPay = {
-						price:parseFloat(self.mainData.price)
-					};
-					console.log('postData',postData)
-				}else{
-					postData.otherPay={
-						price:parseFloat(self.mainData.price)
-					};
+				postData.otherPay={
+					price:parseFloat(self.mainData.price)
 				};
 				
 				postData.tokenFuncName = 'getProjectToken',
@@ -199,4 +202,5 @@ page{background-color: #f5f5f5;}
 <style scoped>
 .colorB{color: #63D1F8;}
 .xy{height: 1000rpx;margin-top: 15%;}
+.carBtn{border-radius: 0;}
 </style>

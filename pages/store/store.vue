@@ -5,16 +5,16 @@
 			<block v-for="(item,index) in mainData" :key="index">
 				<view class="store" @click="goBack(item)">
 					<view class="my-2 flex1">
-						<image src="../../static/images/stores-img.png" class="storeImg"></image>
+						<image :src="item.mainImg[0].url" class="storeImg"></image>
 						<view class="flex3 pl-2 flex-1">
 							<view class="flex">
-								<view class="font-34">西安外事学院</view>
+								<view class="font-34">{{item.name}}</view>
 								<view class="font-20 colorf p-r sq">
 									<image src="../../static/images/home-icon5.png" class="sq-icon"></image>
 									<view class="top-0 p-a t-indent10 line-h-md">社区店</view>
 								</view>
 							</view>
-							<view class="color6 avoidOverflow dz">西安市雁塔区鱼斗路61号左岸春天A座101002室2楼</view>
+							<view class="color6 avoidOverflow dz">{{item.address}}</view>
 							<view>距离：2.23KM</view>
 						</view>
 						<image src="../../static/images/stores-icon1.png" class="wh33 zz"></image>
@@ -117,7 +117,7 @@ page{height: 100%;}
 </style>
 <style scoped>
 .storeBox{min-height: 80%;}
-.storeImg{width: 230rpx;height: 160rpx;}
+.storeImg{width: 230rpx;height: 160rpx;border-radius: 10rpx;}
 .store .dz{width: 400rpx;padding: 20rpx 0;}
 .sq{top: -10rpx;right: -10rpx;}
 .zz{margin-top: 100rpx;}

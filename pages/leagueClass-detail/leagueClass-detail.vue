@@ -193,13 +193,19 @@
 			self.mainData = uni.getStorageSync('leagueClassDetail');
 			self.shopData = uni.getStorageSync('shopData');
 			self.type = option.type;
+				console.log('orderDetail',self.mainData)
 		},
 		methods: {
 			
 			goOrder(){
 				const self = this;
+				self.mainData.shopInfor = self.shopData;
 				uni.setStorageSync('orderDetail',self.mainData);
-				self.$Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})
+				if(self.type == 0){
+					self.$Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})
+				}else{
+					self.$Router.navigateTo({route:{path:'/pages/payLeagueClass-order/payLeagueClass-order'}})
+				}
 			},
 			
 			changeNav(i){
