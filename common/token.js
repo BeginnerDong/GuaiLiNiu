@@ -265,15 +265,15 @@ class Token {
         
     }
     
-    getMerchantToken(callback,postData) { 
-        if((postData&&postData.refreshToken)||!uni.getStorageSync('merchant_token')){
-            uni.removeStorageSync('merchant_token');
-            uni.removeStorageSync('merchant_info');
+    getCoachtestToken(callback,postData) { 
+        if((postData&&postData.refreshToken)||!uni.getStorageSync('coach_token')){
+            uni.removeStorageSync('coach_token');
+            uni.removeStorageSync('coach_info');
             uni.redirectTo({
               url: '/pages/login/login'
             });
         }else{
-            return uni.getStorageSync('merchant_token');
+            return uni.getStorageSync('coach_token');
         }
     }
    
@@ -434,6 +434,69 @@ class Token {
         }else{
             uni.redirectTo({
               url: '/pages/Index/index'
+            });
+        };
+        
+
+    }
+	
+	
+	
+	getCoachToken(callback,params){
+		if(params&&params.refreshToken){
+			uni.removeStorageSync('coach_token');
+			uni.removeStorageSync('coach_info');
+		};
+		if(uni.getStorageSync('coach_token')){
+			return uni.getStorageSync('coach_token');
+		};
+        if(uni.getStorageSync('login').login_name&&uni.getStorageSync('login').password){
+            var postData = {
+                login_name:uni.getStorageSync('login').login_name,
+                password:uni.getStorageSync('login').password,
+            }
+            uni.request({
+                url: config.baseUrl+'/Func/Common/loginByUp',
+                method:'POST',
+                data:postData,
+                success:function(res){
+                    console.log(res)
+                    if(res.data&&res.data.token){
+                        uni.setStorageSync('coach_token', res.data.token);
+						uni.setStorageSync('coach_info',res.data.info);
+                        var login = uni.getStorageSync('login');   
+                        uni.setStorageSync('login',login);
+                        if(params&&callback){  
+                            params.data.token = res.data.token;
+                            callback && callback(params);
+                        }else if(callback){
+                            callback && callback(res);
+                        };
+
+                        
+                    }else{
+                        setTimeout(function(){
+                            uni.showToast({
+                                title: res.data.msg,
+                                icon: 'fail',
+                                duration: 1000,
+                                mask:true
+                            });
+                        },500);
+
+                       
+                        uni.removeStorageSync('coach_token');
+                        uni.removeStorageSync('login');
+
+                    }
+                    
+                    
+                }
+            })
+        }else{
+			console.log('now')
+            uni.redirectTo({
+              url: '/pages/login/login'
             });
         };
         

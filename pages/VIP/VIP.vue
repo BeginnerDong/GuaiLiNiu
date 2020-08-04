@@ -36,7 +36,7 @@
 						<view class="flex1 mb-4 tcBox">
 							<view class="tc b-e1 p-r radius10" 
 							v-for="(item,index) in mainData"
-							:class="tcCurr==index?'on':''" @click="changeTc(index)">
+							:class="tcCurr==index?'on':''" @click="changeTc(index,item)">
 								<view class="font-24 pb-3">{{item.title}}</view>
 								<view class="price font-32">{{item.price}}</view>
 								<image src="../../static/images/members-icon3.png" class="yes" v-show="tcCurr==index"></image>
@@ -76,7 +76,7 @@
 			<view style="height: 130rpx;"></view>
 			<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 				<view class="font-24"><text class="price font-w font-36">299</text>/12个月</view>
-				<view class="carBtn" @click="Router.navigateTo({route:{path:'/pages/VIP-information/VIP-information'}})">确认支付</view>
+				<view class="carBtn" @click="submit">确认支付</view>
 			</view>
 		</view>
 		
@@ -91,10 +91,12 @@
 				tcCurr:0,
 				vip:0,
 				mainData:[],
+				product_id:0,
 				searchItem:{
 					thirdapp_id: 2,
 					type: 2,
-				}
+				},
+				Router:this.$Router
 			}
 		},
 		onLoad(option){
@@ -122,10 +124,129 @@
 				self.$apis.productGet(postData, callback);
 			},
 			
-			changeTc(i){
+			changeTc(i,item){
 				const self = this;
 				self.tcCurr = i;
-			}
+				self.product_id = item.id;
+				
+			},
+			
+			submit(){
+				const self = this;
+				uni.setStorageSync('canClick', false);
+				wx.requestSubscribeMessage({
+				  tmplIds: [
+					  'BZ74KvhYwLWYKzcY-OunKaWIkbsBy_wWZ01LaZsGlKo',
+					  'qAz8Vn3an8LzQ52VplqDpKsoUTCQHM7E9g3Cd4opzvo',
+					],
+				  success (res) {console.log(res) }
+				});
+				return;
+				var orderList = []
+				orderList.push({product_id:self.product_id,count:1,type:1});
+				const callback = (user, res) => {
+					self.addOrder(orderList)
+				};
+				self.$Utils.getAuthSetting(callback);
+			},
+			
+			addOrder(orderList) {
+				const self = this;	
+				const postData = {}; 
+				postData.orderList = self.$Utils.cloneForm(orderList);
+				postData.tokenFuncName = 'getProjectToken';
+				console.log('addOrder',postData);
+				const callback = (res) => {
+					
+					if (res && res.solely_code == 100000) {
+						self.orderId = res.info.id;
+						self.goPay()
+					} else {		
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+						uni.setStorageSync('canClick', true);
+					};		
+				};
+				self.$apis.addOrder(postData, callback);
+			},
+			
+			goPay() {
+				const self = this;
+				const postData = {};
+				console.log('self.mainData.price',self.mainData.price)
+				postData.wxPay = {
+					price:parseFloat(self.mainData.price)
+				};
+					
+				postData.tokenFuncName = 'getProjectToken',
+				postData.searchItem = {
+					id: self.orderId
+				};
+				/* postData.payAfter = [];
+				postData.payAfter.push({
+					tableName: 'UserInfo',
+					FuncName: 'update',
+					data: {
+						standard:self.mainData.score
+					},
+					searchItem:{
+						id:self.orderId
+					}
+				}); */
+				
+				const callback = (res) => {
+					if (res.solely_code == 100000) {
+						uni.setStorageSync('canClick', true);
+						if (res.info) {
+							const payCallback = (payData) => {
+								console.log('payData', payData)
+								if (payData == 1) {
+									uni.showToast({
+										title: '支付成功',
+										duration: 1000,
+										success: function() {
+											uni.removeStorageSync('user_token');
+											uni.removeStorageSync('token_expire_time');
+										}
+									});
+									setTimeout(function() {
+										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+									}, 1000);
+								} else {
+									uni.setStorageSync('canClick', true);
+									uni.showToast({
+										title: '支付失败',
+										duration: 2000
+									});
+								};
+							};
+							self.$Utils.realPay(res.info, payCallback);
+						} else {
+							
+							uni.showToast({
+								title: '支付成功',
+								duration: 1000,
+								success: function() {
+									
+								}
+							});
+							setTimeout(function() {
+								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+							}, 1000);
+						};
+					} else {
+						uni.setStorageSync('canClick', true);
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+					};
+					uni.setStorageSync('canClick', true);
+				};
+				self.$apis.pay(postData, callback);
+			},
 		}
 	}
 </script>

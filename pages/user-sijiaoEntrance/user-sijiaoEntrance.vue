@@ -13,7 +13,7 @@
 					<view class="colorf mx-2 my-3 flex p-r">
 						<image src="../../static/images/about-img1.png" class="wh110"></image>
 						<view class="font-32 pl-2">哆啦A梦</view>
-						<view class="p-a top-0 right-0">退出</view>
+						<view class="p-a top-0 right-0" @click="checkOut">退出</view>
 					</view>
 				</view>
 				
@@ -46,8 +46,34 @@
 				statusBar: app.globalData.statusBar
 			}
 		},
+		onLoad(){
+			const self  = this;
+			
+			self.$Utils.loadAll(['getUserData'], self);
+		},
 		methods: {
 			
+			checkOut(){
+				const self = this;
+				uni.removeStorageSync('coach_token');
+				uni.removeStorageSync('login');
+				self.getUserData();
+			},
+			
+			getUserData() {
+				const self = this;
+				const postData = {};
+				
+				postData.tokenFuncName = 'getCoachToken';
+				
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.userData = res.info.data[0]
+					}
+					self.$Utils.finishFunc('getUserData');
+				};
+				self.$apis.userGet(postData, callback);
+			},
 		}
 	}
 </script>
