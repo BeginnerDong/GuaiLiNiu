@@ -197,6 +197,8 @@
 				var callback = function(res){
 					if(res.info.data.length>0){
 						uni.setStorageSync('shopData', res.info.data[0]);
+						uni.setStorageSync('shopList', res.info.data);
+						uni.setStorageSync('shopListTime', (new Date()).getTime()+30000);
 						self.shopData = uni.getStorageSync('shopData');
 						self.getActiveData();
 						self.getCoachData();

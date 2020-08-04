@@ -698,6 +698,24 @@ export default {
 			var currentdate = date.getHours() + seperator2 + date.getMinutes();
 		}
 		return currentdate;
-	}
+	},
+	
+	getFutureDateList(count) { 
+	    
+		var dayList = [];
+		for(var i = 0;i<count+1;i++){
+			var dd = new Date();
+			dd.setDate(dd.getDate()+i);//获取AddDayCount天后的日期 
+			dayList.push({
+				y : dd.getFullYear(),
+				m : dd.getMonth()+1,
+				d : dd.getDate(),
+				ds: dd.getDay(),
+				stime:dd.setHours(0, 0, 0, 0)
+			})
+		};
+		return dayList;
+		
+	} 
 
 }
