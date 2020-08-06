@@ -4,37 +4,43 @@
 		<view class="p-r z10 bg-white p-s mb-2 top-0 shadowM">
 			<view class="flex nav">
 				<view class="li" :class="navCurr==0?'on':''" @click="changeNav(0)">全部</view>
-				<view class="li" :class="navCurr==1?'on':''" @click="changeNav(1)">已预约</view>
-				<view class="li" :class="navCurr==2?'on':''" @click="changeNav(2)">已完成</view>
+				<view class="li" :class="navCurr==1?'on':''" @click="changeNav(1)">预约中</view>
+				<view class="li" :class="navCurr==2?'on':''" @click="changeNav(2)">已成团</view>
 			</view>
 		</view>
-		
-		<view class="bg-white px-2 mx-2 mb-2 radius10 line-h p-r">
-			<view class="colorf sgin">已完成</view>
-			<view class="flex1 py-3 bB-f5 w-100">
-				<image src="../../static/images/the order-img.png" class="img"></image>
-				<view class="px-2 py-2 flex-1 d-flex flex-column j-sb h-180">
-					<view class="font-30 font-w">减脂训练营·中上</view>
-					<view class="flex">
-						<view class="tag tagY">减脂塑形</view>
-						<view class="tag tagB">肌肉塑形</view>
+		<block v-for="(item,index) in mainData" :key="index">
+			<view class="bg-white px-2 mx-2 mb-2 radius10 line-h p-r">
+				<view class="colorf sgin">{{bookStatus[item.is_book]}}</view>
+				<view class="flex1 py-3 bB-f5 w-100">
+					<image src="../../static/images/the order-img.png" class="img"></image>
+					<view class="px-2 py-2 flex-1 d-flex flex-column j-sb h-180">
+						<view class="font-30 font-w">{{item.product.title}}</view>
+						<view class="flex">
+							<block v-for="(cc_item,cc_index) in item.descriptionArray" :key="cc_index">
+								<view class="tag tagY"  >{{cc_item}}</view>
+							</block>
+						</view>
+						<view class="colorR"><text class="price">{{item.product.price}}</text>/{{item.product.score}}课时</view>
 					</view>
-					<view class="colorR"><text class="price">220</text>/课时</view>
+				</view>
+				<view class="py-3 bB-f5 flex1">
+					<view>预约时间</view>
+					<view>{{item.book_time_change}}</view>
+				</view>
+				<view class="py-3">
+					<view>预约学员（{{item.OrderLog.length}}）</view>
+					<view class="flex flex-wrap">
+						<block v-for="(c_item,c_index) in item.OrderLog" :key="index">
+							<image :src="c_item.User.headImgUrl" class="wh80" ></image>
+						</block>
+						
+					</view>
 				</view>
 			</view>
-			<view class="py-3 bB-f5 flex1">
-				<view>预约时间</view>
-				<view>2020.06.23 14:00</view>
-			</view>
-			<view class="py-3">
-				<view>预约学员（10）</view>
-				<view class="flex flex-wrap">
-					<image src="../../static/images/about-img1.png" class="wh80" v-for="v in 10"></image>
-				</view>
-			</view>
-		</view>
+		</block>
 		
-		<image src="../../static/images/sijiao yuyue-img2.png" class="wh100 p-f"></image>
+		
+		<image src="../../static/images/sijiao yuyue-img2.png" class="wh100 p-f" @click="getScancode"></image>
 		
 	</view>
 </template>
@@ -44,13 +50,97 @@
 		data() {
 			return {
 				Router:this.$Router,
-				navCurr:0
+				navCurr:0,
+				mainData:[],
+				searchItem:{
+					course_type:['in',[1,2]]
+				},
+				isLoadAll:false,
+				paginate:{},
+				bookStatus:['预约中','已成团']
 			}
 		},
+		onReachBottom() {
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
+		},
+		onLoad(options) {
+			const self = this;
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.$Utils.loadAll(['getMainData'], self);
+		},
 		methods: {
+			getScancode: function() {
+				const self = this;
+			    uni.scanCode({
+			        onlyFromCamera: true,
+			        success: function (res) {
+			            console.log('条码类型：' + res.scanType);
+			            console.log('条码内容：' + res.result);
+			        }
+			    });
+			 
+			},
+			
+			getMainData(isNew) {
+				const self = this;
+				if (isNew) {
+					self.mainData = [];
+					self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+				};
+				const postData = {};
+				postData.tokenFuncName = 'getCoachToken';
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				postData.getAfter = {
+					product:{
+						tableName:'Product',
+						middleKey:'product_id',
+						key:'id',
+						searchItem:{
+							status:1
+						},
+						condition:'=',
+						info:['coach_no','score','id','mainImg','book_end_time','book_start_time','title','description','duration','price','score']
+					},
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+						for (var i = 0; i < self.mainData.length; i++) {
+							self.mainData[i].descriptionArray = self.mainData[i].product.description.split(",");
+							self.mainData[i].book_time_change = self.$Utils.timeto(parseInt(self.mainData[i].book_time*1000),'ymd-hm');
+						};
+					}else{
+						self.isLoadAll = true;
+					};
+					uni.setStorageSync('canClick', true);
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.courseGet(postData, callback);
+			},
+			
 			changeNav(i){
 				const self = this;
-				self.navCurr = i
+				if(i!=self.navCurr){
+					self.navCurr = i;
+					delete self.searchItem.is_book;
+					switch(i) {
+					     case 1:
+					        self.searchItem.is_book = 0;
+					        break;
+					     case 2:
+					        self.searchItem.is_book = 1;
+					        break;
+					};
+					self.getMainData(true);
+					
+				}
+				
+				
 			}
 		}
 	}

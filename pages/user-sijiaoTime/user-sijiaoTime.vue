@@ -15,31 +15,32 @@
 		
 		<view class="flex-1 d-flex">
 			<view class="left bR-e1 h-100 bg-f5">
-				<view class="py-3 bB-e1" :class="leftCurr==0?'on':''" @click="changeLeft(0)">
-					<view>今天</view>
-					<view class="font-20 color9 date">周日</view>
-				</view>
-				<view class="py-3 bB-e1" :class="leftCurr==1?'on':''" @click="changeLeft(1)">
-					<view>明天</view>
-					<view class="font-20 color9 date">周日</view>
-				</view>
+				<block v-for="(item,index) in timeList" :key="index">
+					<view class="py-3 bB-e1" :class="leftCurr==index?'on':''" @click="changeLeft(index)">
+						<view>{{item.m+'.'+item.d}}</view>
+						<view class="font-20 color9 date">{{week[item.ds]}}</view>
+					</view>
+				</block>
 			</view>
 			
 			<view class="flex-1 h-100 flexY right">
 				
 				<view class="d-flex flex-wrap">
-					<view class="jl color6 shadowM p-r mt-5" v-for="v in 5">
-						<view>8:00</view>
-						<!-- <image src="../../static/images/yuyue-icon-01.png" class="wh26"></image> -->
-						<image src="../../static/images/yuyue-icon-02.png" class="wh26"></image>
-					</view>
+					<block v-for="(item,index) in canChooseHour" :key="index">
+						<view class="jl color6 shadowM p-r mt-5" @click="chooseHour(item)" >
+							<view>{{item}}</view>
+							<!-- <image src="../../static/images/yuyue-icon-01.png" class="wh26"></image> -->
+							<image src="../../static/images/yuyue-icon-02.png" class="wh26"></image>
+						</view>
+					</block>
+					
 				</view>
 				
 			</view>
 		</view>
 		
 		<view class="bT-e1 p-2">
-			<view class="btnAuto">确定</view>
+			<view class="btnAuto" @click="submit">确定</view>
 		</view>
 		
 	</view>
@@ -49,14 +50,101 @@
 	export default {
 		data() {
 			return {
-				leftCurr:0
+				leftCurr:0,
+				data:{
+					order_no:'',
+					product_id:'',
+					course_type:'',
+					book_time:'',
+					shop_no:''
+				},
+				timeList:[],
+				week:['周日','周一','周二','周三','周四','周五','周六'],
+				canChooseWeek:[],
+				canChooseHour:[],
+				choosedHour:'',
+			
 			}
 		},
+		onLoad(option){
+			const self = this;
+			var userInfo = uni.getStorageSync('user_info');
+			self.mainData = uni.getStorageSync('orderDetail');
+			self.data.order_no = self.mainData.order_no;
+			self.data.product_id = self.mainData.product_id;
+			self.data.course_type = self.mainData.course_type;
+			self.data.shop_no = self.mainData.shop_no;
+			self.data.coach_no = self.mainData.product.coach_no;
+			
+			self.timeList = self.$Utils.getFutureDateList(13);
+			
+			self.canChooseWeek = self.mainData.product.book_week_item.split(',');
+			self.canChooseHour = self.mainData.product.book_time_item.split(',');
+			console.log('self.data',self.data)
+			uni.setStorageSync('canClick', true);
+		},
 		methods: {
+			
+			chooseHour(item){
+				const self = this;
+				self.choosedHour = item;
+			},
 			changeLeft(i){
 				const self = this;
 				self.leftCurr = i;
-			}
+			},
+			submit(){
+				const self = this;
+				/* if(self.mainData.orderLog.length>=parseInt(self.mainData.standard)){
+					self.$Utils.showToast('预约次数已经完成', 'none')
+					return;
+				}; */
+				self.data.book_time = 
+				self.timeList[self.leftCurr].y
+				+'-'+self.timeList[self.leftCurr].m
+				+'-'+self.timeList[self.leftCurr].d
+				+'  '+self.choosedHour;
+				const postData = {
+					data:self.data
+				};
+				postData.tokenFuncName = 'getProjectToken';
+				postData.saveAfter = [
+					{
+						tableName: 'Order',
+						FuncName: 'update',
+						searchItem:{
+							id:self.mainData.id
+						}
+					}
+				];
+				if((self.mainData.orderLog.length+1)==self.mainData.standard){
+					postData.saveAfter[0]['data'] =  {
+						transport_status:2
+					};
+				}else{
+					postData.saveAfter[0]['data'] =  {
+						transport_status:1
+					};
+				}
+				const callback = (res) => {
+					
+					uni.setStorageSync('canClick', true);
+					if (res.solely_code == 100000) {
+						uni.showToast({
+						    title: '预约成功',
+						    duration: 2000,
+						});
+						setTimeout(function(){
+							uni.navigateBack({
+							    delta: 1
+							});
+						},2000)
+					} else {
+						self.$Utils.showToast('网络故障', 'none')
+					}
+				};
+				self.$apis.orderLogAdd(postData, callback);
+			},
 		}
 	}
 </script>

@@ -2,7 +2,11 @@
 <script>
 	import token from "./common/token.js"
 	export default {
-		onLaunch: function() {
+		onLaunch: function(options) {
+			console.log('options',options);
+			if(options.query.coupon_no&&options.query.parent_no){
+				uni.setStorageSync('getProjectTokenParams',options.query);
+			};
 			wx.getSystemInfo({
 			  success: e => {
 			    this.globalData.statusBar = e.statusBarHeight; //状态栏高度

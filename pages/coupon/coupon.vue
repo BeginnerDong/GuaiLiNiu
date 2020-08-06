@@ -13,16 +13,16 @@
 					<image src="../../static/images/coupons-icon.png" class="couponImg"></image>
 					<view class="p-aXY p-3 top-0 left-0 flex1">
 						<view class="px-1 flex-1">
-							<view class="font-40 pb-5 mb-3">满400元减200元</view>
-							<view class="font-22">有效期至：2019.02.20-2019.11.30</view>
+							<view class="font-40 pb-5 mb-3">满{{couponData.condition}}元减{{couponData.value}}元</view>
+							<view class="font-22">有效期至：{{couponData.valid_time}}天</view>
 						</view>
-						<view class="font-30 colorM pr-5">立即分享</view>
+						<view class="font-30 colorM pr-5">已领取优惠卷</view>
 					</view>
 				</view>
 				<view class="px-2 py-4">
 					<view class="font-30 font-w">活动规则</view>
 					<view class="font-26 pt-2 line-h-lg">
-						1、规则
+						{{couponData.description}}
 					</view>
 				</view>
 			</view>
@@ -35,11 +35,53 @@
 	export default {
 		data() {
 			return {
+				mainData:{},
+				newData:{
+					coupon_no:'',
+					parent_no:''
+				},
+				couponData:{}
 				
 			}
 		},
-		methods: {
+		onLoad(options) {
+			const self = this;
+			self.newData.coupon_no = options.coupon_no;
+			self.newData.parent_no = options.parent_no;
+			uni.setStorageSync('getProjectTokenParams',self.newData);
+			self.$Utils.loadAll(['getUserData','getCouponData'], self);
 			
+		},
+		methods: {
+			getUserData() {
+				const self = this;
+				const postData = {};
+				postData.tokenFuncName = 'getProjectToken';
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.userData = res.info.data[0]
+					}
+					self.$Utils.finishFunc('getUserData');
+				};
+				console.log('postdata',postData);
+				self.$apis.userGet(postData, callback);
+			},
+			getCouponData(){
+				const self = this;
+				const postData = {};
+				postData.searchItem = {
+					coupon_no:self.newData.coupon_no
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.couponData =  res.info.data[0];
+					};
+					uni.setStorageSync('canClick', true);
+					console.log('coupon',self.mainData)
+					self.$Utils.finishFunc('getCouponData');
+				};
+				self.$apis.couponGet(postData, callback);
+			}
 		}
 	}
 </script>

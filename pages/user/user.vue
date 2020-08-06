@@ -6,10 +6,14 @@
 			<view class="p-aXY" :style="{marginTop:statusBar+'px'}">
 				<view class="head">我的</view>
 				<view class="colorf px-2 py-3 flex">
-					<image src="../../static/images/about-img1.png" class="wh130"></image>
+					<view class="wh130">
+						<open-data type="userAvatarUrl"></open-data>  
+					</view>
+					
 					<view class="pl-2">
-						<view class="font-32">哆啦A梦</view>
-						<view class="userSgin mt-3">普通用户</view>
+						<view class="font-32"><open-data type="userNickName" lang="zh_CN"></open-data> </view>
+						<view class="userSgin mt-3">{{userData.info.behavior==1?'会员':'普通用户'}}</view>
+						<view>有效期：{{userData.info.deadline_change}}</view>
 					</view>
 				</view>
 				<view class="px-2 Mgb p-r">
@@ -97,14 +101,30 @@
 		data() {
 			return {
 				Router:this.$Router,
-				statusBar: app.globalData.statusBar
+				statusBar: app.globalData.statusBar,
+				userData:{}
 			}
 		},
 		onLoad(){
-			console.log(this.statusBar)
+			const self = this;
+			self.$Utils.loadAll(['getUserData'], self);
 		},
 		methods: {
-			
+			getUserData() {
+				const self = this;
+				const postData = {};
+				
+				postData.tokenFuncName = 'getProjectToken';
+				
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.userData = res.info.data[0];
+						self.userData.info.deadline_change = self.$Utils.timeto(parseInt(self.userData.info.deadline*1000),'ymd-hm')
+					}
+					self.$Utils.finishFunc('getUserData');
+				};
+				self.$apis.userGet(postData, callback);
+			},
 		}
 	}
 </script>

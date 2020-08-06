@@ -29,16 +29,19 @@
 		</view>
 		
 		<view class="shadowM bg-white mx-2 mt-2 px-2 py-3 radius10">
-			<textarea value="" placeholder="请填写评论,让更多人知道" class="comment"/>
+			<textarea v-model="data.description" value="" placeholder="请填写评论,让更多人知道" class="comment"/>
 			<view class="flex font-22 color9 flex-wrap">
-				<image src="../../static/images/my class-img1.png" class="wh100 mr-2"></image>
+				<block v-for="(item,index) in  data.bannerImg" :key="index">
+					<image :src="item.url" class="wh100 mr-2"></image>
+				</block>
 				
-				<image src="../../static/images/evaluation-img.png" class="wh100 mr-2"></image>
+				
+				<image src="../../static/images/evaluation-img.png" class="wh100 mr-2" @click="upLoadImg('bannerImg')"></image>
 				<view>可上传多张图片</view>
 			</view>
 		</view>
 		
-		<view class="btnAuto">确定</view>
+		<view class="btnAuto" @click="Utils.stopMultiClick(submit)">确定</view>
 		
 		
 	</view>
@@ -48,15 +51,110 @@
 	export default {
 		data() {
 			return {
-				type:0
+				type:0,
+				mainData:{},
+				data:{
+					title:'',
+					mainImg:[],/* 头像*/
+					bannerImg:[],
+					description:'',
+					relation_table:'product',
+					relation_id:'',
+					passage1:'',/* 门店NO*/
+					passage2:''/* 教练NO*/,
+					thirdapp_id:2
+				},
+				Utils:this.$Utils
 			}
 		},
 		onLoad(option){
 			const self = this;
+			var userInfo = uni.getStorageSync('user_info');
+			self.mainData = uni.getStorageSync('orderDetail');
+			self.data.title = userInfo.nickname;
+			self.data.user_no = userInfo.user_no;
+			self.data.user_type = userInfo.user_type;
+			if(userInfo.headImgUrl){
+				self.data.mainImg = [{url:userInfo.headImgUrl}];
+			};
+			
+			self.data.relation_id = self.mainData.product.id;
+			self.data.passage1 = self.mainData.shop_no;
+			self.data.passage2 = self.mainData.coach_no;
+			
 			self.type = option.type;
+			uni.setStorageSync('canClick', true);
 		},
 		methods: {
+			submit(){
+				const self = this;
+				const postData = {
+					data:self.data
+				};
+				postData.tokenFuncName = 'getProjectToken';
+				postData.saveAfter = [
+					{
+						tableName: 'Order',
+						FuncName: 'update',
+						data: {
+							isremark:1
+						},
+						searchItem:{
+							id:self.mainData.id
+						}
+					}
+				]
+				const callback = (res) => {
+					
+					uni.setStorageSync('canClick', true);
+					if (res.solely_code == 100000) {
+						uni.showToast({
+						    title: '评论成功',
+						    duration: 2000,
+						});
+						setTimeout(function(){
+							uni.navigateBack({
+							    delta: 1
+							});
+						},2000)
+					} else {
+						self.$Utils.showToast('网络故障', 'none')
+					}
+				};
+				self.$apis.messageAdd(postData, callback);
+			},
 			
+			
+			upLoadImg(type) {
+				const self = this;			
+				
+				const callback = (res) => {
+					console.log('res', res)
+					if (res.solely_code == 100000) {
+						self.data[type].push({url:res.info.url,type:'image'})
+					} else {
+						self.$Utils.showToast('网络故障', 'none')
+					}
+				};				
+				uni.chooseImage({
+					count: 1,
+					sourceType:['camera'],
+					success: function(res) {
+						console.log(res);
+						var tempFilePaths = res.tempFilePaths[0];
+						var file = res.tempFiles[0];
+						var obj = res.tempFiles[0].path.lastIndexOf(".");
+						var ext = res.tempFiles[0].path.substr(obj+1);
+						console.log(callback)
+						self.$Utils.uploadFile(tempFilePaths, 'file', {
+							tokenFuncName: 'getProjectToken',ext:ext,md5:'md5',totalSize:file.size,start:0,chunkSize:file.size,originName:'headImg'
+						}, callback)
+					},
+					fail: function(err) {
+						uni.hideLoading();
+					},			
+				})			
+			},
 		}
 	}
 </script>

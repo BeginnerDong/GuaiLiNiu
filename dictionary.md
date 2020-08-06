@@ -221,8 +221,10 @@ CMS需要适配IPAD；
 | end_time | bigint(13) | 结束时间 |
 | duration | int(11) | 有效天数 |
 | course_type | tinyint(2) | 1.免费团课2.付费团课3.私教 |
-| book_start_time | bigint(13) | 预约开始时间 |
-| book_end_time | bigint(13) | 预约结束时间 |
+| book_start_time | int(11) | 开启预约小时数 |
+| book_end_time | int(11) | 结束预约小时数 |
+| book_week_item | text | 预约周数选项 |
+| book_time_item | text | 预约时间选项 |
 | shop_no | varchar(255) | 所属门店 |
 | coach_no | varchar(255) | 教练名称 |
 
@@ -279,7 +281,6 @@ CMS需要适配IPAD；
 | 字段 | 类型 | 说明 |
 | ------ | ------ | ------ | 
 | invalid_time | int(11) | 会员卡有效期 |
-| passage1 | text | 关联奖励优惠券 |
 
 
 
@@ -356,6 +357,7 @@ CMS需要适配IPAD；
 | sale_count | int(11) | 销量 |
 | type | int(11) | 1.抵扣券 |
 | valid_time | int(11) | 有效期（天） |
+| listorder | int(11) | 自定义排序 |
 
 
 
@@ -366,6 +368,7 @@ CMS需要适配IPAD；
 | type | tinyint(2) | 1.抵扣券2.折扣券 |
 | use_step | tinyint(2) | 1.未使用2.已使用-1.已过期 |
 | invalid_time | bigint(13) | 过期时间戳，前端记录13位 |
+| behavior | tinyint(2) | 0.正常1.奖励优惠券 |
 
 
 ---

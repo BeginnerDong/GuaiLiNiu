@@ -67,7 +67,8 @@
 					course_type:2
 				},
 				courseCurr:-1,
-				courseType:[]
+				courseType:[],
+				isLoadAll:false
 			}
 		},
 		onLoad(options) {
@@ -76,6 +77,13 @@
 			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
 			self.shopData = uni.getStorageSync('shopData');
 			self.$Utils.loadAll(['getMainData','getCourseTypeData'], self);
+		},
+		onReachBottom() {
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
 		},
 		methods: {
 			
@@ -104,6 +112,7 @@
 					&&uni.getStorageSync('courseTypetTime')>(new Date()).getTime()
 				){
 					self.courseType = uni.getStorageSync('courseType');
+					self.$Utils.finishFunc('getCourseTypeData');
 					console.log('self.courseType',self.courseType)
 					return;
 				};
@@ -163,7 +172,9 @@
 							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'hm')
 							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')
 						}
-					};
+					}else{
+						self.isLoadAll  =true;
+					}
 					uni.setStorageSync('canClick', true);
 					console.log('mainData',self.mainData)
 					self.$Utils.finishFunc('getMainData');

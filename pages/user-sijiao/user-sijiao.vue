@@ -9,40 +9,44 @@
 				<view class="li" :class="navCurr==3?'on':''" @click="changeNav(3)">已评价</view>
 			</view>
 		</view>
-		
-		<view class="shadowM bg-white px-2 mx-2 mb-2 radius10 line-h">
-			<view class="font-24 color6 flex1 py-3 bB-f5">
-				<view>订单编号：15658989746565862</view>
-				<view class="colorR">待使用</view>
-				<!-- <view class="colorR">待评价</view> -->
-				<!-- <view class="colorR">已评价</view> -->
-			</view>
-			<view class="flex1 py-3 bB-f5 w-100">
-				<image src="../../static/images/the order-img.png" class="wh180"></image>
-				<view class="px-2 py-1 flex-1 d-flex flex-column j-sb h-180">
-					<view class="font-30 font-w">减脂训练营·中上</view>
-					<view class="flex">
-						<view class="tag tagY">矫正</view>
-						<view class="tag tagB">提升柔软度</view>
-						<view class="tag tagG">改善身体线条</view>
-					</view>
-					<view class="colorR"><text class="price">220</text>/课时</view>
+		<block v-for="(item,index) in mainData" :key="index">
+			<view class="shadowM bg-white px-2 mx-2 mb-2 radius10 line-h">
+				<view class="font-24 color6 flex1 py-3 bB-f5">
+					<view>订单编号：{{item.order_no}}</view>
+					<view class="colorR">待使用</view>
+					<!-- <view class="colorR">待评价</view> -->
+					<!-- <view class="colorR">已评价</view> -->
 				</view>
+				<view class="flex1 py-3 bB-f5 w-100">
+					<image src="../../static/images/the order-img.png" class="wh180"></image>
+					<view class="px-2 py-1 flex-1 d-flex flex-column j-sb h-180">
+						<view class="font-30 font-w">{{item.product.title}}</view>
+						<view class="flex">
+							<block v-for="(c_item,c_index) in item.product.description" :key="c_index">
+								<view v-if="c_index==0" class="tag tagY">{{c_item}}</view>
+								<view v-if="c_index==1" class="tag tagB">{{c_item}}</view>
+								<view v-if="c_index==2" class="tag tagG">{{c_item}}</view>
+							</block>
+						</view>
+						<view class="colorR"><text class="price">{{item.product.price}}</text>/{{item.product.score}}课时</view>
+					</view>
+				</view>
+				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product.duration}}天 </view>
+				<!-- 其他 -->
+				<view class="py-3 d-flex j-end">
+					<view class="btn b-e1" @click="goNext('use',item)">立即使用</view>
+					<view class="btn b-e1" @click="goNext('comment',item)">立即评价</view>
+					<view class="btn b-e1" @click="goNext('checkComment',item)">查看评价</view>
+				</view>
+				
+				<!-- 进行中 -->
+				<!-- <view class="py-3 flex1">
+					<view>核销码：</view>
+					<image src="../../static/images/my class-img.png" class="wh80"></image>
+				</view> -->
 			</view>
-			<view class="font-26 color6 py-3 bB-f5">课程有效期：15天 </view>
-			<!-- 其他 -->
-			<view class="py-3 d-flex j-end">
-				<!-- <view class="btn b-e1" @click="Router.navigateTo({route:{path:'/pages/user-sijiaoTime/user-sijiaoTime'}})">立即使用</view> -->
-				<!-- <view class="btn b-e1" @click="Router.navigateTo({route:{path:'/pages/user-comment/user-comment?type=1'}})">立即评价</view> -->
-				<view class="btn b-e1" @click="Router.navigateTo({route:{path:'/pages/user-commentDetail/user-commentDetail?type=1'}})">查看评价</view>
-			</view>
-			
-			<!-- 进行中 -->
-			<!-- <view class="py-3 flex1">
-				<view>核销码：</view>
-				<image src="../../static/images/my class-img.png" class="wh80"></image>
-			</view> -->
-		</view>
+		</block>
+		
 		
 	</view>
 </template>
@@ -52,14 +56,85 @@
 		data() {
 			return {
 				Router:this.$Router,
-				navCurr:0
+				navCurr:0,
+				mainData:[],
+				searchItem:{
+					thirdapp_id:2,
+					course_type:3
+				},
+				isLoadAll:false
 			}
 		},
+		
+		onLoad(options) {
+			const self = this;
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.$Utils.loadAll(['getMainData'], self);
+		},
+		onReachBottom() {
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
+		},
 		methods: {
-			changeNav(i){
+			
+			goNext(type,item){
 				const self = this;
-				self.navCurr = i
-			}
+				uni.setStorageSync('orderDetail',item);
+				if(type=="comment"){
+					self.Router.navigateTo({route:{path:'/pages/user-comment/user-comment?type=0'}});
+				}else if(type=="use"){
+					self.Router.navigateTo({route:{path:'/pages/user-sijiaoTime/user-sijiaoTime'}});
+				}else if(type=="checkComment"){
+					self.Router.navigateTo({route:{path:'/pages/user-commentDetail/user-commentDetail?type=0'}})
+				}
+			},
+			
+			
+			getMainData(isNew) {
+				const self = this;
+				if (isNew) {
+					self.mainData = [];
+					self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+				};
+				const postData = {};
+				postData.tokenFuncName = 'getProjectToken';
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				postData.getAfter = {
+					product:{
+						tableName:'Product',
+						middleKey:'product_id',
+						key:'id',
+						searchItem:{
+							status:1
+						},
+						condition:'=',
+						info:['book_week_item','book_time_item','coach_no','score','id','mainImg','book_end_time','book_start_time','title','description','duration','price','score']
+					},
+					orderLog:{
+						tableName:'OrderLog',
+						middleKey:'order_no',
+						key:'order_no',
+						searchItem:{
+							status:1
+						},
+						condition:'=',
+					}
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+					}else{
+						self.isLoadAll = true;
+					};
+					uni.setStorageSync('canClick', true);
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.orderGet(postData, callback);
+			},
 		}
 	}
 </script>

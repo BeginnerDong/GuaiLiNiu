@@ -25,24 +25,25 @@
 		</view>
 		
 		<view class="px-2 flex1 flex-wrap pb-5">
-			
-			<view class="p-r overflow-h line-h radius10 shadowM mt-3 sj" 
-			v-for="(item,index) in mainData"
-			@click="Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail'}})">
-				<image :src="item.mainImg[0].url" class="sjImg1"></image>
-				<view class="px-2">
-					<view class="font-w py-2">{{item.name}}</view>
-					<view class="flex">
-						<image src="../../static/images/sijiao-icon.png" class="bq-icon"></image>
-						<view class="font-22 color6 pl-1">{{item.expertise}}</view>
+			<block v-for="(item,index) in mainData">
+				<view class="p-r overflow-h line-h radius10 shadowM mt-3 sj"
+				@click="goDetail(item)">
+					<image :src="item.mainImg[0].url" class="sjImg1"></image>
+					<view class="px-2">
+						<view class="font-w py-2">{{item.name}}</view>
+						<view class="flex">
+							<image src="../../static/images/sijiao-icon.png" class="bq-icon"></image>
+							<view class="font-22 color6 pl-1">{{item.expertise}}</view>
+						</view>
+						<view class="flex1 py-2">
+							<view class="font-26"><text class="price">{{item.products.price}}</text>/节</view>
+							<view class="font-20 color9">累计 {{item.class}}节</view>
+						</view>
 					</view>
-					<view class="flex1 py-2">
-						<view class="font-26"><text class="price">{{item.products.price}}</text>/节</view>
-						<view class="font-20 color9">累计 {{item.class}}节</view>
-					</view>
+					<view class="sjSgin">1项专业证书</view>
 				</view>
-				<view class="sjSgin">1项专业证书</view>
-			</view>
+			</block>
+			
 			
 		</view>
 		
@@ -58,7 +59,9 @@
 				mainData:[],
 				searchItem:{
 					
-				}
+				},
+				isLoadAll:false
+				
 			}
 		},
 		onLoad(options) {
@@ -68,8 +71,18 @@
 			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
 			self.$Utils.loadAll(['getMainData'], self);
 		},
+		onReachBottom() {
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
+		},
 		methods: {
-			
+			goDetail(item){
+				const self = this;
+				self.Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail?coach_no='+item.user_no}})
+			},
 			getMainData(isNew) {
 				const self = this;
 				if (isNew) {
@@ -103,6 +116,8 @@
 						for (var i = 0; i < self.mainData.length; i++) {
 							// self.mainData[i].expertise = self.mainData[i].expertise.split(',')
 						}
+					}else{
+						self.isLoadAll = true;
 					};
 					uni.setStorageSync('canClick', true);
 					console.log('mainData',self.mainData)

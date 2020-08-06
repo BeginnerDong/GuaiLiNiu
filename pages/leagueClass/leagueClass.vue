@@ -104,7 +104,8 @@
 				},
 				courseType:[],
 				week:['周日','周一','周二','周三','周四','周五','周六'],
-				chooseTimestap:0
+				chooseTimestap:0,
+				isLoadAll:false
 			}
 		},
 		onShow(){
@@ -115,7 +116,13 @@
 			};
 			console.log('show')
 		},
-		
+		onReachBottom() {
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
+		},
 		onLoad(options) {
 			const self = this;
 			self.timeList = self.$Utils.getFutureDateList(5);
@@ -206,6 +213,7 @@
 					&&uni.getStorageSync('courseTypetTime')>(new Date()).getTime()
 				){
 					self.courseType = uni.getStorageSync('courseType');
+					self.$Utils.finishFunc('getCourseTypeData');
 					console.log('self.courseType',self.courseType)
 					return;
 				};
@@ -257,9 +265,11 @@
 						self.mainData.push.apply(self.mainData, res.info.data);
 						for (var i = 0; i < self.mainData.length; i++) {
 							self.mainData[i].description = self.mainData[i].description.split(',');
-							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'ymd-hms')
-							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'ymd-hms')
+							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'ymd-hm')
+							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'ymd-hm')
 						}
+					}else{
+						self.isLoadAll = true;
 					};
 					uni.setStorageSync('canClick', true);
 					self.$Utils.finishFunc('getMainData');

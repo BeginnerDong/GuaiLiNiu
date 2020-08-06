@@ -30,8 +30,10 @@
 			</view>
 			<view class="py-4 flex1 bB-f5">
 				<view>优惠券</view>
-				<view class="flex" @click="Router.navigateTo({route:{path:'/pages/payLeagueClass-coupon/payLeagueClass-coupon'}})">
-					<view class="color6">无使用</view>
+				<view class="flex" @click="Router.navigateTo({route:{path:'/pages/payLeagueClass-coupon/payLeagueClass-coupon?standardPrice='+mainData.price*num}})">
+					<view class="color6">
+						{{chooseCoupon.id?'满'+chooseCoupon.snap_product.condition+'减'+chooseCoupon.snap_product.value:'无使用'}}
+					</view>
 					<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
 				</view>
 			</view>
@@ -53,7 +55,7 @@
 		
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 			<view class="font-26">已预约0/{{mainData.max}}人</view>
-			<button class="carBtn" open-type="getUserInfo" @click="submit">立即预约</button>
+			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button>
 		</view>
 		
 		<view class="bg-mask" v-show="is_show">
@@ -77,13 +79,22 @@
 				is_show:false,
 				isAgree:false,
 				num:1,
-				mainData:{}
+				mainData:{},
+				chooseCoupon:{}
 			}
 		},
 		onLoad(){
 			const self = this;
+			uni.removeStorageSync('chooseCoupon');
 			self.mainData = uni.getStorageSync('orderDetail');
 			console.log('order',self.mainData.shopInfor,self.mainData.coach[0])
+		},
+		onShow(){
+			const self = this;
+			if(uni.getStorageSync('chooseCoupon')){
+				self.chooseCoupon = uni.getStorageSync('chooseCoupon')
+			}
+			
 		},
 		methods: {
 			
@@ -110,11 +121,19 @@
 				uni.setStorageSync('canClick', false);
 				var orderList = []
 				if(self.isAgree){
-					orderList.push({product_id:self.mainData.id,count:1,type:1});
-					const callback = (user, res) => {
-						self.addOrder(orderList)
-					};
-					self.$Utils.getAuthSetting(callback);
+					orderList.push({
+						product_id:self.mainData.id,
+						count:self.num,
+						type:1,
+						data:{
+							course_type:self.mainData.course_type,
+							coach_no:self.mainData.coach_no,
+							shop_no:self.mainData.shop_no,
+						}
+					});
+					console.log('orderList2222',orderList);
+					//return;
+					self.addOrder(orderList)
 				}else{
 					uni.showModal({
 						title:'',
@@ -150,10 +169,20 @@
 				const self = this;
 				const postData = {};
 				console.log('price',parseFloat(self.mainData.price)*self.num)
-				
-				postData.wxPay = {
-					price:parseFloat(self.mainData.price)*self.num
+				if(uni.getStorageSync('chooseCoupon')){
+					postData.couponPay = [{
+						id:uni.getStorageSync('chooseCoupon').id,
+						price:parseFloat(uni.getStorageSync('chooseCoupon').value)
+					}];
+					postData.wxPay = {
+						price:parseFloat(self.mainData.price)*self.num - parseFloat(uni.getStorageSync('chooseCoupon').value)
+					};
+				}else{
+					postData.wxPay = {
+						price:parseFloat(self.mainData.price)*self.num
+					};
 				};
+				
 				console.log('postData',postData)
 				
 				postData.tokenFuncName = 'getProjectToken',
@@ -177,7 +206,8 @@
 						uni.setStorageSync('canClick', true);
 						if (res.info) {
 							const payCallback = (payData) => {
-								console.log('payData', payData)
+								console.log('payData', payData);
+								uni.removeStorageSync('chooseCoupon');
 								if (payData == 1) {
 									uni.showToast({
 										title: '支付成功',
@@ -207,6 +237,7 @@
 									
 								}
 							});
+							uni.removeStorageSync('chooseCoupon');
 							setTimeout(function() {
 								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
 							}, 1000);

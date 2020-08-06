@@ -6,58 +6,42 @@
 				<view class="li" :class="navCurr==0?'on':''" @click="changeNav(0)">大厅</view>
 				<view class="li" :class="navCurr==1?'on':''" @click="changeNav(1)">未使用</view>
 				<view class="li" :class="navCurr==2?'on':''" @click="changeNav(2)">已使用</view>
-				<view class="li" :class="navCurr==3?'on':''" @click="changeNav(3)">已过期</view>
+				<view class="li" :class="navCurr==-1?'on':''" @click="changeNav(-1)">已过期</view>
 			</view>
 		</view>
 		
 		<view>
-			<view class="mt-3 colorf p-r" v-show="navCurr==0" v-for="(item,index) in mainData">
-				<image src="../../static/images/coupons-icon.png" class="couponImg"></image>
-				<view class="p-aXY p-3 top-0 left-0 flex1">
-					<view class="px-1 flex-1">
-						<view class="font-40 pb-5">满{{item.condition}}元减{{item.value}}元</view>
-						<view class="font-22">
-							<view>有效期：{{item.valid_time}}天</view>
-							<view>有效期至：2019.02.20-2019.11.30</view>
+			<block v-for="(item,index) in mainData" :key="index">
+				<view class="mt-3 colorf p-r" v-if="!item.snap_coupon" >
+					<image src="../../static/images/coupons-icon.png" class="couponImg"></image>
+					<view class="p-aXY p-3 top-0 left-0 flex1">
+						<view class="px-1 flex-1">
+							<view class="font-40 pb-5">满{{item.condition}}元减{{item.value}}元</view>
+							<view class="font-22">
+								<view>有效期：{{item.valid_time}}天</view>
+								
+							</view>
+						</view>
+						<view class="font-30 colorM pr-5" @click="submit(item)">立即领取</view>
+					</view>
+				</view>
+				
+				<view class="mt-3 colorf p-r" v-if="item.snap_coupon&&item.use_step==navCurr" >
+					<image src="../../static/images/coupons-icon.png" class="couponImg"></image>
+					<view class="p-aXY p-3 top-0 left-0 flex1">
+						<view class="px-1 flex-1">
+							<view class="font-40 pb-5">满{{item.snap_coupon.condition}}元减{{item.snap_coupon.value}}元</view>
+							<view class="font-22">
+								<view>有效期至：{{item.invalid_time_change}}</view>
+							</view>
 						</view>
 					</view>
-					<view class="font-30 colorM pr-5">立即领取</view>
+					<button  open-type='share'  :data-couponNo="item.snap_coupon.coupon_no" :data-parentNo="item.snap_coupon.user_no" >分享</button>
+					<!-- <button type="default" @click="share(item)">分享</button>
+					<view class="font-30 colorM pr-5"  >分享</view> -->
 				</view>
-			</view>
+			</block>
 			
-			<view class="mt-3 colorf p-r" v-show="navCurr==1">
-				<image src="../../static/images/coupons-icon.png" class="couponImg"></image>
-				<view class="p-aXY p-3 top-0 left-0 flex1">
-					<view class="px-1 flex-1">
-						<view class="font-40 pb-5 mb-3">满400元减200元</view>
-						<view class="font-22">有效期至：2019.02.20-2019.11.30</view>
-					</view>
-					<image src="../../static/images/coupons-icon2.png" class="wh60 mr-5"></image>
-				</view>
-			</view>
-			
-			
-			<view class="mt-3 colorf p-r" v-show="navCurr==2">
-				<image src="../../static/images/coupons-icon1.png" class="couponImg"></image>
-				<view class="p-aXY p-3 top-0 left-0 flex1">
-					<view class="px-1 flex-1">
-						<view class="font-40 pb-5 mb-3">满400元减200元</view>
-						<view class="font-22">有效期至：2019.02.20-2019.11.30</view>
-					</view>
-					<view class="font-30 color9 pr-5">不可使用</view>
-				</view>
-			</view>
-			
-			<view class="mt-3 colorf p-r" v-show="navCurr==3">
-				<image src="../../static/images/coupons-icon1.png" class="couponImg"></image>
-				<view class="p-aXY p-3 top-0 left-0 flex1">
-					<view class="px-1 flex-1">
-						<view class="font-40 pb-5 mb-3">满400元减200元</view>
-						<view class="font-22">有效期至：2019.02.20-2019.11.30</view>
-					</view>
-					<view class="font-30 color9 pr-5">已经过期</view>
-				</view>
-			</view>
 			
 		</view>
 		
@@ -72,7 +56,9 @@
 				mainData:[],
 				searchItem:{
 					thirdapp_id: 2
-				}
+				},
+				isLoadAll:false,
+				Router:this.$Router
 			}
 		},
 		onLoad(options) {
@@ -80,7 +66,51 @@
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.$Utils.loadAll(['getMainData'], self);
 		},
+		onReachBottom() {
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
+		},
 		methods: {
+			
+			share(item){
+				const self = this;
+				console.log('share');
+				self.$Router.navigateTo({
+					route:{path:'/pages/coupon/coupon?coupon_no='
+					+item.snap_coupon.coupon_no
+					+'&&parent_no='
+					+item.user_no},
+				});
+			},
+			
+			
+			onShareAppMessage: function( options ){
+			　　var that = this;
+				
+				var path = '/pages/coupon/coupon?coupon_no='
+					+options.target.dataset.couponno
+					+'&&parent_no='
+					+options.target.dataset.parentno;
+				console.log('path',path);
+			　　// 设置菜单中的转发按钮触发转发事件时的转发内容
+			　　var shareObj = {
+			　　　　title: "免费领取优惠卷",        // 默认是小程序的名称(可以写slogan等)
+			　　　　path: path,        // 默认是当前页面，必须是以‘/’开头的完整路径
+			　　　　imgUrl: '',     //自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
+			　　};
+			　　// 来自页面内的按钮的转发
+			/* 　　if( options.from == 'button' ){
+			　　　　var eData = options.target.dataset;
+			　　　　console.log( eData.name );     // shareBtn
+			　　　　// 此处可以修改 shareObj 中的内容
+			　　　　shareObj.path = '/pages/btnname/btnname?btn_name='+eData.name;
+			　　} */
+			　　// 返回shareObj
+			　　return shareObj;
+			},
 			
 			getMainData(isNew) {
 				const self = this;
@@ -89,7 +119,10 @@
 					self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 				};
 				const postData = {};
-				//postData.tokenFuncName = 'getProjectToken';
+				if(self.navCurr>0){
+					postData.tokenFuncName = 'getProjectToken';
+				};
+				
 				postData.paginate = self.$Utils.cloneForm(self.paginate);
 				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
 				postData.order = {
@@ -99,22 +132,142 @@
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);
 						for (var i = 0; i < self.mainData.length; i++) {
+							if(self.mainData[i].invalid_time){
+								self.mainData[i].invalid_time_change = self.$Utils.timeto(parseInt(self.mainData[i].invalid_time),'ymd-hm');	
+							};
+							
 							// self.mainData[i].description = self.mainData[i].description.split(',');
 							// self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'hm')
 							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')
-						}
+						};
+					}else{
+						self.isLoadAll = true;
 					};
 					uni.setStorageSync('canClick', true);
 					console.log('coupon',self.mainData)
 					self.$Utils.finishFunc('getMainData');
 				};
-				self.$apis.couponGet(postData, callback);
+				if(self.navCurr>0){
+					self.$apis.userCouponGet(postData, callback);
+				}else{
+					self.$apis.couponGet(postData, callback);
+				}
+				
 			},
 			
 			changeNav(i){
 				const self = this;
-				self.navCurr = i
-			}
+				if(self.navCurr!=i&&i!=0&&self.navCurr!=0){
+					self.navCurr = i;
+				}else{
+					self.navCurr = i;
+					self.getMainData(true)
+				};
+			},
+			
+			submit(item){
+				const self = this;
+				self.chooseCouponData = item;
+				uni.setStorageSync('canClick', false);
+				var couponList = []
+				
+				couponList.push({coupon_id:self.chooseCouponData.id,
+					count:1,
+					type:1,
+					data:{
+						course_type:self.chooseCouponData.course_type
+					}
+				});
+				self.addOrder(couponList)
+				
+			},
+			
+			addOrder(couponList) {
+				const self = this;	
+				const postData = {}; 
+				postData.couponList = self.$Utils.cloneForm(couponList);
+				postData.tokenFuncName = 'getProjectToken';
+				console.log('addOrder',postData);
+				const callback = (res) => {
+					
+					if (res && res.solely_code == 100000) {
+						self.orderId = res.info.id;
+						self.goPay()
+					} else {		
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+						uni.setStorageSync('canClick', true);
+					};		
+				};
+				self.$apis.addCoupon(postData, callback);
+			},
+			
+			goPay() {
+				const self = this;
+				const postData = {};
+				console.log('self.chooseCouponData.price',self.chooseCouponData.price)
+				postData.otherPay={
+					price:parseFloat(self.chooseCouponData.price)
+				};
+				
+				postData.tokenFuncName = 'getProjectToken',
+				postData.searchItem = {
+					id: self.orderId
+				};
+				
+				
+				const callback = (res) => {
+					if (res.solely_code == 100000) {
+						uni.setStorageSync('canClick', true);
+						if (res.info) {
+							const payCallback = (payData) => {
+								console.log('payData', payData)
+								if (payData == 1) {
+									uni.showToast({
+										title: '领取成功',
+										duration: 1000,
+										success: function() {
+											
+										}
+									});
+									/* setTimeout(function() {
+										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+									}, 1000); */
+								} else {
+									uni.setStorageSync('canClick', true);
+									uni.showToast({
+										title: '支付失败',
+										duration: 2000
+									});
+								};
+							};
+							self.$Utils.realPay(res.info, payCallback);
+						} else {
+							
+							uni.showToast({
+								title: '支付成功',
+								duration: 1000,
+								success: function() {
+									
+								}
+							});
+							setTimeout(function() {
+								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+							}, 1000);
+						};
+					} else {
+						uni.setStorageSync('canClick', true);
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+					};
+					uni.setStorageSync('canClick', true);
+				};
+				self.$apis.couponPay(postData, callback);
+			},
 		}
 	}
 </script>

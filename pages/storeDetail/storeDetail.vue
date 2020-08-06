@@ -152,10 +152,13 @@
 					
 					<view class="py-3 font-30 font-w px-4">器械设备</view>
 					<view class="px-5 flex flex-wrap">
-						<view class="flex4 font-24 color6 mb-3 bb" v-for="(item,index) in equipment" :key="index">
-							<image :src="item.url" class="wh100 mb-2"></image>
-							<view>{{item.name}}</view>
-						</view>
+						<block v-for="(item,index) in equipment" :key="index">
+							<view v-if="item.key&&mainData[item.key]==1" class="flex4 font-24 color6 mb-3 bb" >
+								<image :src="item.url" class="wh100 mb-2"></image>
+								<view>{{item.name}}</view>
+							</view>
+						</block>
+						
 					</view>
 					<view class="py-3 font-30 font-w px-4">基础服务</view>
 					<view class="px-5 flex flex-wrap">
@@ -191,7 +194,7 @@
 					{url:'../../static/images/stores details-icon17.png',name:'瑜伽垫'}
 				],
 				service:[
-					{url:'../../static/images/stores details-icon2.png',name:'无线网络'},
+					{url:'../../static/images/stores details-icon2.png',name:'无线网络',key:'wifi'},
 					{url:'../../static/images/stores details-icon3.png',name:'储物柜'},
 					{url:'../../static/images/stores details-icon4.png',name:'更衣室'},
 					{url:'../../static/images/stores details-icon5.png',name:'饮水机'},

@@ -43,7 +43,6 @@ class Token {
 				info_name:'user_info',
 				token_name:'user_token'
 	        };
-			console.log('getProjectToken',callback)
 			if(callback){
 				this.getUserInfo(params,callback);
 			}else{
@@ -332,9 +331,14 @@ class Token {
             success: function (res) {
                 console.log(res)
                 var postData = {};
+				if(uni.getStorageSync('getProjectTokenParams')){
+					postData = $Utils.extend(postData, uni.getStorageSync('getProjectTokenParams'));
+				};
+				
                 postData.thirdapp_id = params.thirdapp_id;  
-                
                 postData.code = res.code;
+				
+
                 if(wxUserInfo.nickName&&wxUserInfo.avatarUrl){
                     postData.nickname = wxUserInfo.nickName;
                     postData.headImgUrl = wxUserInfo.avatarUrl;
@@ -363,7 +367,7 @@ class Token {
                             var time = parseInt(new Date().getTime()) + 3500000; 
                             uni.setStorageSync('token_expire_time',time);
 							uni.setStorageSync('token_get_time',0);
-                            
+                            uni.removeStorageSync('getProjectTokenParams');
                             if(callback){
                                 callback && callback(res.data.token);
                             };      

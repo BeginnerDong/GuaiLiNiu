@@ -133,20 +133,22 @@
 			</view>
 			
 			<view v-show="navCurr==1" class="p-r pt-2 navCon px-2">
-				<view class="bB-f5 py-3">
-					<view class="font-24 flex1">
-						<image src="../../static/images/pay for courses-img3.png" class="wh70"></image>
-						<view class="color6 flex-1 px-2">用户名</view>
-						<view class="color9">2020.02.23</view>
+				<block v-for="(item,index) in remarkData" :key="index">
+					<view class="bB-f5 py-3">
+						<view class="font-24 flex1">
+							<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="wh70"></image>
+							<view class="color6 flex-1 px-2">{{item.title}}</view>
+							<view class="color9">{{item.create_time}}</view>
+						</view>
+						<view class="font-26 pt-3">
+							{{item.description}}
+						</view>
+						<view class="flex flex-wrap">
+							<image v-for="(c_item,c_index) in item.bannerImg" :key="c_index" :src="c_item.url" class="wh180 mt-2 mr-2"></image>
+						</view>
 					</view>
-					<view class="font-26 pt-3">
-						很愉快的一次购物，非常满意，很愉快的一次购物，非常满意，很愉快的一次购物，非常满意，
-					</view>
-					<view class="flex flex-wrap">
-						<image src="../../static/images/pay for courses-img4.png" class="wh180 mt-2 mr-2"></image>
-						<image src="../../static/images/pay for courses-img4.png" class="wh180 mt-2 mr-2"></image>
-					</view>
-				</view>
+				</block>
+				
 			</view>
 		</view>
 		
@@ -185,15 +187,26 @@
 				is_show:false,
 				type:0,
 				mainData:{},
-				shopData:{}
+				shopData:{},
+				remarkData:[],
+				isLoadAll:false
 			}
 		},
 		onLoad(option){
 			const self = this;
+			
 			self.mainData = uni.getStorageSync('leagueClassDetail');
 			self.shopData = uni.getStorageSync('shopData');
 			self.type = option.type;
-				console.log('orderDetail',self.mainData)
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.getMessageData();
+		},
+		onReachBottom() {
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMessageData()
+			};
 		},
 		methods: {
 			
@@ -215,6 +228,31 @@
 			isShow(){
 				const self = this;
 				self.is_show = !self.is_show
+			},
+			
+			getMessageData(isNew){
+				const self = this;
+					if (isNew) {
+						self.remarkData = [];
+						self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+					};
+					const postData = {};
+					//postData.tokenFuncName = 'getProjectToken';
+					postData.paginate = self.$Utils.cloneForm(self.paginate);
+					postData.searchItem = {
+						thirdapp_id:2,
+						relation_table:'product',
+						relation_id:self.mainData.id,
+					};
+					const callback = (res) => {
+						if (res.info.data.length > 0) {
+							self.remarkData.push.apply(self.remarkData, res.info.data);
+						};
+						uni.setStorageSync('canClick', true);
+						self.$Utils.finishFunc('getMessageData');
+					};
+					self.$apis.messageGet(postData, callback);
+				
 			}
 		}
 	}

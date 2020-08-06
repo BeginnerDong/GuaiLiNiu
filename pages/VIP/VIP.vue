@@ -76,7 +76,16 @@
 			<view style="height: 130rpx;"></view>
 			<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 				<view class="font-24"><text class="price font-w font-36">299</text>/12个月</view>
-				<view class="carBtn" @click="submit">确认支付</view>
+				<button class="carBtn" size="mini" open-type="getUserInfo" 
+				@getuserinfo="Router.navigateTo({route:{
+					path:'/pages/VIP-information/VIP-information?product_id='
+					+product_id
+					+'&&price='
+					+price
+					+'&&duration='
+					+duration}})
+					">确认支付</button>
+				<!-- <view class="carBtn" @click="Router.navigateTo({route:{path:'/pages/VIP-information/VIP-information?product_id='+product_id}})">确认支付</view> -->
 			</view>
 		</view>
 		
@@ -92,6 +101,8 @@
 				vip:0,
 				mainData:[],
 				product_id:0,
+				price:0,
+				duration:0,
 				searchItem:{
 					thirdapp_id: 2,
 					type: 2,
@@ -118,6 +129,9 @@
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);
 					};
+					self.product_id = self.mainData[0].id;
+					self.price = self.mainData[0].price;
+					self.duration = self.mainData[0].duration;
 					uni.setStorageSync('canClick', true);
 					self.$Utils.finishFunc('getMainData');
 				};
@@ -128,125 +142,12 @@
 				const self = this;
 				self.tcCurr = i;
 				self.product_id = item.id;
+				self.price = item.price;
+				self.duration = item.duration;
 				
 			},
 			
-			submit(){
-				const self = this;
-				uni.setStorageSync('canClick', false);
-				wx.requestSubscribeMessage({
-				  tmplIds: [
-					  'BZ74KvhYwLWYKzcY-OunKaWIkbsBy_wWZ01LaZsGlKo',
-					  'qAz8Vn3an8LzQ52VplqDpKsoUTCQHM7E9g3Cd4opzvo',
-					],
-				  success (res) {console.log(res) }
-				});
-				return;
-				var orderList = []
-				orderList.push({product_id:self.product_id,count:1,type:1});
-				const callback = (user, res) => {
-					self.addOrder(orderList)
-				};
-				self.$Utils.getAuthSetting(callback);
-			},
 			
-			addOrder(orderList) {
-				const self = this;	
-				const postData = {}; 
-				postData.orderList = self.$Utils.cloneForm(orderList);
-				postData.tokenFuncName = 'getProjectToken';
-				console.log('addOrder',postData);
-				const callback = (res) => {
-					
-					if (res && res.solely_code == 100000) {
-						self.orderId = res.info.id;
-						self.goPay()
-					} else {		
-						uni.showToast({
-							title: res.msg,
-							duration: 2000
-						});
-						uni.setStorageSync('canClick', true);
-					};		
-				};
-				self.$apis.addOrder(postData, callback);
-			},
-			
-			goPay() {
-				const self = this;
-				const postData = {};
-				console.log('self.mainData.price',self.mainData.price)
-				postData.wxPay = {
-					price:parseFloat(self.mainData.price)
-				};
-					
-				postData.tokenFuncName = 'getProjectToken',
-				postData.searchItem = {
-					id: self.orderId
-				};
-				/* postData.payAfter = [];
-				postData.payAfter.push({
-					tableName: 'UserInfo',
-					FuncName: 'update',
-					data: {
-						standard:self.mainData.score
-					},
-					searchItem:{
-						id:self.orderId
-					}
-				}); */
-				
-				const callback = (res) => {
-					if (res.solely_code == 100000) {
-						uni.setStorageSync('canClick', true);
-						if (res.info) {
-							const payCallback = (payData) => {
-								console.log('payData', payData)
-								if (payData == 1) {
-									uni.showToast({
-										title: '支付成功',
-										duration: 1000,
-										success: function() {
-											uni.removeStorageSync('user_token');
-											uni.removeStorageSync('token_expire_time');
-										}
-									});
-									setTimeout(function() {
-										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
-									}, 1000);
-								} else {
-									uni.setStorageSync('canClick', true);
-									uni.showToast({
-										title: '支付失败',
-										duration: 2000
-									});
-								};
-							};
-							self.$Utils.realPay(res.info, payCallback);
-						} else {
-							
-							uni.showToast({
-								title: '支付成功',
-								duration: 1000,
-								success: function() {
-									
-								}
-							});
-							setTimeout(function() {
-								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
-							}, 1000);
-						};
-					} else {
-						uni.setStorageSync('canClick', true);
-						uni.showToast({
-							title: res.msg,
-							duration: 2000
-						});
-					};
-					uni.setStorageSync('canClick', true);
-				};
-				self.$apis.pay(postData, callback);
-			},
 		}
 	}
 </script>

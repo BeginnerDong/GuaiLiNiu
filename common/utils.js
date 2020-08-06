@@ -1,5 +1,5 @@
 import assetsConfig from "@/config/assets.config.js";
-
+import token from '@/common/token.js';
 export default {
 	
 	
@@ -67,6 +67,52 @@ export default {
 
 		return [params,hash]
     },
+	
+	uploadFile(filePath, name, formData, callback) {
+		var that = this;
+		const c_callback = (res) => {
+			that.uploadFile(filePath, name, formData, callback);
+		};
+		console.log('uploadFile', formData)
+		if (formData.tokenFuncName) {
+			if (formData.refreshTokn) {
+				token[formData.tokenFuncName](c_callback, {
+					refreshToken: true
+				});
+			} else {
+				formData.token = token[formData.tokenFuncName](c_callback);
+			};
+			if (!formData.token) {
+				return;
+			};
+		};
+		wx.uploadFile({
+			url: 'http://106.12.155.217/gln/public/index.php/api/v1/Base/FtpFile/upload',
+			filePath: filePath,
+			name: name,
+			formData: formData,
+			success: function(res) {
+				if (res.data) {
+					res.data = JSON.parse(res.data);
+				};
+				if (res.data.solely_code == '200000') {
+					token[formData.tokenFuncName](c_callback, {
+						refreshToken: true
+					});
+				} else {
+					callback && callback(res.data);
+				};
+			},
+			fail: function(err) {
+				wx.showToast({
+					title: '网络故障',
+					icon: 'fail',
+					duration: 2000,
+					mask: true,
+				});
+			}
+		})
+	},
 
 	showToast(title, type, duration, func) {
 		uni.showToast({
@@ -79,6 +125,7 @@ export default {
 	},
 
 	loadAll(array, self) {
+		uni.removeStorageSync('loadAllArray');
 		uni.setStorageSync('canClick', false);
 		uni.setStorageSync('loadAllArray', array);
 		for (var i = 0; i < array.length; i++) {
@@ -667,11 +714,19 @@ export default {
 		
 		var month = date.getMonth() + 1;
 		var strDate = date.getDate();
+		var hour = date.getHours();
+		var minutes = date.getMinutes();
 		if (month >= 1 && month <= 9) {
 			month = "0" + month;
 		}
 		if (strDate >= 0 && strDate <= 9) {
 			strDate = "0" + strDate;
+		}
+		if (hour >= 0 && hour <= 9) {
+			hour = "0" + hour;
+		}
+		if (minutes >= 0 && minutes <= 9) {
+			minutes = "0" + minutes;
 		}
 		if (type == "ym") {
 			// 转年月
@@ -684,6 +739,10 @@ export default {
 			var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
 				" " + date.getHours() + seperator2 + date.getMinutes() +
 				seperator2 + date.getSeconds();
+		} else if (type == "ymd-hm") {
+			//转年月日 时分秒
+			var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+				" " + hour + seperator2 + minutes ;
 		} else if (type == "hms") {
 			//转时分秒
 			var currentdate = date.getHours() + seperator2 + date.getMinutes() + seperator2 + date.getSeconds();
@@ -738,5 +797,12 @@ export default {
 			}
 		});
 	},
+	
+	extend(target, source) { 
+		for (var obj in source) {
+			target[obj] = source[obj];
+		};
+		return target;
+	} 
 
 }

@@ -44,7 +44,7 @@
 		</view>
 		
 		<view class="bT-e1 p-2">
-			<view class="btnAuto">确定</view>
+			<view class="btnAuto" @click="submit">确定</view>
 		</view>
 		
 	</view>
@@ -54,14 +54,80 @@
 	export default {
 		data() {
 			return {
-				leftCurr:0
+				leftCurr:0,
+				data:{
+					order_no:'',
+					product_id:'',
+					course_type:'',
+					book_time:'',
+					shop_no:''
+				}
 			}
+		},
+		onLoad(option){
+			const self = this;
+			var userInfo = uni.getStorageSync('user_info');
+			self.mainData = uni.getStorageSync('orderDetail');
+			self.data.order_no = self.mainData.order_no;
+			self.data.product_id = self.mainData.product.id;
+			self.data.course_type = self.mainData.product.course_type;
+			self.data.shop_no = self.mainData.product.shop_no;
+			
+			self.data.book_time = (new Date()).getTime()/1000;
+			uni.setStorageSync('canClick', true);
 		},
 		methods: {
 			changeLeft(i){
 				const self = this;
 				self.leftCurr = i;
-			}
+			},
+			submit(){
+				const self = this;
+				if(self.mainData.orderLog.length>=parseInt(self.mainData.standard)){
+					self.$Utils.showToast('预约次数已经完成', 'none')
+					return;
+				};
+				const postData = {
+					data:self.data
+				};
+				postData.tokenFuncName = 'getProjectToken';
+				postData.saveAfter = [
+					{
+						tableName: 'Order',
+						FuncName: 'update',
+						searchItem:{
+							id:self.mainData.id
+						}
+					}
+				];
+				if((self.mainData.orderLog.length+1)==self.mainData.standard){
+					postData.saveAfter[0]['data'] =  {
+						transport_status:2
+					};
+				}else{
+					postData.saveAfter[0]['data'] =  {
+						transport_status:1
+					};
+				}
+				const callback = (res) => {
+					
+					uni.setStorageSync('canClick', true);
+					if (res.solely_code == 100000) {
+						uni.showToast({
+						    title: '预约成功',
+						    duration: 2000,
+						});
+						setTimeout(function(){
+							uni.navigateBack({
+							    delta: 1
+							});
+						},2000)
+					} else {
+						self.$Utils.showToast('网络故障', 'none')
+					}
+				};
+				self.$apis.orderLogAdd(postData, callback);
+			},
 		}
 	}
 </script>

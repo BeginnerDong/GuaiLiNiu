@@ -10,7 +10,7 @@
 		
 		<view class="content bg-white radius30-T px-2 p-r content">
 			<view class="pb-4 bB-f5">
-				<view class="flex pt-5 font-40 font-w">时空穿梭</view>
+				<view class="flex pt-5 font-40 font-w">{{mainData.title}}</view>
 				<view class="shareSgin" @click="Router.navigateTo({route:{path:'/pages/limitedTime/limitedTime'}})">
 					<image src="../../static/images/course-icon2.png" class="fx-icon"></image>
 					<view>分享</view>
@@ -28,7 +28,7 @@
 				</view>
 				
 				<!-- 付费团课展示 -->
-				<view class="font-20 pt-3"><text class="font-36 font-w price">220</text>/9课时</view>
+				<view class="font-20 pt-3"><text class="font-36 font-w price">{{mainData.price}}</text>/{{mainData.score}}课时</view>
 			</view>
 			
 			<view class="font-26 pt-4 ">
@@ -126,8 +126,14 @@
 	export default {
 		data() {
 			return {
-				Router:this.$Router
+				Router:this.$Router,
+				mainData:{}
 			}
+		},
+		onLoad(){
+			const self = this;
+			self.mainData = uni.getStorageSync('sijiaoCourseDetail');
+			
 		},
 		methods: {
 			

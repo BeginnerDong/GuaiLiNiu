@@ -18,7 +18,7 @@
 		</view>
 		
 		
-		<view class="mx-2 mb-2 p-r line-h radius10 overflow-h" v-for="(item,index) of mainData" :key="item.id">
+		<view class="mx-2 mb-2 p-r line-h radius10 overflow-h" v-for="(item,index) of mainData" :key="item.id" @click="goToDetail(item)">
 			<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="sjkImg"></image>
 			<view class="colorf p-aXY pt-5 px-4 sjkBg">
 				<view class="font-44 font-w pt-5 py-4">{{item.title}}</view>
@@ -54,6 +54,19 @@
 		},
 		
 		methods: {
+			
+			
+			goToDetail(item){
+				const self = this;
+				if(item.course_type==3){
+					self.$Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail?coach_no='+item.coach_no}});
+				}else{
+					uni.setStorageSync('leagueClassDetail',item);
+					self.$Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=1'}});
+				};
+				
+				
+			},
 			
 			change(index){
 				const self = this;

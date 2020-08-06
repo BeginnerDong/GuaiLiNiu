@@ -126,7 +126,7 @@
 		</view>
 		
 		
-		<view class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;" v-show="is_show" @click="Router.navigateTo({route:{path:'/pages/experienceCoupon/experienceCoupon'}})">
+		<view v-if="id_free==0" class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;" v-show="is_show" @click="Router.navigateTo({route:{path:'/pages/experienceCoupon/experienceCoupon'}})">
 			<image src="../../static/images/home-img4.png" class="Img80"></image>
 			<view class="pl-2 pr-5 flex-1">店长送你一份信任见面礼，如需到店使用请提前预约~</view>
 			<view class="criBtn criBtn1">去领取</view>
@@ -160,7 +160,8 @@
 				shopData:{},
 				activeData:[],
 				coachData:[],
-				classData:[]
+				classData:[],
+				id_free:1
 			}
 		},
 		
@@ -202,7 +203,8 @@
 						self.shopData = uni.getStorageSync('shopData');
 						self.getActiveData();
 						self.getCoachData();
-						self.getClassData()
+						self.getClassData();
+						self.id_free = uni.getStorageSync('user_info').info.id_free;
 					}else{
 						uni.showModal({
 							title:'提示',

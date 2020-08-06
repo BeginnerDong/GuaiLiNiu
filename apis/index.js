@@ -44,6 +44,45 @@ export default {
 		};
 		http.HTTP(allParams);
 	},
+	
+	messageGet(param, callback) {
+	
+		var allParams = {
+			url: 'Common/Message/get',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
+	messageAdd(param, callback) {
+	
+		var allParams = {
+			url: 'Common/Message/add',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
+	
+	
+	orderLogAdd(param, callback) {
+	
+		var allParams = {
+			url: 'Common/OrderLog/add',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
 
 	registerSuper(param, callback) {
 
@@ -502,6 +541,18 @@ export default {
 		};
 		http.HTTP(allParams);
 	},
+	
+	addCoupon(param, callback) {
+		var allParams = {
+			url: 'Func/Coupon/addCoupon',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
 
 	pay(param, callback) {
 		var allParams = {
@@ -514,10 +565,34 @@ export default {
 		};
 		http.HTTP(allParams);
 	},
+	
+	couponPay(param, callback) {
+		var allParams = {
+			url: 'Base/CouponPay/CouponPay',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
 
 	flowLogGet(param, callback) {
 		var allParams = {
 			url: 'Common/FlowLog/get',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
+	
+	courseGet(param, callback) {
+		var allParams = {
+			url: 'Common/Course/get',
 			type: 'post',
 			data: param,
 			sCallback: function(data) {

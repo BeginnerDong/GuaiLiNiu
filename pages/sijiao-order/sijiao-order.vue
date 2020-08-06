@@ -6,8 +6,8 @@
 				<view class="flex1 py-2 bB-f5">
 					<image src="../../static/images/the order-img.png" class="wh180"></image>
 					<view class="px-2 py-3 flex-1">
-						<view class="font-30 font-w pb-1">减脂训练营·中上</view>
-						<view><text class="price font-w">220</text>/9课时</view>
+						<view class="font-30 font-w pb-1">{{mainData.title}}</view>
+						<view><text class="price font-w">{{mainData.price}}</text>/{{mainData.score}}课时</view>
 						<view class="font-24 py-2 line-h">Auger | 20:00~20:45</view>
 						<view class="flex">
 							<view class="tag tagY">矫正</view>
@@ -34,9 +34,9 @@
 					<view class="pb-4 flex1">
 						<view>课时套餐（￥200/9课时）</view>
 						<view class="flex">
-							<image src="../../static/images/the order-icon.png" class="wh40"></image>
-							<view class="num">1</view>
-							<image src="../../static/images/the order-icon1.png" class="wh40"></image>
+							<image src="../../static/images/the order-icon.png" class="wh40" @click="count(-1)"></image>
+							<view class="num">{{num}}</view>
+							<image src="../../static/images/the order-icon1.png" class="wh40" @click="count(1)"></image>
 						</view>
 					</view>
 					<view class="flex1 tcBox">
@@ -49,8 +49,10 @@
 				
 				<view class="py-4 flex1 bB-f5">
 					<view>优惠券</view>
-					<view class="flex" @click="Router.navigateTo({route:{path:'/pages/payLeagueClass-coupon/payLeagueClass-coupon'}})">
-						<view class="color6">无使用</view>
+					<view class="flex" @click="Router.navigateTo({route:{path:'/pages/payLeagueClass-coupon/payLeagueClass-coupon?standardPrice='+mainData.price}})">
+						<view class="color6">
+							{{chooseCoupon.id?'满'+chooseCoupon.snap_product.condition+'减'+chooseCoupon.snap_product.value:'无使用'}}
+						</view>
 						<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
 					</view>
 				</view>
@@ -64,9 +66,9 @@
 				</view>
 				
 				<view class="flex py-4 font-24">
-					<!-- <image src="../../static/images/the order-icon4.png" class="wh30 mr-2"></image> -->
-					<image src="../../static/images/the order-icon5.png" class="wh30 mr-2"></image>
-					<view>同意 <text class="colorB">《怪力牛运动会员服务协议》</text></view>
+					<image src="../../static/images/the order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
+					<image src="../../static/images/the order-icon4.png" class="wh30 mr-2" v-else></image>
+					<view><text @click="isShow('agree')">同意</text> <text class="colorB" @click="isShow">《怪力牛运动会员服务协议》</text></view>
 				</view>
 			</view>
 		</view>
@@ -75,7 +77,18 @@
 		<view style="height: 130rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 			<view class="font-26">总计：<text class="colorR font-36">799</text></view>
-			<view class="carBtn">立即预约</view>
+			
+			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button>
+		</view>
+		
+		<view class="bg-mask" v-show="is_show">
+			<view class="bg-white radius20 mx-4 flexY xy">
+				<view class="font-30 text-center py-3">《怪力牛会员购买服务协议》</view>
+				<view class="px-3 mb-3 flex-1 flexY">
+					1、都必须为为和促进OK了
+				</view>
+				<view class="text-center colorf py-3 Mgb" @click="isShow">确定</view>
+			</view>
 		</view>
 		
 	</view>
@@ -86,14 +99,182 @@
 		data() {
 			return {
 				Router:this.$Router,
-				tcCurr:0
+				tcCurr:0,
+				mainData:{},
+				num:1,
+				is_show:false,
+				isAgree:false,
+				chooseCoupon:{}
 			}
 		},
+		onLoad(){
+			const self = this;
+			uni.removeStorageSync('chooseCoupon');
+			self.mainData = uni.getStorageSync('sijiaoCourseDetail');
+			
+		},
+		onShow(){
+			const self = this;
+			if(uni.getStorageSync('chooseCoupon')){
+				self.chooseCoupon = uni.getStorageSync('chooseCoupon')
+			}
+			
+		},
 		methods: {
+			
+			count(x){
+				const self = this;
+				if(self.num+x<=0){
+					return;
+				}else{
+					self.num = self.num+x;
+				}
+			},
+			isShow(type){
+				const self = this;
+				if(type){
+					self.isAgree = !self.isAgree;
+				}else{
+					self.is_show = !self.is_show
+				}
+			},
 			changeCurr(i){
 				const self = this;
 				self.tcCurr = i
-			}
+			},
+			submit(){
+				const self = this;
+				uni.setStorageSync('canClick', false);
+				var orderList = []
+				if(self.isAgree){
+					orderList.push({product_id:self.mainData.id,
+					count:self.num,
+					type:1,
+					data:{
+						course_type:self.mainData.course_type,
+						coach_no:self.mainData.coach_no,
+						shop_no:self.mainData.shop_no,
+					}
+				});
+					self.addOrder(orderList)
+				}else{
+					uni.showModal({
+						title:'',
+						content:'请先同意会员服务协议',
+						showCancel:false
+					})
+				}
+			},
+			
+			addOrder(orderList) {
+				const self = this;	
+				const postData = {}; 
+				postData.orderList = self.$Utils.cloneForm(orderList);
+				postData.tokenFuncName = 'getProjectToken';
+				console.log('addOrder',postData);
+				const callback = (res) => {
+					
+					if (res && res.solely_code == 100000) {
+						self.orderId = res.info.id;
+						self.goPay()
+					} else {		
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+						uni.setStorageSync('canClick', true);
+					};		
+				};
+				self.$apis.addOrder(postData, callback);
+			},
+			
+			goPay() {
+				const self = this;
+				const postData = {};
+				console.log('price',parseFloat(self.mainData.price)*self.num)
+				
+				if(uni.getStorageSync('chooseCoupon')){
+					postData.couponPay = [{
+						id:uni.getStorageSync('chooseCoupon').id,
+						price:parseFloat(uni.getStorageSync('chooseCoupon').value)
+					}];
+					postData.wxPay = {
+						price:(parseFloat(self.mainData.price)*self.num - parseFloat(uni.getStorageSync('chooseCoupon').value)).toFixed(2) 
+					};
+				}else{
+					postData.wxPay = {
+						price:parseFloat(self.mainData.price)*self.num
+					};
+				};
+				console.log('postData',postData)
+				
+				postData.tokenFuncName = 'getProjectToken',
+				postData.searchItem = {
+					id: self.orderId
+				};
+				postData.payAfter = [];
+				postData.payAfter.push({
+					tableName: 'Order',
+					FuncName: 'update',
+					data: {
+						standard:self.mainData.score
+					},
+					searchItem:{
+						id:self.orderId
+					}
+				});
+				
+				const callback = (res) => {
+					if (res.solely_code == 100000) {
+						uni.setStorageSync('canClick', true);
+						if (res.info) {
+							const payCallback = (payData) => {
+								console.log('payData', payData);
+								uni.removeStorageSync('chooseCoupon');
+								if (payData == 1) {
+									uni.showToast({
+										title: '支付成功',
+										duration: 1000,
+										success: function() {
+											
+										}
+									});
+									setTimeout(function() {
+										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+									}, 1000);
+								} else {
+									uni.setStorageSync('canClick', true);
+									uni.showToast({
+										title: '支付失败',
+										duration: 2000
+									});
+								};
+							};
+							self.$Utils.realPay(res.info, payCallback);
+						} else {
+							uni.removeStorageSync('chooseCoupon');
+							uni.showToast({
+								title: '支付成功',
+								duration: 1000,
+								success: function() {
+									
+								}
+							});
+							setTimeout(function() {
+								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+							}, 1000);
+						};
+					} else {
+						uni.setStorageSync('canClick', true);
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+					};
+					uni.setStorageSync('canClick', true);
+				};
+				self.$apis.pay(postData, callback);
+			},
 		}
 	}
 </script>

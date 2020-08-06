@@ -38,7 +38,7 @@
 		
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 			<view class="font-26">已预约0/{{mainData.standard}}人</view>
-			<button class="carBtn" open-type="getUserInfo" @click="submit">立即预约</button>
+			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button>
 		</view>
 		
 		<view class="bg-mask" v-show="is_show">
@@ -69,6 +69,7 @@
 			console.log('order',self.mainData.shopInfor,self.mainData.coach[0])
 		},
 		methods: {
+			
 			isShow(type){
 				const self = this;
 				if(type){
@@ -82,11 +83,16 @@
 				uni.setStorageSync('canClick', false);
 				var orderList = []
 				if(self.isAgree){
-					orderList.push({product_id:self.mainData.id,count:1,type:1});
-					const callback = (user, res) => {
-						self.addOrder(orderList)
-					};
-					self.$Utils.getAuthSetting(callback);
+					orderList.push({product_id:self.mainData.id,
+					count:1,
+					type:1,
+					data:{
+						course_type:self.mainData.course_type,
+						coach_no:self.mainData.coach_no,
+						shop_no:self.mainData.shop_no,
+					}
+				});
+					self.addOrder(orderList)
 				}else{
 					uni.showModal({
 						title:'',
@@ -147,7 +153,8 @@
 						uni.setStorageSync('canClick', true);
 						if (res.info) {
 							const payCallback = (payData) => {
-								console.log('payData', payData)
+								console.log('payData', payData);
+								uni.removeStorageSync('chooseCoupon');
 								if (payData == 1) {
 									uni.showToast({
 										title: '支付成功',
@@ -177,6 +184,7 @@
 									
 								}
 							});
+							uni.removeStorageSync('chooseCoupon');
 							setTimeout(function() {
 								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
 							}, 1000);
