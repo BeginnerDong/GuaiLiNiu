@@ -15,22 +15,20 @@
 			<view class="shadowM px-2 mx-2 mb-3 radius10 line-h">
 				<view class="font-24 color6 flex1 py-3 bB-f5">
 					<view>订单编号：{{item.order_no}}</view>
-					<!-- <view class="colorR">待使用</view> -->
-					<!-- <view class="colorR">使用中</view> -->
-					<!-- <view class="colorR">待评价</view> -->
-					<!-- <view class="colorR">已评价</view> -->
+					<view class="colorR" v-show="item.transport_status==0">待使用</view>
+					<view class="colorR" v-show="item.transport_status==1">使用中</view>
+					<view class="colorR" v-show="item.transport_status==2&&item.isremark==0">待评价</view>
+					<view class="colorR" v-show="item.transport_status==3&&item.isremark==1">已评价</view>
 				</view>
 				<view class="flex1 py-3 bB-f5 w-100">
 					<image :src="item.product[0].mainImg&&item.product[0].mainImg[0]?item.product[0].mainImg[0].url:''" class="wh180"></image>
 					<view class="px-2 flex-1 flex-1">
 						<view class="font-30 font-w">{{item.product[0].title}}</view>
 						<view class="pt-2"><text class="font-w price">{{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
-						<view class="font-24 py-2">Auger | {{item.product[0].book_week_item}}~{{item.product[0].book_time_item}}</view>
+						<view class="font-24 py-1 line-h-sm">Auger | {{item.product[0].book_week_item}}~{{item.product[0].book_time_item}}</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in item.product[0].description_change" :key="c_index">
-								<view v-if="c_index==0" class="tag tagY">{{c_item}}</view>
-								<view v-if="c_index==1" class="tag tagB">{{c_item}}</view>
-								<view v-if="c_index==2" class="tag tagG">{{c_item}}</view>
+								<view class="tag">{{c_item}}</view>
 							</block>
 							
 						</view>
@@ -39,11 +37,11 @@
 				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view>
 				<!-- 其他 -->
 				<view class="py-3 d-flex j-end">
-					<view class="btn b-e1" @click="goNext('use',item)">立即使用</view>
-					<view class="btn b-e1" @click="goNext('comment',item)">立即评价</view>
-					<view class="btn b-e1" @click="goNext('checkComment',item)">查看评价</view>
+					<view class="btn b-e1" v-show="item.transport_status==0" @click="goNext('use',item)">立即使用</view>
+					<view class="btn b-e1" v-show="item.transport_status==2&&item.isremark==0" @click="goNext('comment',item)">立即评价</view>
+					<view class="btn b-e1" v-show="item.transport_status==3&&item.isremark==1" @click="goNext('checkComment',item)">查看评价</view>
 				</view>
-				<view style="width:100%;height:50px">
+				<view>
 					<block v-for="(cc_item,index) in item.orderLog" :key="index">
 						<view >
 							<span>预约时间：{{cc_item.book_time_change}}{{cc_item.qrcode?'':'未成团'}}</span>
@@ -83,12 +81,16 @@
 		onLoad(options) {
 			const self = this;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.searchItem = {
+				thirdapp_id:2,
+				course_type:['in',[1,2]]
+			};
 			self.$Utils.loadAll(['getMainData'], self);
 		},
-		onShow(){
-			const self = this;
-			self.getMainData(true);
-		},
+		// onShow(){
+		// 	const self = this;
+		// 	self.getMainData(true);
+		// },
 		onReachBottom() {
 			const self = this;
 			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
@@ -155,11 +157,13 @@
 					}else{
 						self.isLoadAll = true;					
 					};
+					console.log('main',self.mainData)
 					uni.setStorageSync('canClick', true);
 					self.$Utils.finishFunc('getMainData');
 				};
 				self.$apis.orderGet(postData, callback);
 			},
+			
 			changeNav(i){
 				const self = this;
 				self.navCurr = i;
@@ -213,5 +217,5 @@
 
 <style scoped>
 .li{width: 20%;}
-.btn{width: 160rpx;line-height: 60rpx;text-align: center;border-radius: 5rpx;}
+.btn{width: 160rpx;line-height: 60rpx;text-align: center;border-radius: 5rpx;margin-left: 20rpx;}
 </style>

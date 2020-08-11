@@ -3,29 +3,29 @@
 		
 		<view class="shadowM px-2 mx-2 mt-3 bg-white radius10 line-h">
 			<view class="font-24 color6 flex1 py-3 bB-f5">
-				<view>订单编号：15658989746565862</view>
+				<view>订单编号：{{mainData.order_no}}</view>
 				<view class="colorR">待评价</view>
 			</view>
 			<view class="flex1 py-3 bB-f5 w-100">
-				<image src="../../static/images/the order-img.png" class="wh180"></image>
+				<image :src="mainData.product[0].mainImg[0].url" class="wh180"></image>
 				<view class="px-2 flex-1 d-flex flex-column j-sb h-180">
-					<view class="font-30 font-w">减脂训练营·中上</view>
+					<view class="font-30 font-w">{{mainData.product[0].title}}</view>
 					
 					<!-- 团课评价显示 -->
-					<view v-show="type==0"><text class="font-w price">220</text>/9课时</view>
-					<view class="font-24" v-show="type==0">Auger | 20:00~20:45</view>
+					<view v-show="type==0"><text class="font-w price">{{mainData.product[0].price}}</text>/{{mainData.product[0].score}}课时</view>
+					<view class="font-24 line-h-sm" v-show="type==0">Auger | {{mainData.product[0].book_week_item}}~{{mainData.product[0].book_time_item}}</view>
 					
 					<view class="flex">
-						<view class="tag tagY">矫正</view>
-						<view class="tag tagB">提升柔软度</view>
-						<view class="tag tagG">改善身体线条</view>
+						<block v-for="(c_item,c_index) in mainData.product[0].description_change" :key="c_index">
+							<view class="tag">{{c_item}}</view>
+						</block>
 					</view>
 					
 					<!-- 私教课评价显示 -->
-					<view class="colorR" v-show="type==1"><text class="price">220</text>/课时</view>
+					<view class="colorR" v-show="type==1"><text class="price">{{mainData.product[0].price}}</text>/课时</view>
 				</view>
 			</view>
-			<view class="font-26 color6 py-3 bB-f5">课程有效期：15天 </view>
+			<view class="font-26 color6 py-3 bB-f5">课程有效期：{{mainData.product[0].duration}}天 </view>
 		</view>
 		
 		<view class="shadowM bg-white mx-2 mt-2 px-2 py-3 radius10">
@@ -77,7 +77,7 @@
 			if(userInfo.headImgUrl){
 				self.data.mainImg = [{url:userInfo.headImgUrl}];
 			};
-			
+			console.log('course',self.mainData)
 			self.data.relation_id = self.mainData.product.id;
 			self.data.passage1 = self.mainData.shop_no;
 			self.data.passage2 = self.mainData.coach_no;

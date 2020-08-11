@@ -54,23 +54,25 @@
 				</view>
 			</view>
 			<view class="flexX py-3">
-				<view class="shadowM radius10 flex-shrink mr-2">
-					<image src="../../static/images/sijiao-img.png" class="kcImg"></image>
-					<view class="py-3 px-2 line-h">
-						<view class="font-30 font-w">减脂训练营·中上</view>
-						<view class="pt-3"><text class="font-30 font-w price">220</text>/9课时</view>
+				<block v-for="(item,index) in courseData" :key="index">
+					<view class="shadowM radius10 overflow-h flex-shrink mr-2" @click="goToDetail(item)">
+						<image :src="item.mainImg[0].url" class="kcImg"></image>
+						<view class="py-3 px-2 line-h">
+							<view class="font-30 font-w">{{item.title}}</view>
+							<view class="pt-3"><text class="font-30 font-w price">{{item.price}}</text>/{{item.score}}课时</view>
+						</view>
 					</view>
-				</view>
+				</block>
 			</view>
 		</view>
 		
 		<view class="pb-4 px-2">
-			<view class="font-w t-indent20 font-30 line-h tit">学院评价</view>
+			<view class="font-w t-indent20 font-30 line-h tit">学员评价</view>
 			
 			<block v-for="(item,index) in remarkData" :key="index">
 				<view class="bB-f5 py-3">
 					<view class="font-24 flex1">
-						<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="wh70"></image>
+						<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="wh70 radius-5"></image>
 						<view class="color6 flex-1 px-2">{{item.title}}</view>
 						<view class="color9">{{item.create_time}}</view>
 					</view>
@@ -82,22 +84,17 @@
 					</view>
 				</view>
 			</block>
-			
 		</view>
 		
 		
 		<view class="bg-mask" v-show="is_show">
 			<view class="banner">
 				<swiper :indicator-dots="false" :autoplay="false" :interval="3000" :duration="1000" >
-					<swiper-item>
-							<image src="../../static/images/home-banner.png" ></image>
-					</swiper-item>
-					<swiper-item>
-							<image src="../../static/images/home-banner.png" ></image>
-					</swiper-item>
-					<swiper-item>
-							<image src="../../static/images/home-banner.png" ></image>
-					</swiper-item>
+					<block v-for="(item,index) in mainData.certificate" :key="index">
+						<swiper-item>
+								<image :src="item.url" ></image>
+						</swiper-item>
+					</block>
 				</swiper>
 				
 				<view class="xx wh50 p-r" @click="isShow">
@@ -117,7 +114,8 @@
 				is_show:false,
 				mainData:{},
 				remarkData:[],
-				isLoadAll:false
+				isLoadAll:false,
+				courseData:[]
 			}
 		},
 		
@@ -137,6 +135,14 @@
 		},
 		
 		methods: {
+			
+			goToDetail(item){
+				const self = this;
+				item.coach = self.mainData.name;
+				item.description = item.description.split(',')
+				uni.setStorageSync('sijiaoCourseDetail',item);
+				self.Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail'}});
+			},
 			
 			getMainData() {
 				var self = this;
@@ -188,8 +194,14 @@
 					if(res.info.data.length>0){
 						self.mainData = res.info.data[0];
 						self.mainData.expertise = self.mainData.expertise.split(',')
+						for(var i=0;i<self.mainData.product.length;i++){
+							if(self.mainData.product[i].course_type == 3){
+								self.courseData.push(self.mainData.product[i])
+							}
+						}
 					};
 					self.getMessageData();
+					console.log('course',self.courseData)
 					self.$Utils.finishFunc('getMainData');
 				};
 				self.$apis.coachGet(postData, callback);

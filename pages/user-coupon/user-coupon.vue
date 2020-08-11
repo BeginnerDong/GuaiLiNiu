@@ -35,10 +35,11 @@
 								<view>有效期至：{{item.invalid_time_change}}</view>
 							</view>
 						</view>
+						<button  open-type='share'  :data-couponNo="item.snap_coupon.coupon_no" :data-parentNo="item.snap_coupon.user_no" class="font-30 colorM pr-5" >分享</button>
 					</view>
-					<button  open-type='share'  :data-couponNo="item.snap_coupon.coupon_no" :data-parentNo="item.snap_coupon.user_no" >分享</button>
+					
 					<!-- <button type="default" @click="share(item)">分享</button>
-					<view class="font-30 colorM pr-5"  >分享</view> -->
+					<view  >分享</view> -->
 				</view>
 			</block>
 			
@@ -278,4 +279,5 @@ page{background-color: #f5f5f5;}
 .li{width: 25%;}
 .couponImg{width: 713rpx;height: 220rpx;margin: auto;}
 .lq{width: 160rpx;line-height: 50rpx;border-radius: 10rpx;text-align: center;margin-right: 40rpx;}
+button{background: rgba(0,0,0,0);}
 </style>

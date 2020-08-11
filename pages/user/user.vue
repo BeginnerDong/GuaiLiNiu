@@ -6,13 +6,13 @@
 			<view class="p-aXY" :style="{marginTop:statusBar+'px'}">
 				<view class="head">我的</view>
 				<view class="colorf px-2 py-3 flex">
-					<view class="wh130">
+					<view class="wh130 radius-5 overflow-h">
 						<open-data type="userAvatarUrl"></open-data>  
 					</view>
 					
 					<view class="pl-2">
 						<view class="font-32"><open-data type="userNickName" lang="zh_CN"></open-data> </view>
-						<view class="userSgin mt-3">{{userData.info.behavior==1?'会员':'普通用户'}}</view>
+						<view class="userSgin my-1">{{userData.info.behavior==1?'会员':'普通用户'}}</view>
 						<view>有效期：{{userData.info.deadline_change}}</view>
 					</view>
 				</view>

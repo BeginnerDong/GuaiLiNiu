@@ -8,31 +8,31 @@
 					<view class="px-2 py-3 flex-1">
 						<view class="font-30 font-w pb-1">{{mainData.title}}</view>
 						<view><text class="price font-w">{{mainData.price}}</text>/{{mainData.score}}课时</view>
-						<view class="font-24 py-2 line-h">Auger | 20:00~20:45</view>
+						<view class="font-24 py-1 line-h-sm">Auger | {{mainData.book_week_item}}~{{mainData.book_time_item}}</view>
 						<view class="flex">
-							<view class="tag tagY">矫正</view>
-							<view class="tag tagB">提升柔软度</view>
-							<view class="tag tagG">改善身体线条</view>
+							<block v-for="(c_item,c_index) in mainData.description_change" :key="c_index">
+								<view class="tag">{{c_item}}</view>
+							</block>
 						</view>
 					</view>
 				</view>
-				<view class="font-26 color6 py-3">课程有效期：15天 </view>
+				<view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view>
 			</view>
 			
 			<view class="mx-2">
 				<view class="py-4 flex1 bB-f5">
 					<view>上课地点</view>
-					<view class="color6">西安外事学院店</view>
+					<view class="color6">{{shopData.name}}</view>
 				</view>
 				
 				<view class="py-4 flex1 bB-f5">
 					<view>教练</view>
-					<view class="color6">萍萍</view>
+					<view class="color6">{{mainData.coach}}</view>
 				</view>
 				
 				<view class="py-4 bB-f5">
 					<view class="pb-4 flex1">
-						<view>课时套餐（￥200/9课时）</view>
+						<view>课时套餐（￥{{mainData.price}}/{{mainData.score}}课时）</view>
 						<view class="flex">
 							<image src="../../static/images/the order-icon.png" class="wh40" @click="count(-1)"></image>
 							<view class="num">{{num}}</view>
@@ -51,7 +51,7 @@
 					<view>优惠券</view>
 					<view class="flex" @click="Router.navigateTo({route:{path:'/pages/payLeagueClass-coupon/payLeagueClass-coupon?standardPrice='+mainData.price}})">
 						<view class="color6">
-							{{chooseCoupon.id?'满'+chooseCoupon.snap_product.condition+'减'+chooseCoupon.snap_product.value:'无使用'}}
+							{{chooseCoupon.id?'满'+chooseCoupon.snap_coupon.condition+'减'+chooseCoupon.snap_coupon.value:'无使用'}}
 						</view>
 						<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
 					</view>
@@ -76,7 +76,7 @@
 		
 		<view style="height: 130rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
-			<view class="font-26">总计：<text class="colorR font-36">799</text></view>
+			<view class="font-26">总计：<text class="colorR font-36 price">{{totle}}</text></view>
 			
 			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button>
 		</view>
@@ -104,21 +104,24 @@
 				num:1,
 				is_show:false,
 				isAgree:false,
-				chooseCoupon:{}
+				chooseCoupon:{},
+				shopData:{},
+				totle:0
 			}
 		},
 		onLoad(){
 			const self = this;
 			uni.removeStorageSync('chooseCoupon');
 			self.mainData = uni.getStorageSync('sijiaoCourseDetail');
-			
+			self.shopData = uni.getStorageSync('shopData');
 		},
 		onShow(){
 			const self = this;
 			if(uni.getStorageSync('chooseCoupon')){
 				self.chooseCoupon = uni.getStorageSync('chooseCoupon')
 			}
-			
+			console.log('self.chooseCoupon',self.chooseCoupon)
+			self.totlePrice();
 		},
 		methods: {
 			
@@ -129,7 +132,13 @@
 				}else{
 					self.num = self.num+x;
 				}
+				self.totlePrice();
 			},
+			totlePrice(){
+				const self = this;
+				self.totle = parseFloat(self.mainData.price ) * self.num
+			},
+			
 			isShow(type){
 				const self = this;
 				if(type){
@@ -147,14 +156,15 @@
 				uni.setStorageSync('canClick', false);
 				var orderList = []
 				if(self.isAgree){
-					orderList.push({product_id:self.mainData.id,
-					count:self.num,
-					type:1,
-					data:{
-						course_type:self.mainData.course_type,
-						coach_no:self.mainData.coach_no,
-						shop_no:self.mainData.shop_no,
-					}
+					orderList.push({
+						product_id:self.mainData.id,
+						count:self.num,
+						type:1,
+						data:{
+							course_type:self.mainData.course_type,
+							coach_no:self.mainData.coach_no,
+							shop_no:self.mainData.shop_no,
+						}
 				});
 					self.addOrder(orderList)
 				}else{
@@ -199,11 +209,11 @@
 						price:parseFloat(uni.getStorageSync('chooseCoupon').value)
 					}];
 					postData.wxPay = {
-						price:(parseFloat(self.mainData.price)*self.num - parseFloat(uni.getStorageSync('chooseCoupon').value)).toFixed(2) 
+						price:(self.totle - parseFloat(uni.getStorageSync('chooseCoupon').value)).toFixed(2) 
 					};
 				}else{
 					postData.wxPay = {
-						price:parseFloat(self.mainData.price)*self.num
+						price:self.totle
 					};
 				};
 				console.log('postData',postData)
@@ -286,4 +296,5 @@ page{background-color: #f5f5f5;}
 .colorB{color: #63D1F8;}
 .tc{font-size: 24rpx;line-height: 80rpx;text-align: center;border: 1px solid #e1e1e1;border-radius: 10rpx;width: 155rpx;color: #666;}
 .tcBox .on{border: 1px solid #FF633A;background: #FFEEE9;color: #000000;}
+.carBtn{border-radius: 0;}
 </style>

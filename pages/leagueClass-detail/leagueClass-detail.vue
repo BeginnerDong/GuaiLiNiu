@@ -17,7 +17,7 @@
 		<view class="content bg-white radius30-T px-2 p-r content">
 			<view class="pb-4 bB-f5">
 				<view class="flex pt-5 font-40 font-w">{{mainData.title}}</view>
-				<view class="shareSgin" @click="Router.navigateTo({route:{path:'/pages/limitedTime/limitedTime'}})">
+				<view class="shareSgin">
 					<image src="../../static/images/course-icon2.png" class="fx-icon"></image>
 					<view>分享</view>
 				</view>
@@ -42,7 +42,7 @@
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay for courses-icon2.png" class="wh30 mt"></image>
-					<view class="flex-1 pl-2">预计<text class="colorR">6月24日</text>开课<br />每周一/三/五 19:00~20:00</view>
+					<view class="flex-1 pl-2">预计<text class="colorR">6月24日</text>开课<br />{{mainData.book_week_item}} {{mainData.book_time_item}}</view>
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay for courses-icon3.png" class="dw-icon mt"></image>
@@ -136,7 +136,7 @@
 				<block v-for="(item,index) in remarkData" :key="index">
 					<view class="bB-f5 py-3">
 						<view class="font-24 flex1">
-							<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="wh70"></image>
+							<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="wh70 radius-5"></image>
 							<view class="color6 flex-1 px-2">{{item.title}}</view>
 							<view class="color9">{{item.create_time}}</view>
 						</view>
@@ -194,7 +194,6 @@
 		},
 		onLoad(option){
 			const self = this;
-			
 			self.mainData = uni.getStorageSync('leagueClassDetail');
 			self.shopData = uni.getStorageSync('shopData');
 			self.type = option.type;

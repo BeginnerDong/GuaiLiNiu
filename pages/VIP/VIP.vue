@@ -3,12 +3,12 @@
 		
 		<view class="vipHead colorf font-24 line-h px-2">
 			<view class="flex py-3 font-30 font-w" @click="Show()">
-				<view>西安外事学院店</view>
+				<view>{{shopData.name}}</view>
 				<image src="../../static/images/members-icon.png" class="sj-icon"></image>
 			</view>
 			<view>距离 2.22KM</view>
 			<view class="flex1 py-3">
-				<view>西安市雁塔区鱼斗路左岸春天A座2025</view>
+				<view>{{shopData.address}}</view>
 				<image src="../../static/images/members-icon1.png" class="homeDz-icon"></image>
 			</view>
 			
@@ -107,11 +107,13 @@
 					thirdapp_id: 2,
 					type: 2,
 				},
-				Router:this.$Router
+				Router:this.$Router,
+				shopData:{}
 			}
 		},
 		onLoad(option){
 			const self = this;
+			self.shopData = uni.getStorageSync('shopData');
 			self.searchItem.user_no = uni.getStorageSync('shopData')['user_no'];
 			self.$Utils.loadAll(['getMainData'], self);
 		},
@@ -165,4 +167,6 @@
 
 .btnAuto{width: 710rpx;margin-top: 200rpx;}
 .btnAuto .price{color: #fff;}
+
+.carBtn{height: 100rpx;border-radius: 0;line-height: 100rpx!important;}
 </style>

@@ -11,8 +11,10 @@
 				<view>
 					<view class="head" :style="{marginTop:statusBar+'px'}"></view>
 					<view class="colorf mx-2 my-3 flex p-r">
-						<image src="../../static/images/about-img1.png" class="wh110"></image>
-						<view class="font-32 pl-2">哆啦A梦</view>
+						<view class="wh110 radius-5 overflow-h">
+							<open-data type="userAvatarUrl"></open-data>  
+						</view>
+						<view class="font-32 pl-2"><open-data type="userNickName" lang="zh_CN"></open-data></view>
 						<view class="p-a top-0 right-0" @click="checkOut">退出</view>
 					</view>
 				</view>

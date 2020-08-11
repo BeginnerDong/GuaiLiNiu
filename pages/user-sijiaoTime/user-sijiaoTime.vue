@@ -2,13 +2,13 @@
 	<view class="h-100 flexY">
 		
 		<view class="flex1 py-3 px-2 bB-e1 w-100">
-			<image src="../../static/images/the order-img.png" class="wh120"></image>
+			<image :src="mainData.product[0].mainImg[0].url" class="wh120"></image>
 			<view class="px-2 flex5 flex-1 h-120">
-				<view class="font-30 font-w flex-1">减脂训练营·中上</view>
+				<view class="font-30 font-w flex-1">{{mainData.product[0].title}}</view>
 				<view class="flex">
-					<view class="tag tagY">矫正</view>
-					<view class="tag tagB">提升柔软度</view>
-					<view class="tag tagG">改善身体线条</view>
+					<block v-for="(c_item,c_index) in mainData.product[0].description_change" :key="c_index">
+						<view class="tag">{{c_item}}</view>
+					</block>
 				</view>
 			</view>
 		</view>
@@ -29,8 +29,8 @@
 					<block v-for="(item,index) in canChooseHour" :key="index">
 						<view class="jl color6 shadowM p-r mt-5" @click="chooseHour(item)" >
 							<view>{{item}}</view>
-							<!-- <image src="../../static/images/yuyue-icon-01.png" class="wh26"></image> -->
-							<image src="../../static/images/yuyue-icon-02.png" class="wh26"></image>
+							<image src="../../static/images/yuyue-icon-01.png" class="wh26" v-if="choosedHour == item"></image>
+							<image src="../../static/images/yuyue-icon-02.png" class="wh26" v-else></image>
 						</view>
 					</block>
 					
@@ -39,7 +39,7 @@
 			</view>
 		</view>
 		
-		<view class="bT-e1 p-2">
+		<view class="bT-e1 p-2 bg-white">
 			<view class="btnAuto" @click="submit">确定</view>
 		</view>
 		
@@ -63,7 +63,7 @@
 				canChooseWeek:[],
 				canChooseHour:[],
 				choosedHour:'',
-			
+				mainData:{}
 			}
 		},
 		onLoad(option){
@@ -77,10 +77,8 @@
 			self.data.coach_no = self.mainData.product[0].coach_no;
 			
 			self.timeList = self.$Utils.getFutureDateList(13);
-			
 			self.canChooseWeek = self.mainData.product[0].book_week_item.split(',');
 			self.canChooseHour = self.mainData.product[0].book_time_item.split(',');
-			console.log('self.data',self.data)
 			uni.setStorageSync('canClick', true);
 		},
 		methods: {
@@ -155,10 +153,10 @@ page{height: 100%;}
 .h-120{height: 120rpx;}
 .btnAuto{width: 710rpx;}
 
-.left{width: 140rpx;text-align: center;}
+.left{width: 140rpx;text-align: center;overflow-y: auto;}
 .left .on{background-color: #fff;color: #FF633A;}
 .left .on .date{color: #FF633A;}
-.right{padding: 30rpx 30rpx 80rpx;}
+.right{padding: 30rpx 30rpx 80rpx;overflow-y: auto;}
 .jl{margin-right: 68rpx;width: 140rpx;line-height: 80rpx;text-align: center;}
 .jl:nth-child(3n){margin-right: 0;}
 

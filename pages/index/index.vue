@@ -78,7 +78,7 @@
 						</view>
 					</view>
 					<view class="line-h flexX py-1">
-						<view class="shadowM radius10 flex-shrink overflow-h mr-3 p-r"  v-for="(item,index) in classData" :key="index">
+						<view class="shadowM radius10 flex-shrink overflow-h mr-3 p-r"  v-for="(item,index) in classData" :key="index" @click="goToDetail(item,1)">
 							<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="kcImg"></image>
 							<view class="p-3">
 								<view class="font-30 font-w">{{item.title?item.title:''}}</view>
@@ -98,25 +98,27 @@
 						</view>
 					</view>
 					<view class="line-h">
-						<view class="shadowM radius10 flex1 p-2 mb-3" v-for="(item,index) in coachData" :key="index">
-							<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="sjImg"></image>
-							<view class="p-3 flex-1">
-								<view class="flex">
-									<view class="font-30 font-w pr-2">{{item.name}}</view>
+						<block  v-for="(item,index) in coachData" :key="index">
+							<view class="shadowM radius10 flex1 p-2 mb-3" v-show="index<2" @click="goToDetail(item,2)">
+								<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="sjImg"></image>
+								<view class="p-3 flex-1">
 									<view class="flex">
-										<image src="../../static/images/home-icon6.png" class="zs-icon"></image>
-										<view class="colorZS font-24 pl-1">专业证书（{{item.certificate.length}}）</view>
+										<view class="font-30 font-w pr-2">{{item.name}}</view>
+										<view class="flex">
+											<image src="../../static/images/home-icon6.png" class="zs-icon"></image>
+											<view class="colorZS font-24 pl-1">专业证书（{{item.certificate.length}}）</view>
+										</view>
+									</view>
+									<view class="flex py-4">
+										<view class="tag" v-for="(c_item,c_index) of item.expertise" :key="c_index">{{c_item}}</view>
+									</view>
+									<view class="flex">
+										<view class="price font-26 pr-5">{{item.class&&item.class[0]?item.class[0].price:'0'}}/节</view>
+										<view class="font-18 color9 pl-4">累计：{{item.course?item.course.num:0}}节</view>
 									</view>
 								</view>
-								<view class="flex py-4">
-									<view class="tag" v-for="(c_item,c_index) of item.expertise" :key="c_index">{{c_item}}</view>
-								</view>
-								<view class="flex">
-									<view class="price font-26 pr-5">{{item.class&&item.class[0]?item.class[0].price:'0'}}/节</view>
-									<view class="font-18 color9 pl-4">累计：{{item.course?item.course.num:0}}节</view>
-								</view>
 							</view>
-						</view>
+						</block>
 						
 					</view>
 					<view class="criBtn p-aX bottom-0">进入店铺</view>
@@ -171,6 +173,21 @@
 		},
 		
 		methods: {
+			
+			goToDetail(item,type){
+				const self = this;
+				if(type == 1){
+					item.description = item.description.split(',')
+					uni.setStorageSync('leagueClassDetail',item);
+					if(item.course_type == 1){
+						self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}});
+					}else if(item.course_type == 2){
+						self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=1'}});
+					}
+				}else{
+					self.Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail?coach_no='+item.user_no}})
+				}
+			},
 			
 			getLocation(){
 				const self = this;

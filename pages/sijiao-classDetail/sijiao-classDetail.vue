@@ -21,24 +21,21 @@
 						团操课
 					</view>
 					<view class="flex pl-2">
-						<view class="tag tagY">矫正</view>
-						<view class="tag tagB">提升柔软度</view>
-						<view class="tag tagG">改善身体线条</view>
+						<view class="tag" v-for="(item,index) in mainData.description" :key="index">{{item}}</view>
 					</view>
 				</view>
 				
-				<!-- 付费团课展示 -->
 				<view class="font-20 pt-3"><text class="font-36 font-w price">{{mainData.price}}</text>/{{mainData.score}}课时</view>
 			</view>
 			
 			<view class="font-26 pt-4 ">
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay for courses-icon1.png" class="rq-icon mt"></image>
-					<view class="flex-1 pl-2">适合人群：广大瘦身小白</view>
+					<view class="flex-1 pl-2">适合人群：{{mainData.fit}}</view>
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/members-icon6.png" class="fw-icon mt"></image>
-					<view class="flex-1 pl-2">服务教练：张思雨</view>
+					<view class="flex-1 pl-2">服务教练：{{mainData.coach}}</view>
 				</view>
 			</view>
 		</view>
@@ -48,7 +45,7 @@
 			<view class="p-3 radius10 shadowM p-r">
 				<view class="font-w t-indent20 font-30 line-h tit">课程内容</view>
 				<view class="font-26 color9 pt-3">
-					你自己东方红快递费课程VB好歹加了挡风叫代驾看信访局看信访局看打扫房间墨刀上繁花似锦看能吃就树倒猢狲散可视电话咋SD卡和v时代剧华可视电话不打算看三等奖发发沙迪克v和阿啥抵扣卷
+					<view v-html="mainData.content"></view>
 				</view>
 				<view class="p-a flex1 left-0 right-0 mt-2 px-2">
 					<image src="../../static/images/course-icon.png" class="courIcon"></image>
@@ -58,7 +55,7 @@
 			<view class="p-3 radius10 shadowM p-r mt-2">
 				<view class="font-w t-indent20 font-30 line-h tit">课程规则</view>
 				<view class="font-26 color9 pt-3">
-					你自己东方红快递费课程VB好歹加了挡风叫代驾看信访局看信访局看打扫房间墨刀上繁花似锦看能吃就树倒猢狲散可视电话咋SD卡和v时代剧华可视电话不打算看三等奖发发沙迪克v和阿啥抵扣卷
+					<view v-html="mainData.rule"></view>
 				</view>
 			</view>
 		</view>
@@ -85,7 +82,8 @@
 						<view>4.评价</view>
 					</view>
 				</view>
-				<view class="flex4 colorM pl-5 p-r GZ">
+				<view class="flex4 colorM pl-5 p-r GZ"
+				 @click="Router.navigateTo({route:{path:'/pages/ruleDetail/ruleDetail'}})">
 					<image src="../../static/images/pay for courses-icon9.png" class="lcIcon5"></image>
 					<view>规则详情</view>
 				</view>
@@ -95,27 +93,45 @@
 		
 		<view class="px-2 py-4">
 			<view class="font-w t-indent20 font-30 line-h tit">用户评价</view>
-			<view class="bB-f5 py-3">
-				<view class="font-24 flex1">
-					<image src="../../static/images/pay for courses-img3.png" class="wh70"></image>
-					<view class="color6 flex-1 px-2">用户名</view>
-					<view class="color9">2020.02.23</view>
+			<block  v-for="(item,index) in remarkData" :key="index">
+				<view class="bB-f5 py-3">
+					<view class="font-24 flex1">
+						<image src="../../static/images/pay for courses-img3.png" class="wh70"></image>
+						<view class="color6 flex-1 px-2">{{item.title}}</view>
+						<view class="color9">{{item.create_time}}</view>
+					</view>
+					<view class="font-26 pt-3">
+						{{item.description}}
+					</view>
+					<view class="flex flex-wrap">
+						<image v-for="(c_item,c_index) in item.bannerImg" :key="c_index" :src="c_item.url" class="wh180 mt-2 mr-2"></image>
+					</view>
 				</view>
-				<view class="font-26 pt-3">
-					很愉快的一次购物，非常满意，很愉快的一次购物，非常满意，很愉快的一次购物，非常满意，
-				</view>
-				<view class="flex flex-wrap">
-					<image src="../../static/images/pay for courses-img4.png" class="wh180 mt-2 mr-2"></image>
-					<image src="../../static/images/pay for courses-img4.png" class="wh180 mt-2 mr-2"></image>
-				</view>
-			</view>
+			</block>
+			
 		</view>
+		<view class="f5Bj-H20"></view>
 		
 		
 		<view style="height: 100rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1">
-			<view class="font-26">已预约0/5人，还差<text class="colorR">3</text>人开课</view>
-			<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/sijiao-order/sijiao-order'}})">立即购买</view>
+			<view class="font-26">已预约0/{{mainData.max}}人，还差<text class="colorR">{{mainData.standard}}</text>人开课</view>
+			<view class="criBtn" @click="goOrder">立即购买</view>
+		</view>
+		
+		
+		<!-- 不是会员弹框 -->
+		<view class="bg-mask" v-show="is_show">
+			<view class="noVip bg-white radius10 text-center line-h m-a">
+				<view class="py-2">
+					<view class="pt-5 pb-4">很抱歉，您还不是怪力牛会员</view>
+					<view class="pb-5 color9 font-24">成为会员，团课免费预约</view>
+				</view>
+				<view class="flex bT-f5">
+					<view class="py-4 w-50 bR-f5" @click="isShow">我知道了</view>
+					<view class="py-4 w-50 colorM">去看看</view>
+				</view>
+			</view>
 		</view>
 		
 		
@@ -127,7 +143,9 @@
 		data() {
 			return {
 				Router:this.$Router,
-				mainData:{}
+				is_show:false,
+				mainData:{},
+				remarkData:[]
 			}
 		},
 		onLoad(){
@@ -136,6 +154,43 @@
 			
 		},
 		methods: {
+			
+			isShow(){
+				const self = this;
+				self.is_show = !self.is_show
+			},
+			
+			goOrder(){
+				const self = this;
+				self.mainData.shopInfor = self.shopData;
+				uni.setStorageSync('sijiaoCourseDetail',self.mainData);
+				self.$Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})
+			},
+			
+			getMessageData(isNew){
+				const self = this;
+					if (isNew) {
+						self.remarkData = [];
+						self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+					};
+					const postData = {};
+					//postData.tokenFuncName = 'getProjectToken';
+					postData.paginate = self.$Utils.cloneForm(self.paginate);
+					postData.searchItem = {
+						thirdapp_id:2,
+						relation_table:'product',
+						relation_id:self.mainData.id,
+					};
+					const callback = (res) => {
+						if (res.info.data.length > 0) {
+							self.remarkData.push.apply(self.remarkData, res.info.data);
+						};
+						uni.setStorageSync('canClick', true);
+						self.$Utils.finishFunc('getMessageData');
+					};
+					self.$apis.messageGet(postData, callback);
+				
+			}
 			
 		}
 	}

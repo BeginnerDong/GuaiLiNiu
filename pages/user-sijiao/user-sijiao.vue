@@ -23,9 +23,7 @@
 						<view class="font-30 font-w">{{item.product[0].title}}</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in item.product[0].description" :key="c_index">
-								<view v-if="c_index==0" class="tag tagY">{{c_item}}</view>
-								<view v-if="c_index==1" class="tag tagB">{{c_item}}</view>
-								<view v-if="c_index==2" class="tag tagG">{{c_item}}</view>
+								<view class="tag">{{c_item}}</view>
 							</block>
 						</view>
 						<view class="colorR"><text class="price">{{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
@@ -129,11 +127,51 @@
 					}else{
 						self.isLoadAll = true;
 					};
+					for (var i = 0; i < self.mainData.length; i++){
+						self.mainData[i].product[0].description = self.mainData[i].product[0].description.split(',')
+					}
 					uni.setStorageSync('canClick', true);
 					self.$Utils.finishFunc('getMainData');
 				};
 				self.$apis.orderGet(postData, callback);
 			},
+			
+			changeNav(i){
+				const self = this;
+				self.navCurr = i;
+				switch(i) {
+					case 0:
+					self.searchItem = {
+						thirdapp_id:2,
+						course_type:3
+					};
+					break;
+					case 1:
+					self.searchItem = {
+						thirdapp_id:2,
+						course_type:3,
+						transport_status:0
+					};
+					break;
+					case 2:
+					self.searchItem = {
+						thirdapp_id:2,
+						course_type:3,
+						transport_status:1
+					};
+					break;
+					case 3:
+					self.searchItem = {
+						thirdapp_id:2,
+						course_type:3,
+						transport_status:2,
+						isremark:0
+					};
+					break;
+				};
+				self.getMainData(true);
+			}
+			
 		}
 	}
 </script>
@@ -142,6 +180,6 @@ page{background-color: #f5f5f5;}
 </style>
 <style scoped>
 .li{width: 25%;}
-.btn{width: 160rpx;line-height: 60rpx;text-align: center;border-radius: 5rpx;}
+.btn{width: 160rpx;line-height: 60rpx;text-align: center;border-radius: 5rpx;margin-left: 20rpx;}
 .h-180{height: 180rpx;}
 </style>
