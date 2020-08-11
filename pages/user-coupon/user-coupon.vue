@@ -247,7 +247,7 @@
 						} else {
 							
 							uni.showToast({
-								title: '支付成功',
+								title: '领取成功',
 								duration: 1000,
 								success: function() {
 									

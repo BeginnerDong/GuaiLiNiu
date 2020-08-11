@@ -15,19 +15,19 @@
 			<view class="shadowM px-2 mx-2 mb-3 radius10 line-h">
 				<view class="font-24 color6 flex1 py-3 bB-f5">
 					<view>订单编号：{{item.order_no}}</view>
-					<view class="colorR">待使用</view>
+					<!-- <view class="colorR">待使用</view> -->
 					<!-- <view class="colorR">使用中</view> -->
 					<!-- <view class="colorR">待评价</view> -->
 					<!-- <view class="colorR">已评价</view> -->
 				</view>
 				<view class="flex1 py-3 bB-f5 w-100">
-					<image :src="item.product.mainImg&&item.product.mainImg[0]?item.product.mainImg[0].url:''" class="wh180"></image>
+					<image :src="item.product[0].mainImg&&item.product[0].mainImg[0]?item.product[0].mainImg[0].url:''" class="wh180"></image>
 					<view class="px-2 flex-1 flex-1">
-						<view class="font-30 font-w">{{item.product.title}}</view>
-						<view class="pt-2"><text class="font-w price">{{item.product.price}}</text>/{{item.product.score}}课时</view>
-						<view class="font-24 py-2">Auger | {{item.product.start_time}}~{{item.product.end_time}}</view>
+						<view class="font-30 font-w">{{item.product[0].title}}</view>
+						<view class="pt-2"><text class="font-w price">{{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
+						<view class="font-24 py-2">Auger | {{item.product[0].book_week_item}}~{{item.product[0].book_time_item}}</view>
 						<view class="flex">
-							<block v-for="(c_item,c_index) in item.product.description" :key="c_index">
+							<block v-for="(c_item,c_index) in item.product[0].description_change" :key="c_index">
 								<view v-if="c_index==0" class="tag tagY">{{c_item}}</view>
 								<view v-if="c_index==1" class="tag tagB">{{c_item}}</view>
 								<view v-if="c_index==2" class="tag tagG">{{c_item}}</view>
@@ -36,12 +36,21 @@
 						</view>
 					</view>
 				</view>
-				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product.duration}}天 </view>
+				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view>
 				<!-- 其他 -->
 				<view class="py-3 d-flex j-end">
 					<view class="btn b-e1" @click="goNext('use',item)">立即使用</view>
 					<view class="btn b-e1" @click="goNext('comment',item)">立即评价</view>
 					<view class="btn b-e1" @click="goNext('checkComment',item)">查看评价</view>
+				</view>
+				<view style="width:100%;height:50px">
+					<block v-for="(cc_item,index) in item.orderLog" :key="index">
+						<view >
+							<span>预约时间：{{cc_item.book_time_change}}{{cc_item.qrcode?'':'未成团'}}</span>
+							<img :src="cc_item.qrcode" style="width: 40px;height: 40px;" ></img>
+						</view>
+					</block>
+					
 				</view>
 				
 				<!-- 进行中 -->
@@ -65,7 +74,8 @@
 				mainData:[],
 				searchItem:{
 					thirdapp_id:2,
-					course_type:['in',[1,2]]
+					course_type:['in',[1,2]],
+					pay_status:1
 				},
 				isLoadAll:false
 			}
@@ -74,6 +84,10 @@
 			const self = this;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.$Utils.loadAll(['getMainData'], self);
+		},
+		onShow(){
+			const self = this;
+			self.getMainData(true);
 		},
 		onReachBottom() {
 			const self = this;
@@ -115,7 +129,7 @@
 							status:1
 						},
 						condition:'=',
-						info:['book_week_item','book_time_item','coach_no','score','id','mainImg','book_end_time','book_start_time','title','description','duration','price','score']
+						//info:['book_week_item','book_time_item','coach_no','score','id','mainImg','book_end_time','book_start_time','title','description','duration','price','score']
 					},
 					orderLog:{
 						tableName:'OrderLog',
@@ -131,9 +145,12 @@
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);
 						for (var i = 0; i < self.mainData.length; i++) {
-							self.mainData[i].product.description = self.mainData[i].product.description.split(',');
-							self.mainData[i].product.start_time = self.$Utils.timeto(parseInt(self.mainData[i].product.book_start_time),'ymd-hm')
-							self.mainData[i].product.end_time = self.$Utils.timeto(parseInt(self.mainData[i].product.book_end_time),'ymd-hm')
+							self.mainData[i].product[0].description_change= self.mainData[i].product[0].description.split(',');
+							console.log('self.mainData[i].product[0].description',self.mainData[i].product[0].description)
+							for(var j=0;j<self.mainData[i].orderLog.length;j++){
+								self.mainData[i].orderLog[j]['book_time_change'] = 
+								self.$Utils.timeto(parseInt(self.mainData[i].orderLog[j]['book_time']),'ymd-hm');
+							}
 						};
 					}else{
 						self.isLoadAll = true;					

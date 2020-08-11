@@ -20,18 +20,18 @@
 				<view class="flex1 py-3 bB-f5 w-100">
 					<image src="../../static/images/the order-img.png" class="wh180"></image>
 					<view class="px-2 py-1 flex-1 d-flex flex-column j-sb h-180">
-						<view class="font-30 font-w">{{item.product.title}}</view>
+						<view class="font-30 font-w">{{item.product[0].title}}</view>
 						<view class="flex">
-							<block v-for="(c_item,c_index) in item.product.description" :key="c_index">
+							<block v-for="(c_item,c_index) in item.product[0].description" :key="c_index">
 								<view v-if="c_index==0" class="tag tagY">{{c_item}}</view>
 								<view v-if="c_index==1" class="tag tagB">{{c_item}}</view>
 								<view v-if="c_index==2" class="tag tagG">{{c_item}}</view>
 							</block>
 						</view>
-						<view class="colorR"><text class="price">{{item.product.price}}</text>/{{item.product.score}}课时</view>
+						<view class="colorR"><text class="price">{{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
 					</view>
 				</view>
-				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product.duration}}天 </view>
+				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view>
 				<!-- 其他 -->
 				<view class="py-3 d-flex j-end">
 					<view class="btn b-e1" @click="goNext('use',item)">立即使用</view>
@@ -112,7 +112,6 @@
 							status:1
 						},
 						condition:'=',
-						info:['book_week_item','book_time_item','coach_no','score','id','mainImg','book_end_time','book_start_time','title','description','duration','price','score']
 					},
 					orderLog:{
 						tableName:'OrderLog',

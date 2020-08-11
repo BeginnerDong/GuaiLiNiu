@@ -45,6 +45,33 @@ export default {
 		http.HTTP(allParams);
 	},
 	
+
+	
+	orderLogGet(param, callback) {
+	
+		var allParams = {
+			url: 'Common/OrderLog/get',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
+	orderLogUpdate(param, callback) {
+	
+		var allParams = {
+			url: 'Common/OrderLog/update',
+			type: 'post',
+			data: param,
+			sCallback: function(data) {
+				callback && callback(data);
+			}
+		};
+		http.HTTP(allParams);
+	},
+	
 	messageGet(param, callback) {
 	
 		var allParams = {

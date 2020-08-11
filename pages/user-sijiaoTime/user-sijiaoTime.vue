@@ -74,12 +74,12 @@
 			self.data.product_id = self.mainData.product_id;
 			self.data.course_type = self.mainData.course_type;
 			self.data.shop_no = self.mainData.shop_no;
-			self.data.coach_no = self.mainData.product.coach_no;
+			self.data.coach_no = self.mainData.product[0].coach_no;
 			
 			self.timeList = self.$Utils.getFutureDateList(13);
 			
-			self.canChooseWeek = self.mainData.product.book_week_item.split(',');
-			self.canChooseHour = self.mainData.product.book_time_item.split(',');
+			self.canChooseWeek = self.mainData.product[0].book_week_item.split(',');
+			self.canChooseHour = self.mainData.product[0].book_time_item.split(',');
 			console.log('self.data',self.data)
 			uni.setStorageSync('canClick', true);
 		},

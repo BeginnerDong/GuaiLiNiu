@@ -80,9 +80,71 @@
 			        success: function (res) {
 			            console.log('条码类型：' + res.scanType);
 			            console.log('条码内容：' + res.result);
+						if(res.result){
+							self.getOrderLog(res.result)
+						}
 			        }
 			    });
 			 
+			},
+			
+			getOrderLog(id){
+				const self = this;
+				var postData = {
+					searchItem:{
+						id:id,
+						user_type:0
+					},
+					tokenFuncName : 'getCoachToken'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						var c_postData = {
+							searchItem:{
+								id:id,
+								user_type:0
+							},
+							tokenFuncName : 'getCoachToken',
+							data:{
+								is_use:1
+							}
+						};
+						if(!res.info.data[0].sign_time){
+							c_postData.data.sign_time = (new Date().getTime()/1000);
+						}else if(!res.info.data[0].in_time){
+							c_postData.data.in_time = (new Date().getTime()/1000);
+						}else if(!res.info.data[0].out_time){
+							c_postData.data.out_time = (new Date().getTime()/1000);
+						};
+						
+						self.updateOrderLog(c_postData)
+					};
+				};
+				self.$apis.orderLogGet(postData, callback);
+			},
+			updateOrderLog(postData){
+				const self = this;
+				const callback = (res)=>{
+					if(postData.sign_time){
+						var title = "签到成功";
+					}else if(postData.in_time){
+						var title = "进场成功";
+					}else{
+						var title = "离场成功";
+					};
+					if(res.solely_code=100000){
+						uni.showToast({
+						    title:title,
+						    duration: 2000,
+						});
+					}else{
+						uni.showToast({
+						    title:msg,
+						    duration: 2000,
+						});
+					};
+				};
+				self.$apis.orderLogUpdate(postData, callback);
 			},
 			
 			getMainData(isNew) {
@@ -104,7 +166,7 @@
 							status:1
 						},
 						condition:'=',
-						info:['coach_no','score','id','mainImg','book_end_time','book_start_time','title','description','duration','price','score']
+						info:['coach_no','score','id','mainImg','title','description','duration','price','score']
 					},
 				};
 				const callback = (res) => {

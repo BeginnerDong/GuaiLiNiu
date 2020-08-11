@@ -39,12 +39,12 @@
 							<image src="../../static/images/the order-icon1.png" class="wh40" @click="count(1)"></image>
 						</view>
 					</view>
-					<view class="flex1 tcBox">
+					<!-- <view class="flex1 tcBox">
 						<view class="tc" :class="tcCurr==0?'on':''" @click="changeCurr(0)">30节套餐</view>
 						<view class="tc" :class="tcCurr==1?'on':''" @click="changeCurr(1)">50节套餐</view>
 						<view class="tc" :class="tcCurr==2?'on':''" @click="changeCurr(2)">80节套餐</view>
 						<view class="tc" :class="tcCurr==3?'on':''" @click="changeCurr(3)">100节套餐</view>
-					</view>
+					</view> -->
 				</view>
 				
 				<view class="py-4 flex1 bB-f5">
