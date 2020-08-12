@@ -67,7 +67,7 @@
 						</view>
 					</view>
 					
-					<view class="btnAuto" v-show="vip==1"><text class="price">999</text>/年卡 立即续费</view>
+					<view class="btnAuto" v-show="vip==1"><text class="price">{{price}}</text>/{{mainData[tcCurr].title}} 立即续费</view>
 				</view>
 			</view>
 		</view>
@@ -75,7 +75,7 @@
 		<view v-show="vip==0">
 			<view style="height: 130rpx;"></view>
 			<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
-				<view class="font-24"><text class="price font-w font-36">299</text>/12个月</view>
+				<view class="font-24"><text class="price font-w font-36">{{price}}</text>/{{duration}}天</view>
 				<button class="carBtn" size="mini" open-type="getUserInfo" 
 				@getuserinfo="Router.navigateTo({route:{
 					path:'/pages/VIP-information/VIP-information?product_id='

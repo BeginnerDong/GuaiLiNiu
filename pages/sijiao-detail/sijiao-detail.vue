@@ -138,9 +138,9 @@
 			
 			goToDetail(item){
 				const self = this;
-				item.coach = {};
-				item.coach.name = self.mainData.name;
-				item.description = item.description.split(',')
+				item.coachName = {};
+				item.coachName = self.mainData.name;
+				// item.description = item.description.split(',')
 				uni.setStorageSync('sijiaoCourseDetail',item);
 				self.Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail'}});
 			},

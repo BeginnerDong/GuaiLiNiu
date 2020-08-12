@@ -20,7 +20,7 @@
 					<image v-else src="../../static/images/members information-icon5.png" class="wh32 mr-1"></image>
 					<view>男</view>
 				</view>
-				<view class="flex "  @click="mainData.gender=1">
+				<view class="flex pl-5"  @click="mainData.gender=1">
 					<image v-if="mainData.gender==1" src="../../static/images/members information-icon4.png" class="wh32 mr-1"></image>
 					<image v-else src="../../static/images/members information-icon5.png" class="wh32 mr-1"></image>
 					<view>女</view>
@@ -78,9 +78,6 @@
 					  self.addOrder(orderList)
 				  }
 				});
-				
-				
-				
 			},
 			
 			addOrder(orderList) {

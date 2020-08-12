@@ -35,7 +35,7 @@
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/members-icon6.png" class="fw-icon mt"></image>
-					<view class="flex-1 pl-2">服务教练：{{mainData.coach.name}}</view>
+					<view class="flex-1 pl-2">服务教练：{{mainData.coachName}}</view>
 				</view>
 			</view>
 		</view>
@@ -145,13 +145,16 @@
 				Router:this.$Router,
 				is_show:false,
 				mainData:{},
-				remarkData:[]
+				remarkData:[],
+				type:'Array'
 			}
 		},
 		onLoad(){
 			const self = this;
 			self.mainData = uni.getStorageSync('sijiaoCourseDetail');
-			
+			self.mainData.description = self.mainData.description.split(',')
+			self.type = typeof(self.mainData.coach)
+			console.log('type',self.type)
 		},
 		methods: {
 			

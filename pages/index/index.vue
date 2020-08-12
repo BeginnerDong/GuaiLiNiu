@@ -121,7 +121,8 @@
 						</block>
 						
 					</view>
-					<view class="criBtn p-aX bottom-0">进入店铺</view>
+					<view class="criBtn p-aX bottom-0"
+					@click="Router.navigateTo({route:{path:'/pages/storeDetail/storeDetail?id='+shopData.id}})">进入店铺</view>
 				</view>
 				
 			</view>
@@ -177,12 +178,16 @@
 			goToDetail(item,type){
 				const self = this;
 				if(type == 1){
-					item.description = item.description.split(',')
+					// item.description = item.description.split(',')
 					uni.setStorageSync('leagueClassDetail',item);
 					if(item.course_type == 1){
 						self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}});
 					}else if(item.course_type == 2){
 						self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=1'}});
+					}else if(item.course_type == 3){
+						item.coachName = item.coach[0].name
+						uni.setStorageSync('sijiaoCourseDetail',item);
+						self.Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail'}});
 					}
 				}else{
 					self.Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail?coach_no='+item.user_no}})
@@ -267,6 +272,7 @@
 							self.classData[i].end_time = self.$Utils.timeto(parseInt(self.classData[i].end_time),'hm')
 						}
 					}
+					console.log("class",self.classData)
 				};
 				self.$apis.productGet(postData, callback);
 			},

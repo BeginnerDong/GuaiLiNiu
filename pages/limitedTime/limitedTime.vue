@@ -31,10 +31,10 @@
 			<view class="flex1 px-3">
 				<image src="../../static/images/preferential-img1.png" class="nkImg"></image>
 				<view class="flex-1 pl-2">
-					<view class="font-24 pb-4">年卡直降200</view>
-					<view class="colorR">799元<text class="price line-through font-22 pl-3">999</text></view>
+					<view class="font-24 pb-4">{{mainData.title}}</view>
+					<view class="colorR">{{mainData.card[0].price}}元<text class="price line-through font-22 pl-3">{{mainData.card[0].o_price}}</text></view>
 				</view> 
-				<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/limitedTime-may/limitedTime-may'}})">立即购买</view>
+				<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/limitedTime-may/limitedTime-may?card='+card+'&name='+mainData.title}})">立即购买</view>
 			</view>
 		</view>
 		
@@ -60,7 +60,8 @@
 			return {
 				Router:this.$Router,
 				mainData:{},
-				time: 0
+				time: 0,
+				card:''
 			}
 		},
 		
@@ -107,6 +108,7 @@
 						self.time = self.mainData.limit_time*1000 - new Date().getTime();
 						//console.log(new Date().getTime()/1000)
 					}
+					self.card = JSON.stringify(self.mainData.card[0])
 					self.$Utils.finishFunc('getMainData');
 				};
 				self.$apis.articleGet(postData, callback);

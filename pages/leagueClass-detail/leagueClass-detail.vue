@@ -59,9 +59,7 @@
 				<view class="flex-1 pl-2">
 					<view class="pb-3"><text class="font-30 pr-2 font-w">{{mainData.coach[0].name}}</text> {{mainData.coach[0].phone}}</view>
 					<view class="font-24 color6">
-						<view>中国健美先回CCBA专业健身教练认证</view>
-						<view>中国健美先回CCBA专业健身教练认证</view>
-						<view>中国健美先回CCBA专业健身教练认证</view>
+						<view v-for="(item,index) in mainData.coach[0].title" :key="index">{{item}}</view>
 					</view>
 				</view>
 			</view>
@@ -195,6 +193,7 @@
 		onLoad(option){
 			const self = this;
 			self.mainData = uni.getStorageSync('leagueClassDetail');
+			self.mainData.coach[0].title = self.mainData.coach[0].title.split(',');
 			self.shopData = uni.getStorageSync('shopData');
 			self.type = option.type;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
