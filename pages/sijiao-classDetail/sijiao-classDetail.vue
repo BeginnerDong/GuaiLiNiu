@@ -35,7 +35,7 @@
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/members-icon6.png" class="fw-icon mt"></image>
-					<view class="flex-1 pl-2">服务教练：{{mainData.coach}}</view>
+					<view class="flex-1 pl-2">服务教练：{{mainData.coach.name}}</view>
 				</view>
 			</view>
 		</view>

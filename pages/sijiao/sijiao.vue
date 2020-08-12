@@ -40,7 +40,7 @@
 							<view class="font-20 color9">累计 {{item.class}}节</view>
 						</view>
 					</view>
-					<view class="sjSgin">1项专业证书</view>
+					<view class="sjSgin">{{item.certificate.length}}项专业证书</view>
 				</view>
 			</block>
 			

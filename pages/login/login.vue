@@ -38,8 +38,18 @@
 				uni.setStorageSync('login',self.mainData);
 				var callback = function(res){
 					console.log('callback');
+					uni.setStorageSync('canClick',true);
+					if(res.solely_code==100000){
+						self.$Router.redirectTo({route:{path:'/pages/user-sijiaoEntrance/user-sijiaoEntrance'}})
+					}else{
+						uni.showModal({
+							title:'登陆失败',
+							content:res.msg,
+							showCancel:false
+						})
+					};
 					
-					self.$Router.redirectTo({route:{path:'/pages/user-sijiaoEntrance/user-sijiaoEntrance'}})
+					
 				};
 				self.$Token.getCoachToken(callback);
 			}

@@ -53,6 +53,18 @@
 				postData.order = {
 					listorder:'desc'
 				};
+				postData.getAfter = {
+					coach:{
+						tableName:'Coach',
+						middleKey:'coach_no',
+						key:'user_no',
+						searchItem:{
+							status:1
+						},
+						condition:'=',
+						info:['name']
+					}
+				};
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);

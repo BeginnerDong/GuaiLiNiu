@@ -138,7 +138,8 @@
 			
 			goToDetail(item){
 				const self = this;
-				item.coach = self.mainData.name;
+				item.coach = {};
+				item.coach.name = self.mainData.name;
 				item.description = item.description.split(',')
 				uni.setStorageSync('sijiaoCourseDetail',item);
 				self.Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail'}});
@@ -196,7 +197,9 @@
 						self.mainData.expertise = self.mainData.expertise.split(',')
 						for(var i=0;i<self.mainData.product.length;i++){
 							if(self.mainData.product[i].course_type == 3){
-								self.courseData.push(self.mainData.product[i])
+								self.courseData.push(self.mainData.product[i]);
+								self.courseData.coach = {};
+								self.courseData.coach.name = self.mainData.name;
 							}
 						}
 					};

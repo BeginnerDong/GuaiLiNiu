@@ -25,7 +25,7 @@
 					<view class="px-2 flex-1 flex-1">
 						<view class="font-30 font-w">{{item.product[0].title}}</view>
 						<view class="pt-2"><text class="font-w price">{{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
-						<view class="font-24 py-1 line-h-sm">Auger | {{item.product[0].book_week_item}}~{{item.product[0].book_time_item}}</view>
+						<view class="font-24 py-1 line-h-sm">{{item.coach.name}} | {{item.product[0].book_week_item}}~{{item.product[0].book_time_item}}</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in item.product[0].description_change" :key="c_index">
 								<view class="tag">{{c_item}}</view>
@@ -141,6 +141,16 @@
 							status:1
 						},
 						condition:'=',
+					},
+					coach:{
+						tableName:'Coach',
+						middleKey:'coach_no',
+						key:'user_no',
+						searchItem:{
+							status:1
+						},
+						condition:'=',
+						info:['name']
 					}
 				};
 				const callback = (res) => {
@@ -151,7 +161,7 @@
 							console.log('self.mainData[i].product[0].description',self.mainData[i].product[0].description)
 							for(var j=0;j<self.mainData[i].orderLog.length;j++){
 								self.mainData[i].orderLog[j]['book_time_change'] = 
-								self.$Utils.timeto(parseInt(self.mainData[i].orderLog[j]['book_time']),'ymd-hm');
+								self.$Utils.timeto(parseInt(self.mainData[i].orderLog[j]['book_time'])*1000,'ymd-hm');
 							}
 						};
 					}else{

@@ -13,7 +13,7 @@
 					<view class="pl-2">
 						<view class="font-32"><open-data type="userNickName" lang="zh_CN"></open-data> </view>
 						<view class="userSgin my-1">{{userData.info.behavior==1?'会员':'普通用户'}}</view>
-						<view>有效期：{{userData.info.deadline_change}}</view>
+						<view v-if="userData.info.deadline>0" >有效期：{{userData.info.deadline_change}}</view>
 					</view>
 				</view>
 				<view class="px-2 Mgb p-r">

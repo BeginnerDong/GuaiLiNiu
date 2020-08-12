@@ -26,7 +26,7 @@
 								<view class="tag">{{c_item}}</view>
 							</block>
 						</view>
-						<view class="colorR"><text class="price">{{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
+						<view class="colorR"><text class="price">{{item.coach.name}} |  {{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
 					</view>
 				</view>
 				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view>
@@ -119,6 +119,16 @@
 							status:1
 						},
 						condition:'=',
+					},
+					coach:{
+						tableName:'Coach',
+						middleKey:'coach_no',
+						key:'user_no',
+						searchItem:{
+							status:1
+						},
+						condition:'=',
+						info:['name']
 					}
 				};
 				const callback = (res) => {
