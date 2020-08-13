@@ -73,10 +73,13 @@
 		},
 		onLoad(options) {
 			const self = this;
-			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
-			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
-			self.shopData = uni.getStorageSync('shopData');
+			self.load();
 			self.$Utils.loadAll(['getMainData','getCourseTypeData'], self);
+		},
+		onShow() {
+			const self = this;
+			self.load();
+			self.getMainData(true);
 		},
 		onReachBottom() {
 			const self = this;
@@ -86,6 +89,13 @@
 			};
 		},
 		methods: {
+			
+			load(){
+				const self = this;
+				self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+				self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
+				self.shopData = uni.getStorageSync('shopData');
+			},
 			
 			goToDetail(item){
 				const self = this;

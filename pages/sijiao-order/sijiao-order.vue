@@ -4,7 +4,7 @@
 		<view class="bg-white pt-2">
 			<view class="shadowM px-2 mx-2 radius10">
 				<view class="flex1 py-2 bB-f5">
-					<image src="../../static/images/the order-img.png" class="wh180"></image>
+					<image :src="mainData&&mainData.mainImg&&mainData.mainImg[0]&&mainData.mainImg[0].url" class="wh180 radius20"></image>
 					<view class="px-2 py-3 flex-1">
 						<view class="font-30 font-w pb-1">{{mainData.title}}</view>
 						<view><text class="price font-w">{{mainData.price}}</text>/{{mainData.score}}课时</view>
@@ -34,9 +34,9 @@
 					<view class="pb-4 flex1">
 						<view>课时套餐（￥{{mainData.price}}/{{mainData.score}}课时）</view>
 						<view class="flex">
-							<image src="../../static/images/the order-icon.png" class="wh40" @click="count(-1)"></image>
+							<image src="../../static/images/the-order-icon.png" class="wh40" @click="count(-1)"></image>
 							<view class="num">{{num}}</view>
-							<image src="../../static/images/the order-icon1.png" class="wh40" @click="count(1)"></image>
+							<image src="../../static/images/the-order-icon1.png" class="wh40" @click="count(1)"></image>
 						</view>
 					</view>
 					<!-- <view class="flex1 tcBox">
@@ -53,22 +53,22 @@
 						<view class="color6">
 							{{chooseCoupon.id?'满'+chooseCoupon.snap_coupon.condition+'减'+chooseCoupon.snap_coupon.value:'无使用'}}
 						</view>
-						<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
+						<image src="../../static/images/the-order-icon3.png" class="R-icon ml-1"></image>
 					</view>
 				</view>
 				
 				<view class="py-4 flex1 bB-f5">
 					<view>支付方式</view>
 					<view class="flex">
-						<image src="../../static/images/the order-icon2.png" class="wh44 mr-1"></image>
+						<image src="../../static/images/the-order-icon2.png" class="wh44 mr-1"></image>
 						<view class="color6">微信支付</view>
 					</view>
 				</view>
 				
 				<view class="flex py-4 font-24">
-					<image src="../../static/images/the order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
-					<image src="../../static/images/the order-icon4.png" class="wh30 mr-2" v-else></image>
-					<view><text @click="isShow('agree')">同意</text> <text class="colorB" @click="isShow">《怪力牛运动会员服务协议》</text></view>
+					<image src="../../static/images/the-order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
+					<image src="../../static/images/the-order-icon4.png" class="wh30 mr-2" v-else></image>
+					<view><text @click="isShow('agree')">同意</text> <text class="colorB" @click="isShow()">《怪力牛运动会员服务协议》</text></view>
 				</view>
 			</view>
 		</view>

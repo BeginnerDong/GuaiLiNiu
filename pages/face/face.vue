@@ -6,7 +6,7 @@
 			<view class="colorM" @click="Router.navigateTo({route:{path:'/pages/faceApply/faceApply'}})">申请删除</view>
 		</view>
 		
-		<view class="photo p-r" @click="isShow">
+		<view class="photo p-r" @click="upLoadImg('mainImg')">
 			<image src="../../static/images/face recogontion-icon.png"></image>
 			<view class="wh300 radius-5 Mgb p-aXY">
 				<image src="../../static/images/face recogontion-icon1.png" class="img"></image>
@@ -34,10 +34,43 @@
 			}
 		},
 		methods: {
+			
 			isShow(){
 				const self = this;
 				self.is_show = !self.is_show
+			},
+			
+			upLoadImg(type) {
+				const self = this;			
+				
+				const callback = (res) => {
+					console.log('res', res)
+					if (res.solely_code == 100000) {
+						self.submitData[type].push({url:res.info.url,type:'image'})
+					}else {
+						self.$Utils.showToast('网络故障', 'none')
+					}
+				};				
+				uni.chooseImage({
+					count: 1,
+					success: function(res) {
+						console.log(res);
+						var tempFilePaths = res.tempFilePaths[0];
+						var file = res.tempFiles[0];
+						var obj = res.tempFiles[0].path.lastIndexOf(".");
+						var ext = res.tempFiles[0].path.substr(obj+1);
+						console.log(callback)
+						console.log('img',self.submitData)
+						self.$Utils.uploadFile(tempFilePaths, 'file', {
+							tokenFuncName: 'getProjectToken',ext:ext,md5:'md5',totalSize:file.size,start:0,chunkSize:file.size,originName:'headImg'
+						}, callback)
+					},
+					fail: function(err) {
+						uni.hideLoading();
+					},			
+				})			
 			}
+			
 		}
 	}
 </script>

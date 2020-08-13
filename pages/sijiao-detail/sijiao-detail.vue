@@ -50,7 +50,7 @@
 				<view class="font-w t-indent20 font-30 line-h tit">所授课程</view>
 				<view class="color6 flex1" @click="Router.navigateTo({route:{path:'/pages/sijiao-courses/sijiao-courses?coach_no='+mainData.user_no}})">
 					<view>查看全部</view>
-					<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
+					<image src="../../static/images/the-order-icon3.png" class="R-icon ml-1"></image>
 				</view>
 			</view>
 			<view class="flexX py-3">
@@ -115,13 +115,15 @@
 				mainData:{},
 				remarkData:[],
 				isLoadAll:false,
-				courseData:[]
+				courseData:[],
+				id:''
 			}
 		},
 		
 		onLoad(options) {
 			const self = this;
 			self.coach_no = options.coach_no;
+			self.id = options.id;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			
 			self.$Utils.loadAll(['getMainData'], self);
@@ -150,7 +152,8 @@
 				const postData = {};
 				postData.searchItem = {
 					thirdapp_id:2,
-					user_no:self.coach_no
+					user_no:self.coach_no,
+					id:self.id
 				};
 				postData.getAfter = {
 					shop:{

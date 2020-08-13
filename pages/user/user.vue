@@ -59,11 +59,11 @@
 					<view>关于我们</view>
 				</view>
 				<view class="flex4 itt" @click="Router.navigateTo({route:{path:'/pages/joinUS/joinUS'}})">
-					<image src="../../static/images/about-icon4.png" class="userIcon4"></image>
+					<image src="../../static/images/about-icon5.png" class="userIcon4"></image>
 					<view>加盟我们</view>
 				</view>
 				<view class="flex4 itt" @click="Router.navigateTo({route:{path:'/pages/face/face'}})">
-					<image src="../../static/images/about-icon5.png" class="userIcon5"></image>
+					<image src="../../static/images/about-icon4.png" class="userIcon5"></image>
 					<view>人脸录入</view>
 				</view>
 				<view class="flex4 itt" @click="Router.navigateTo({route:{path:'/pages/user-sijiaoEntrance/user-sijiaoEntrance'}})">

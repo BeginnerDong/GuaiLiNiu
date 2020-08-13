@@ -31,7 +31,7 @@
 					<view>预约学员（{{item.OrderLog.length}}）</view>
 					<view class="flex flex-wrap">
 						<block v-for="(c_item,c_index) in item.OrderLog" :key="index">
-							<image :src="c_item.User.headImgUrl" class="wh80" ></image>
+							<image :src="c_item.User.headImgUrl" class="wh80 radius-5" ></image>
 						</block>
 						
 					</view>

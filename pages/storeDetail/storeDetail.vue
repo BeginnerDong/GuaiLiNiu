@@ -19,10 +19,10 @@
 						<view class="top-0 p-a t-indent10 line-h-md">社区店</view>
 					</view>
 				</view>
-				<view class="shareSgin">
+				<button open-type="share" class="shareSgin">
 					<image src="../../static/images/course-icon2.png" class="fx-icon"></image>
 					<view>分享</view>
-				</view>
+				</button>
 				<view class="font-22 line-h py-2 color9">
 					门店面积 <text class="priceM pl-1">{{mainData.total_area?mainData.total_area:''}}</text> | 
 					私教面积 <text class="priceM pl-1">{{mainData.private_area?mainData.private_area:''}}</text>
@@ -47,7 +47,7 @@
 					<view class="font-w t-indent20 line-h pt-4 pb-3 tit">门店详情</view>
 					<view class="color6 flex1" @click="isShow(2)">
 						<view>查看全部</view>
-						<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
+						<image src="../../static/images/the-order-icon3.png" class="R-icon ml-1"></image>
 					</view>
 				</view>
 				<view class="flex1 color6 font-24">
@@ -79,7 +79,7 @@
 					<view class="font-w t-indent20 line-h pt-4 pb-3 tit">门店私教</view>
 					<view class="color6 flex1" @click="Router.navigateTo({route:{path:'/pages/store-sijiao/store-sijiao'}})">
 						<view>查看全部</view>
-						<image src="../../static/images/the order-icon3.png" class="R-icon ml-1"></image>
+						<image src="../../static/images/the-order-icon3.png" class="R-icon ml-1"></image>
 					</view>
 				</view>
 				<view class="flexX line-h">
@@ -162,10 +162,12 @@
 					</view>
 					<view class="py-3 font-30 font-w px-4">基础服务</view>
 					<view class="px-5 flex flex-wrap">
-						<view class="flex4 font-24 color6 mb-3 bb" v-for="(item,index) in service" :key="index">
-							<image :src="item.url" class="wh100 mb-2"></image>
-							<view>{{item.name}}</view>
-						</view>
+						<block v-for="(item,index) in service" :key="index">
+							<view class="flex4 font-24 color6 mb-3 bb" v-if="item.key&&mainData[item.key]==1">
+								<image :src="item.url" class="wh100 mb-2"></image>
+								<view>{{item.name}}</view>
+							</view>
+						</block>
 					</view>
 				</view>
 				<image src="../../static/images/stores details-icon21.png" class="wh30 p-a m-2 right-0 z-index100 top-0" @click="isShow(2)"></image>
@@ -185,22 +187,22 @@
 				kf_show:false,
 				sb_show:false,
 				equipment:[
-					{url:'../../static/images/stores details-icon11.png',name:'固定器械'},
-					{url:'../../static/images/stores details-icon12.png',name:'哑铃'},
-					{url:'../../static/images/stores details-icon13.png',name:'深蹲架'},
-					{url:'../../static/images/stores details-icon14.png',name:'卧推'},
-					{url:'../../static/images/stores details-icon15.png',name:'动感单车'},
-					{url:'../../static/images/stores details-icon16.png',name:'跑步机'},
-					{url:'../../static/images/stores details-icon17.png',name:'瑜伽垫'}
+					{url:'../../static/images/stores details-icon11.png',name:'固定器械',key:'apparatus'},
+					{url:'../../static/images/stores details-icon12.png',name:'哑铃',key:'dumbbell'},
+					{url:'../../static/images/stores details-icon13.png',name:'深蹲架',key:'squat'},
+					{url:'../../static/images/stores details-icon14.png',name:'卧推',key:'bench'},
+					{url:'../../static/images/stores details-icon15.png',name:'动感单车',key:'bicycle'},
+					{url:'../../static/images/stores details-icon16.png',name:'跑步机',key:'run'},
+					{url:'../../static/images/stores details-icon17.png',name:'瑜伽垫',key:'yoga'}
 				],
 				service:[
 					{url:'../../static/images/stores details-icon2.png',name:'无线网络',key:'wifi'},
-					{url:'../../static/images/stores details-icon3.png',name:'储物柜'},
-					{url:'../../static/images/stores details-icon4.png',name:'更衣室'},
-					{url:'../../static/images/stores details-icon5.png',name:'饮水机'},
-					{url:'../../static/images/stores details-icon6.png',name:'人脸识别'},
-					{url:'../../static/images/stores details-icon9.png',name:'充电宝'},
-					{url:'../../static/images/stores details-icon10.png',name:'沐浴房'}
+					{url:'../../static/images/stores details-icon3.png',name:'储物柜',key:'cabinet'},
+					{url:'../../static/images/stores details-icon4.png',name:'更衣室',key:'locker'},
+					{url:'../../static/images/stores details-icon5.png',name:'饮水机',key:'water'},
+					{url:'../../static/images/stores details-icon6.png',name:'人脸识别',key:'face'},
+					{url:'../../static/images/stores details-icon9.png',name:'充电宝',key:'charge'},
+					{url:'../../static/images/stores details-icon10.png',name:'沐浴房',key:'bathroom'}
 				],
 				mainData:{},
 				timeList:[],

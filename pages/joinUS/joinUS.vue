@@ -57,7 +57,8 @@
 				postData.tokenFuncName = 'getProjectToken';
 				postData.data = {};
 				postData.data = self.$Utils.cloneForm(self.submitData);
-				const callback = (data) => {				
+				const callback = (data) => {
+					console.log('data',data)
 					if (data.solely_code == 100000) {					
 						self.$Utils.showToast('留言成功', 'none', 1000)
 						setTimeout(function() {
@@ -65,7 +66,7 @@
 								delta:1
 							})
 						}, 1000);
-						
+						self.Router.navigateTo({route:{path:'/pages/user/usrt'}})
 					} else {
 						uni.setStorageSync('canClick', true);
 						self.$Utils.showToast(data.msg, 'none', 1000)
@@ -126,7 +127,7 @@
 .img1{width: 413rpx;height: 463rpx;margin: auto;}
 .ru{background-color: #FFF3EB;}
 .tit::before{content: '';background-color: #FF633A;width: 60rpx;height: 4rpx;position: absolute;bottom: 0;left: 50%;margin-left: -25rpx;}
-input{width: 710rpx;height: 80rpx;font-size: 26rpx;border: 1px solid #e1e1e1;background-color: #fff;border-radius: 10rpx;margin-bottom: 30rpx;text-indent: 20rpx;}
+input{width: 710rpx;height: 80rpx;font-size: 26rpx;border: 1px solid #e1e1e1;background-color: #fff;border-radius: 10rpx;margin-bottom: 30rpx;padding: 0 20rpx;box-sizing: border-box;}
 
 .joinIcon{width: 38rpx;height: 34rpx;}
 

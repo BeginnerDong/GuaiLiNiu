@@ -3,7 +3,7 @@
 		
 		<view class="shadowM px-2 mx-2 radius10">
 			<view class="flex1 py-2 bB-f5">
-				<image src="../../static/images/the order-img.png" class="wh180"></image>
+				<image :src="mainData&&mainData.mainImg&&mainData.mainImg[0]&&mainData.mainImg[0].url" class="wh180 radius20"></image>
 				<view class="px-2 py-3 flex-1">
 					<view class="font-30 font-w">{{mainData.title}}</view>
 					<view class="font-24 py-2">{{mainData.coach[0].name}} | {{mainData.start_time}}~{{mainData.end_time}}</view>
@@ -12,7 +12,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="font-26 color6 py-3">课程有效期：15天 </view>
+			<view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view>
 		</view>
 		
 		<view class="mx-2">
@@ -29,15 +29,15 @@
 				<view class="color6">（￥{{mainData.price}}/{{mainData.score}}课时）</view>
 			</view>
 			<view class="flex py-4 font-24">
-				<image src="../../static/images/the order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
-				<image src="../../static/images/the order-icon4.png" class="wh30 mr-2" v-else></image>
-				<view><text @click="isShow('agree')">同意</text> <text class="colorB" @click="isShow">《怪力牛运动会员服务协议》</text></view>
+				<image src="../../static/images/the-order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
+				<image src="../../static/images/the-order-icon4.png" class="wh30 mr-2" v-else></image>
+				<view><text @click="isShow('agree')">同意</text> <text class="colorB" @click="isShow()">《怪力牛运动会员服务协议》</text></view>
 			</view>
 		</view>
 		
 		
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
-			<view class="font-26">已预约0/{{mainData.standard}}人</view>
+			<view class="font-26">已预约{{mainData.is_book}}/{{mainData.max}}人</view>
 			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button>
 		</view>
 		
@@ -47,7 +47,7 @@
 				<view class="px-3 mb-3 flex-1 flexY">
 					1、都必须为为和促进OK了
 				</view>
-				<view class="text-center colorf py-3 Mgb" @click="isShow">确定</view>
+				<view class="text-center colorf py-3 Mgb" @click="isShow()">确定</view>
 			</view>
 		</view>
 		
@@ -66,7 +66,7 @@
 		onLoad(){
 			const self = this;
 			self.mainData = uni.getStorageSync('orderDetail');
-			console.log('order',self.mainData.shopInfor,self.mainData.coach[0])
+			console.log('order',self.mainData.shopInfor,self.mainData)
 		},
 		methods: {
 			

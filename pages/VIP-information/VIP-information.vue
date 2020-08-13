@@ -33,7 +33,7 @@
 			<input type="text" v-model="mainData.phone" placeholder="请输入" />
 		</view>
 		<!-- <button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button> -->
-		<button class="btnAuto"  @click="submit">确认</button>
+		<button class="btnAuto"  @click="successSubmit">确认</button>
 		
 	</view>
 </template>
@@ -46,7 +46,7 @@
 				mainData:{
 					name:'',
 					gender:0,
-					birthday:0,
+					birthday:'',
 					phone:'',
 					deadline:0,
 					behavior:1
@@ -63,6 +63,25 @@
 			console.log('self.mainData',self.mainData);
 		},
 		methods: {
+			
+			successSubmit(){
+				const self = this;
+				if(self.mainData.name == ''){
+					self.$Utils.showToast('请输入姓名','none')
+				}else if(self.mainData.birthday == ''){
+					self.$Utils.showToast('请输入年龄','none')
+				}else if(self.mainData.phone == ''){
+					self.$Utils.showToast('请输入电话','none')
+				}else{
+					var reg = /^1[3456789]\d{9}$/
+					if(reg.test(self.mainData.phone)){
+						self.submit()
+					}else{
+						self.$Utils.showToast('电话号码格式错误','none')
+					}
+				}
+			},
+			
 			submit(){
 				const self = this;
 				

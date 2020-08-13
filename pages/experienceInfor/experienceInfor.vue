@@ -2,10 +2,10 @@
 	<view class="font-30">
 		
 		<view class="px-2 bg-white">
-			<!-- <view class="flex1 py-4 bB-f5">
+			<view class="flex1 py-4 bB-f5">
 				<view class="flex-1">上传照片</view>
 				<image src="../../static/images/img3.png" class="scImg"></image>
-			</view> -->
+			</view>
 			<view class="flex1 py-4 bB-f5">
 				<view class="flex-1">姓名</view>
 				<input type="text" v-model="mainData.name" placeholder="请输入" />
@@ -18,13 +18,13 @@
 				<view class="flex-1">性别</view>
 				<view class="font-26 flex">
 					<view class="flex" @click="mainData.gender=0">
-						<image v-if="mainData.gender==0" src="../../static/images/members information-icon4.png" class="wh32 mr-1"></image>
-						<image v-else src="../../static/images/members information-icon5.png" class="wh32 mr-1"></image>
+						<image v-if="mainData.gender==0" src="../../static/images/members-information-icon4.png" class="wh32 mr-1"></image>
+						<image v-else src="../../static/images/members-information-icon5.png" class="wh32 mr-1"></image>
 						<view>男</view>
 					</view>
 					<view class="flex pl-5" @click="mainData.gender=1">
-						<image v-if="mainData.gender==1" src="../../static/images/members information-icon4.png" class="wh32 mr-1"></image>
-						<image v-else src="../../static/images/members information-icon5.png" class="wh32 mr-1"></image>
+						<image v-if="mainData.gender==1" src="../../static/images/members-information-icon4.png" class="wh32 mr-1"></image>
+						<image v-else src="../../static/images/members-information-icon5.png" class="wh32 mr-1"></image>
 						<view>女</view>
 					</view>
 				</view>
@@ -50,7 +50,7 @@
 				mainData:{
 					name:'',
 					gender:0,
-					birthday:0,
+					birthday:'',
 					phone:'',
 					deadline:0,
 					behavior:1,

@@ -74,7 +74,7 @@
 						<view class="font-w">门店课程</view>
 						<view class="flex" @click="Router.navigateTo({route:{path:'/pages/sijiao-course/sijiao-course?shop_no='+shopData.user_no}})">
 							<view class="font-26 color9 pr-2">全部</view>
-							<image src="../../static/images/the order-icon3.png" class="R-icon"></image>
+							<image src="../../static/images/the-order-icon3.png" class="R-icon"></image>
 						</view>
 					</view>
 					<view class="line-h flexX py-1">
@@ -84,7 +84,7 @@
 								<view class="font-30 font-w">{{item.title?item.title:''}}</view>
 								<view class="font-24 pt-3">{{item.coach&&item.coach[0]?item.coach[0].name:''}} | {{item.start_time}}~{{item.end_time}}</view>
 							</view>
-							<view class="font-20 colorf kcSgin">差一个人开课</view>
+							<view class="font-20 colorf kcSgin">差{{item.is_book?item.standard-item.is_book:item.standard}}个人开课</view>
 						</view>
 					</view>
 				</view>
@@ -94,7 +94,7 @@
 						<view class="font-w">推荐私教</view>
 						<view class="flex" @click="Router.navigateTo({route:{path:'/pages/store-sijiao/store-sijiao?shop_no='+shopData.user_no}})">
 							<view class="font-26 color9 pr-2">全部</view>
-							<image src="../../static/images/the order-icon3.png" class="R-icon"></image>
+							<image src="../../static/images/the-order-icon3.png" class="R-icon"></image>
 						</view>
 					</view>
 					<view class="line-h">
@@ -114,7 +114,7 @@
 									</view>
 									<view class="flex">
 										<view class="price font-26 pr-5">{{item.class&&item.class[0]?item.class[0].price:'0'}}/节</view>
-										<view class="font-18 color9 pl-4">累计：{{item.course?item.course.num:0}}节</view>
+										<view class="font-18 color9 pl-4">累计：{{mainData.class?mainData.class:0}}节</view>
 									</view>
 								</view>
 							</view>
@@ -171,6 +171,19 @@
 		onLoad() {
 			const self = this;
 			self.$Utils.loadAll(['getSliderData','getLocation'], self);
+		},
+		
+		onShow() {
+			const self = this;
+			if(self.shopData.name != uni.getStorageSync('shopData').name){
+				self.shopData = uni.getStorageSync('shopData');
+				self.getActiveData();
+				self.getCoachData();
+				self.getClassData();
+			}
+			console.log('activeData',self.activeData)
+			console.log('coachData',self.coachData)
+			console.log('classData',self.classData)
 		},
 		
 		methods: {
@@ -303,9 +316,13 @@
 				var self = this;
 				const postData = {};
 				postData.searchItem = {
-					thirdapp_id:2,
-					shop_no:uni.getStorageSync('shopData').user_no
+					thirdapp_id:2
 				};
+				if(self.shopData){
+					postData.searchItem.shop_no = self.shopData.shop_no
+				}else{
+					shop_no:uni.getStorageSync('shopData').user_no
+				}
 				postData.getAfter = {
 					class:{
 						tableName:'Product',
@@ -377,8 +394,8 @@
 </script>
 <style scoped>
 swiper{height: 250rpx;}
-.banner{width: 710rpx;height: 250rpx;border0-radius:20rpx;overflow: hidden;}
-.banner image{width: 100%;height: 250rpx;}
+.banner{width: 710rpx;height: 250rpx;border-radius:20rpx;overflow: hidden;}
+.banner image{width: 100%;height: 250rpx;border-radius:20rpx;}
 .home-icon{width: 112rpx;height: 112rpx;margin-bottom: 20rpx;}
 .homeBg{width: 722rpx;height: 1818rpx;position: absolute;top: 0;left: 0;right: 0;margin: 0 auto 280rpx;}
 .sq{top: -10rpx;right: -10rpx;}
@@ -386,7 +403,7 @@ swiper{height: 250rpx;}
 .banner1 image{width: 650rpx;height: 200rpx;}
 .kcImg{width: 420rpx;height: 230rpx;}
 
-.sjImg{width: 160rpx;height: 196rpx;}
+.sjImg{width: 160rpx;height: 196rpx;border-radius: 10rpx;}
 .homeBto{background-color: #3F2E2A;font-size: 24rpx;color: #fff;}
 .criBtn1{width: 110rpx;line-height: 40rpx;border-radius: 20rpx;}
 

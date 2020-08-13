@@ -43,18 +43,14 @@
 				current:-1
 			}
 		},
-		
-		
-		
 		onLoad(options) {
 			const self = this;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
-			self.searchItem.shop_no = options.shop_no;
+			// self.searchItem.user_no = options.shop_no;
+			// console.log('shop_no',self.searchItem.shop_no)
 			self.$Utils.loadAll(['getMenuData','getMainData'], self);
 		},
-		
 		methods: {
-			
 			
 			goToDetail(item){
 				const self = this;
@@ -64,7 +60,6 @@
 					uni.setStorageSync('leagueClassDetail',item);
 					self.$Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=1'}});
 				};
-				
 				
 			},
 			
@@ -85,13 +80,9 @@
 				const self = this;
 				if (isNew) {
 					self.mainData = [];
-					self.paginate = {
-						count: 0,
-						currentPage: 1,
-						is_page: true,
-						pagesize: 10
-					}
+					self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 				};
+				self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
 				const postData = {};
 				//postData.tokenFuncName = 'getProjectToken';
 				postData.paginate = self.$Utils.cloneForm(self.paginate);
@@ -99,9 +90,27 @@
 				postData.order = {
 					listorder:'desc'
 				};
+				postData.getAfter = {
+					coach:{
+						tableName:'Coach',
+						middleKey:'coach_no',
+						key:'user_no',
+						searchItem:{
+							status:1
+						},
+						condition:'='
+					}
+				};
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);
+						for (var i = 0; i < self.mainData.length; i++) {
+							self.mainData[i].description = self.mainData[i].description.split(',');
+							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'ymd-hm')
+							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'ymd-hm')
+						}
+					}else{
+						self.isLoadAll = true;
 					};
 					uni.setStorageSync('canClick', true);
 					self.$Utils.finishFunc('getMainData');

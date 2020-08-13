@@ -4,8 +4,8 @@
 		<!-- banner -->
 		<view class="p-r">
 			<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" indicator-active-color="#fff" class="banner">
-				<swiper-item>
-					<image src="../../static/images/pay for courses-img.png" ></image>
+				<swiper-item v-for="(item,index) in mainData.bannerImg" :key="index">
+					<image :src="item.url" ></image>
 				</swiper-item>
 			</swiper>
 			
@@ -17,13 +17,13 @@
 		<view class="content bg-white radius30-T px-2 p-r content">
 			<view class="pb-4 bB-f5">
 				<view class="flex pt-5 font-40 font-w">{{mainData.title}}</view>
-				<view class="shareSgin">
+				<button open-type="share" class="shareSgin">
 					<image src="../../static/images/course-icon2.png" class="fx-icon"></image>
 					<view>分享</view>
-				</view>
+				</button>
 				<view class="flex pt-3">
 					<view class="bR-e1 pr-2 flex">
-						<image src="../../static/images/pay for courses-icon.png" class="wh30 mr-1"></image>
+						<image src="../../static/images/pay-for-courses-icon.png" class="wh30 mr-1"></image>
 						团操课
 					</view>
 					<view class="flex pl-2">
@@ -37,15 +37,15 @@
 			
 			<view class="font-26 pt-4 ">
 				<view class="d-flex a-start pb-4">
-					<image src="../../static/images/pay for courses-icon1.png" class="rq-icon mt"></image>
+					<image src="../../static/images/pay-for-courses-icon1.png" class="rq-icon mt"></image>
 					<view class="flex-1 pl-2">适合人群：{{mainData.fit}}</view>
 				</view>
 				<view class="d-flex a-start pb-4">
-					<image src="../../static/images/pay for courses-icon2.png" class="wh30 mt"></image>
+					<image src="../../static/images/pay-for-courses-icon2.png" class="wh30 mt"></image>
 					<view class="flex-1 pl-2">预计<text class="colorR">6月24日</text>开课<br />{{mainData.book_week_item}} {{mainData.book_time_item}}</view>
 				</view>
 				<view class="d-flex a-start pb-4">
-					<image src="../../static/images/pay for courses-icon3.png" class="dw-icon mt"></image>
+					<image src="../../static/images/pay-for-courses-icon3.png" class="dw-icon mt"></image>
 					<view class="flex-1 pl-2">{{shopData.address}}</view>
 				</view>
 			</view>
@@ -55,7 +55,7 @@
 		<view class="px-2 py-4">
 			<view class="font-30 font-w">服务教练</view>
 			<view class="flex1 pt-3">
-				<image src="../../static/images/pay for courses-img1.png" class="jlImg"></image>
+				<image src="../../static/images/pay-for-courses-img1.png" class="jlImg"></image>
 				<view class="flex-1 pl-2">
 					<view class="pb-3"><text class="font-30 pr-2 font-w">{{mainData.coach[0].name}}</text> {{mainData.coach[0].phone}}</view>
 					<view class="font-24 color6">
@@ -81,7 +81,7 @@
 					</view>
 					<view class="font-26 pt-3">
 						<view v-html="mainData.content"></view>
-						<!-- <image src="../../static/images/pay for courses-img2.png" class="conImg"></image> -->
+						<!-- <image src="../../static/images/pay-for-courses-img2.png" class="conImg"></image> -->
 					</view>
 				</view>
 				
@@ -105,24 +105,24 @@
 					<view class="font-24 flex1 pt-3">
 						<view class="flex1 flex-1 pr-5">
 							<view class="LC flex4">
-								<image src="../../static/images/pay for courses-icon5.png"></image>
+								<image src="../../static/images/pay-for-courses-icon5.png"></image>
 								<view>1.购买</view>
 							</view>
 							<view class="LC flex4">
-								<image src="../../static/images/pay for courses-icon6.png"></image>
+								<image src="../../static/images/pay-for-courses-icon6.png"></image>
 								<view>2.约课</view>
 							</view>
 							<view class="LC flex4">
-								<image src="../../static/images/pay for courses-icon7.png"></image>
+								<image src="../../static/images/pay-for-courses-icon7.png"></image>
 								<view>3.签到</view>
 							</view>
 							<view class="LC flex4">
-								<image src="../../static/images/pay for courses-icon8.png"></image>
+								<image src="../../static/images/pay-for-courses-icon8.png"></image>
 								<view>4.评价</view>
 							</view>
 						</view>
 						<view class="flex4 colorM pl-5 p-r GZ" @click="Router.navigateTo({route:{path:'/pages/ruleDetail/ruleDetail'}})">
-							<image src="../../static/images/pay for courses-icon9.png" class="lcIcon5"></image>
+							<image src="../../static/images/pay-for-courses-icon9.png" class="lcIcon5"></image>
 							<view>规则详情</view>
 						</view>
 					</view>
@@ -153,7 +153,7 @@
 		
 		<view style="height: 200rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1">
-			<view class="font-26"><!-- 已预约0/{{mainData.max}}人，还差 --><text class="colorR">{{mainData.standard}}</text>人开课</view>
+			<view class="font-26">已预约{{mainData.is_book}}/{{mainData.max}}人，还差<text class="colorR">{{mainData.standard-mainData.is_book}}</text>人开课</view>
 			<view class="criBtn" @click="goOrder">立即预约</view>
 		</view>
 		

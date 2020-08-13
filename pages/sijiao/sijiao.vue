@@ -10,11 +10,11 @@
 			</view>
 			<view class="flex" @click="Router.navigateTo({route:{path:'/pages/sijiao-store/sijiao-store'}})">
 				<view class="color6">选择门店</view>
-				<image src="../../static/images/the order-icon3.png" class="R-icon ml-2"></image>
+				<image src="../../static/images/the-order-icon3.png" class="R-icon ml-2"></image>
 			</view>
 		</view>
 		
-		<view class="flex shadowM mx-2 radius10 py-3 tan" @click="Router.navigateTo({route:{path:'/pages/sijiao-course/sijiao-course'}})">
+		<view class="flex shadowM mx-2 radius10 py-3 tan" @click="Router.navigateTo({route:{path:'/pages/sijiao-course/sijiao-course?shop_no='+shopData.user_no}})">
 			<image src="../../static/images/sijiao-icon2.png" class="wh40 mx-2"></image>
 			<view class="color6">优选课程</view>
 			<view class="flex flex-1 pl-5">
@@ -68,8 +68,16 @@
 			const self = this;
 			self.shopData = uni.getStorageSync('shopData');
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
-			self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
+			self.searchItem.shop_no = self.shopData.user_no;
 			self.$Utils.loadAll(['getMainData'], self);
+		},
+		onShow() {
+			const self = this;
+			if(self.shopData.id != uni.getStorageSync('shopData').id){
+				self.shopData = uni.getStorageSync('shopData');
+				self.searchItem.shop_no = self.shopData.user_no;
+				self.getMainData(true)
+			}
 		},
 		onReachBottom() {
 			const self = this;
