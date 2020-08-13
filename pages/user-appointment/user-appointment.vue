@@ -12,7 +12,7 @@
 			<view class="bg-white px-2 mx-2 mb-2 radius10 line-h p-r">
 				<view class="colorf sgin">{{bookStatus[item.is_book]}}</view>
 				<view class="flex1 py-3 bB-f5 w-100">
-					<image src="../../static/images/the order-img.png" class="img"></image>
+					<image :src="item.product.mainImg[0].url" class="img radius10"></image>
 					<view class="px-2 py-2 flex-1 d-flex flex-column j-sb h-180">
 						<view class="font-30 font-w">{{item.product.title}}</view>
 						<view class="flex">

@@ -13,7 +13,7 @@
 					<view class="pl-2">
 						<view class="font-32"><open-data type="userNickName" lang="zh_CN"></open-data> </view>
 						<view class="userSgin my-1">{{userData.info.behavior==1?'会员':'普通用户'}}</view>
-						<view v-if="userData.info.deadline>0" >有效期：{{userData.info.deadline_change}}</view>
+						<!-- <view >有效期：{{userData.info.deadline_change}}</view> -->
 					</view>
 				</view>
 				<view class="px-2 Mgb p-r">
@@ -22,14 +22,12 @@
 						<view>
 							<view class="flex font-30 font-w">
 								<image src="../../static/images/members-icon2.png" class="vip-icon"></image>
-								<view>VIP会员</view>
-								<!-- <view>会员码：2658475</view> -->
+								<view>{{userData.info.behavior==1?'会员':'VIP会员'}}</view>
 							</view>
-							<view class="pt-4 font-24">享受更多的优惠权益</view>
-							<!-- <view class="pt-4 font-24">有效期：2020.06.23-2021.06.23</view> -->
+							<view class="pt-4 font-24" v-if="userData.info.deadline>0">有效期：{{userData.info.deadline_change}}</view>
+							<view class="pt-4 font-24" v-else>享受更多的优惠权益</view>
 						</view>
-						<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/VIP/VIP?vip=0'}})">立即开通</view>
-						<!-- <view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/VIP/VIP?vip=1'}})">立即续费</view> -->
+						<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/VIP/VIP?vip=0'}})">{{userData.info.behavior==1?'立即续费':'立即开通'}}</view>
 					</view>
 				</view>
 			</view>
@@ -75,7 +73,11 @@
 		
 		<view class="pl-2 font-24 colorf p-r mt-5">
 			<image src="../../static/images/about-img2.png" class="userImg"></image>
-			<view class="p-aXY txt">健身房是现代剧好几家肯德基六款新车承接数控刀具拉可视对讲</view>
+			<view class="p-aXY txt">
+				<view   class="content ql-editor" style="padding:0;" v-html="articleData.content">
+					
+				</view>
+			</view>
 		</view>
 		
 		
@@ -86,7 +88,7 @@
 				<image src="../../static/images/nabar1.png" mode=""></image>
 				<view>首页</view>
 			</view>
-			<view class="item on" @click="Router.redirectTo({route:{path:'/pages/user/user'}})">
+			<view class="item on">
 				<image src="../../static/images/nabar2-a.png" mode=""></image>
 				<view>我的</view>
 			</view>
@@ -102,12 +104,13 @@
 			return {
 				Router:this.$Router,
 				statusBar: app.globalData.statusBar,
-				userData:{}
+				userData:{},
+				articleData:{}
 			}
 		},
 		onLoad(){
 			const self = this;
-			self.$Utils.loadAll(['getUserData'], self);
+			self.$Utils.loadAll(['getUserData','getArticleData'], self);
 		},
 		methods: {
 			getUserData() {
@@ -120,11 +123,31 @@
 					if (res.info.data.length > 0) {
 						self.userData = res.info.data[0];
 						self.userData.info.deadline_change = self.$Utils.timeto(parseInt(self.userData.info.deadline*1000),'ymd-hm')
+						// self.userData.info.deadline_change = self.userData.info.deadline.substring(0,10)
+						// console.log('会员时间',self.userData)
 					}
 					self.$Utils.finishFunc('getUserData');
 				};
 				self.$apis.userGet(postData, callback);
 			},
+			
+			getArticleData(){
+				const self = this;
+				const postData = {};
+				postData.searchItem = {
+					thirdapp_id: 2,
+					menu_id: 5
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.articleData = res.info.data[0];
+					}
+					console.log('文章',self.articleData)
+					self.$Utils.finishFunc('getArticleData');
+				};
+				self.$apis.articleGet(postData, callback);
+			}
+			
 		}
 	}
 </script>

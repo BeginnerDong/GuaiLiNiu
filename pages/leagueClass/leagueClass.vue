@@ -65,7 +65,7 @@
 		<view class="line-h px-2 py-3 flex">
 			<image src="../../static/images/sijiao-icon0.png" class="dw-icon"></image>
 			<view class="px-1">{{shopData.name?shopData.name:''}}</view>
-			<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：2.21KM</view>
+			<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：{{shopData.distance}}KM</view>
 		</view>
 		<view class="shadow radius20 m-a p-r mb-3 overflow-h tkBox" 
 		 @click="goToDetail(item)"
@@ -264,6 +264,9 @@
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);
 						for (var i = 0; i < self.mainData.length; i++) {
+							if(self.mainData[i].standard-self.mainData[i].is_book <= 0){
+								self.mainData[i].is_book = 0
+							}
 							self.mainData[i].description = self.mainData[i].description.split(',');
 							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'ymd-hm')
 							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'ymd-hm')

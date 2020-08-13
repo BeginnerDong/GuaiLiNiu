@@ -6,7 +6,7 @@
 			<view class="line-h flex">
 				<image src="../../static/images/sijiao-icon0.png" class="dw-icon"></image>
 				<view class="px-1 font-w">{{shopData.name}}</view>
-				<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：2.21KM</view>
+				<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：{{shopData.distance}}KM</view>
 			</view>
 			<view class="flex" @click="Router.navigateTo({route:{path:'/pages/sijiao-store/sijiao-store'}})">
 				<view class="color6">选择门店</view>

@@ -82,7 +82,7 @@
 					self.mainData = [];
 					self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 				};
-				self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
+				self.searchItem.user_no = uni.getStorageSync('shopData').user_no;
 				const postData = {};
 				//postData.tokenFuncName = 'getProjectToken';
 				postData.paginate = self.$Utils.cloneForm(self.paginate);

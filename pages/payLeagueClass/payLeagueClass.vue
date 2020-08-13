@@ -33,10 +33,10 @@
 		<view class="line-h px-2 py-3 flex">
 			<image src="../../static/images/sijiao-icon0.png" class="dw-icon"></image>
 			<view class="px-1">{{shopData.name}}</view>
-			<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：2.21KM</view>
+			<view class="font-20 bg-f5 d-inline-block line-h-md px-1">距您：{{shopData.distance}}KM</view>
 		</view>
-		<view class="shadow radius20 m-a p-r mb-3 tkBox" v-for="(item,index) in mainData" :key="index" @click="goToDetail(item)">
-			<image src="../../static/images/sijiao-img.png" class="kcImg"></image>
+		<view class="shadow radius20 m-a p-r mb-3 overflow-h tkBox" v-for="(item,index) in mainData" :key="index" @click="goToDetail(item)">
+			<image :src="item.mainImg[0].url" class="kcImg"></image>
 			<view class="px-2 py-3">
 				<view class="font-30 flex1">
 					<view class="font-w">{{item.title}}</view>
@@ -47,7 +47,7 @@
 					<view class="tag tagY" v-for="(v,i) in item.description" :key="i">{{v}}</view>
 				</view>
 			</view>
-			<view class="font-20 colorf kcSgin">差一个人开课</view>
+			<view class="font-20 colorf kcSgin">差{{item.is_book?item.standard-item.is_book:item.standard}}个人开课</view>
 		</view>
 		
 	</view>
@@ -123,7 +123,6 @@
 				){
 					self.courseType = uni.getStorageSync('courseType');
 					self.$Utils.finishFunc('getCourseTypeData');
-					console.log('self.courseType',self.courseType)
 					return;
 				};
 				const postData = {};
@@ -138,8 +137,6 @@
 						uni.setStorageSync('courseType', res.info.data);
 						uni.setStorageSync('courseTypetTime', (new Date()).getTime()+30000);
 					};
-					
-					console.log('self.courseType',self.courseType)
 					self.$Utils.finishFunc('getCourseTypeData');
 				};
 				self.$apis.labelGet(postData, callback);
@@ -176,8 +173,11 @@
 				};
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
-						self.mainData.push.apply(self.mainData, res.info.data);
+						self.mainData = res.info.data;
 						for (var i = 0; i < self.mainData.length; i++) {
+							if(self.mainData[i].standard-self.mainData[i].is_book <= 0){
+								self.mainData[i].is_book = 0
+							}
 							self.mainData[i].description = self.mainData[i].description.split(',');
 							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'hm')
 							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')

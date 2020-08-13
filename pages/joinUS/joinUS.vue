@@ -13,10 +13,10 @@
 		
 		<view class="ru px-2 pb-5">
 			<view class="font-36 line-h pt-5 pb-2 text-center p-r mb-4 tit">申请入口</view>
-			<input type="text" v-model="submitData.title" placeholder="请输入您的姓名" />
-			<input type="text" v-model="submitData.phone" placeholder="请输入您的手机号" />
-			<input type="text" v-model="submitData.description" placeholder="请输入您选择的区域" />
-			<view class="btnAuto" open-type="getUserInfo" @getuserinfo="Utils.stopMultiClick(submit)">确定</view>
+			<input type="text" v-model="data.title" placeholder="请输入您的姓名" />
+			<input type="text" v-model="data.phone" placeholder="请输入您的手机号" />
+			<input type="text" v-model="data.description" placeholder="请输入您选择的区域" />
+			<view class="btnAuto" @click="successSubmit">确定</view>
 		</view>
 		
 		<view class="px-2">
@@ -35,10 +35,11 @@
 			return {
 				text:['专','业','一','对','一','服','务'],
 				mainData:{},
-				submitData:{
+				data:{
 					title:'',
 					phone:'',
-					description:''
+					description:'',
+					type:1
 				}
 			}
 		},
@@ -50,53 +51,49 @@
 		
 		methods: {
 			
-			
-			messageAdd() {
+			successSubmit(){
 				const self = this;
-				const postData = {};
-				postData.tokenFuncName = 'getProjectToken';
-				postData.data = {};
-				postData.data = self.$Utils.cloneForm(self.submitData);
-				const callback = (data) => {
-					console.log('data',data)
-					if (data.solely_code == 100000) {					
-						self.$Utils.showToast('留言成功', 'none', 1000)
-						setTimeout(function() {
-							uni.navigateBack({
-								delta:1
-							})
-						}, 1000);
-						self.Router.navigateTo({route:{path:'/pages/user/usrt'}})
-					} else {
-						uni.setStorageSync('canClick', true);
-						self.$Utils.showToast(data.msg, 'none', 1000)
-					}	
-				};
-				self.$apis.messageAdd(postData, callback);
+				if(self.data.title == ''){
+					self.$Utils.showToast('请输入姓名','none')
+				}else if(self.data.phone == ''){
+					self.$Utils.showToast('请输入电话号码','none')
+				}else if(self.data.description == ''){
+					self.$Utils.showToast('请输入您的区域','none')
+				}else{
+					var reg = /^1[3456789]\d{9}$/
+					if(reg.test(self.data.phone)){
+						self.submit()
+					}else{
+						self.$Utils.showToast('电话号码格式错误','none')
+					}
+				}
 			},
 			
 			
-			
-			
-			submit() {
+			submit(){
 				const self = this;
-				
-				uni.setStorageSync('canClick', false);
-				const pass = self.$Utils.checkComplete(self.submitData);
-				console.log('pass', pass);
-				console.log('self.submitData',self.submitData)
-				
-				if (pass) {	
-					const callback = (user, res) => {
-						console.log(res)
-						self.messageAdd();
-					};
-					self.$Utils.getAuthSetting(callback);
-				
-				} else {
-					uni.setStorageSync('canClick', true);
-					self.$Utils.showToast('请输入留言内容', 'none')
+				const postData = {
+					data:self.data
 				};
+				postData.tokenFuncName = 'getProjectToken';
+				const callback = (res) => {
+					
+					uni.setStorageSync('canClick', true);
+					if (res.solely_code == 100000) {
+						uni.showToast({
+						    title: '已提交申请',
+						    duration: 2000,
+						});
+						setTimeout(function(){
+							uni.navigateBack({
+							    delta: 1
+							});
+						},2000)
+					} else {
+						self.$Utils.showToast('网络故障', 'none')
+					}
+				};
+				self.$apis.messageAdd(postData, callback);
 			},
 			
 			getMainData() {

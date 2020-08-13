@@ -1,14 +1,14 @@
 <template>
 	<view>
 
-		<image src="../../static/images/the loginl-img.png" class="login-logo"></image>
+		<image src="../../static/images/the-loginl-img.png" class="login-logo"></image>
 
 		<view class="flex m-75 bB-f5 pb-3 mb-5">
-			<image src="../../static/images/the loginl-icon.png" class="zh-icon"></image>
+			<image src="../../static/images/the-loginl-icon.png" class="zh-icon"></image>
 			<input v-model="mainData.login_name" type="text" value="" placeholder="请输入账号" />
 		</view>
 		<view class="flex m-75 bB-f5 pb-3 mb-5">
-			<image src="../../static/images/the loginl-icon1.png" class="zh-icon"></image>
+			<image src="../../static/images/the-loginl-icon1.png" class="zh-icon"></image>
 			<input v-model="mainData.password" type="text" value="" placeholder="请输入密码" />
 		</view>
 
@@ -35,11 +35,11 @@
 		methods: {
 			submit() {
 				const self = this;
+				uni.setStorageSync('canClick', true);
 
 				uni.setStorageSync('login', self.mainData);
 				var callback = function(res) {
 					// console.log(res);
-					uni.setStorageSync('canClick', true);
 					if (res.data.solely_code == 100000) {
 						console.log('登录成功')
 						self.$Router.redirectTo({

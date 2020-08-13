@@ -49,7 +49,7 @@
 						<image src="../../static/images/home-icon3.png" class="homeDz-icon"></image>
 						<view class="flex-1 flex">
 							<view class="font-24 pr-2">{{shopData.address?shopData.address:''}}</view>
-							<view class="font-20 bg-f5 d-inline-block line-h-md px-1">2.21KM</view>
+							<view class="font-20 bg-f5 d-inline-block line-h-md px-1">{{shopData.distance}}KM</view>
 						</view>
 						<image src="../../static/images/home-icon4.png" class="R-icon"></image>
 					</view>
@@ -188,10 +188,11 @@
 		
 		methods: {
 			
+			
 			goToDetail(item,type){
 				const self = this;
 				if(type == 1){
-					// item.description = item.description.split(',')
+					item.description = item.description.split(',')
 					uni.setStorageSync('leagueClassDetail',item);
 					if(item.course_type == 1){
 						self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}});
@@ -232,6 +233,9 @@
 				};
 				var callback = function(res){
 					if(res.info.data.length>0){
+						for(var i=0;i<res.info.data.length;i++){
+							res.info.data[i].distance = res.info.data[i].distance.toFixed(2);
+						}
 						uni.setStorageSync('shopData', res.info.data[0]);
 						uni.setStorageSync('shopList', res.info.data);
 						uni.setStorageSync('shopListTime', (new Date()).getTime()+30000);
@@ -240,6 +244,7 @@
 						self.getCoachData();
 						self.getClassData();
 						self.id_free = uni.getStorageSync('user_info').info.id_free;
+						console.log('self.shopData',self.shopData)
 					}else{
 						uni.showModal({
 							title:'提示',
@@ -285,7 +290,7 @@
 							self.classData[i].end_time = self.$Utils.timeto(parseInt(self.classData[i].end_time),'hm')
 						}
 					}
-					console.log("class",self.classData)
+					// console.log("class",self.classData)
 				};
 				self.$apis.productGet(postData, callback);
 			},

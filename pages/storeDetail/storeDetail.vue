@@ -31,7 +31,7 @@
 					<view class="dz avoidOverflow2 font-26 color6">地址：{{mainData.address?mainData.address:''}}</view>
 					<view class="flex4 font-20 color6">
 						<image src="../../static/images/stores details-icon.png" class="storeDz-icon mb-2"></image>
-						<view>距离13.2KM</view>
+						<view>距离{{distance}}KM</view>
 					</view>
 				</view>
 			</view>
@@ -211,7 +211,8 @@
 					thirdapp_id:2
 				},
 				chooseTimestap:0,
-				start_time:0
+				start_time:0,
+				distance:''
 			}
 		},
 		
@@ -219,6 +220,7 @@
 			const self = this;
 			self.id = options.id;
 			self.timeList = self.$Utils.getFutureDateList(5);
+			self.distance = uni.getStorageSync('shopData').distance;
 			console.log('self.timeList',self.timeList);
 			self.chooseTimestap = self.timeList[0]['stime'];
 			self.start_time = ['between',

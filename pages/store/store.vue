@@ -15,7 +15,7 @@
 								</view>
 							</view>
 							<view class="color6 avoidOverflow dz">{{item.address}}</view>
-							<view>距离：2.23KM</view>
+							<view>距离：{{item.distance}}KM</view>
 						</view>
 						<image src="../../static/images/stores-icon1.png" class="wh33 zz"></image>
 					</view>
@@ -94,6 +94,9 @@
 				};
 				var callback = function(res){
 					if(res.info.data.length>0){
+						for(var i=0;i<res.info.data.length;i++){
+							res.info.data[i].distance = res.info.data[i].distance.toFixed(2);
+						}
 						self.mainData.push.apply(self.mainData,res.info.data);	
 						console.log('self.mainData',self.mainData)
 						uni.setStorageSync('shopList', res.info.data);

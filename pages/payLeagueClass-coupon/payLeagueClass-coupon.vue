@@ -15,7 +15,7 @@
 					<view class="p-aXY p-3 top-0 left-0 flex1">
 						<view class="px-1 flex-1">
 							<view class="font-40 pb-5 mb-3">满{{item.condition}}元减{{item.value}}元</view>
-							<view class="font-22">有效期至：{{invalid_time_change}}</view>
+							<view class="font-22">有效期至：{{item.invalid_time_change}}</view>
 						</view>
 						<image src="../../static/images/coupons-icon2.png" class="wh60 mr-5"></image>
 					</view>

@@ -55,7 +55,7 @@
 		<view class="px-2 py-4">
 			<view class="font-30 font-w">服务教练</view>
 			<view class="flex1 pt-3">
-				<image src="../../static/images/pay-for-courses-img1.png" class="jlImg"></image>
+				<image :src="mainData.coach[0].mainImg[0].url" class="jlImg"></image>
 				<view class="flex-1 pl-2">
 					<view class="pb-3"><text class="font-30 pr-2 font-w">{{mainData.coach[0].name}}</text> {{mainData.coach[0].phone}}</view>
 					<view class="font-24 color6">
