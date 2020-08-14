@@ -234,12 +234,12 @@
 				var callback = function(res){
 					if(res.info.data.length>0){
 						for(var i=0;i<res.info.data.length;i++){
-							res.info.data[i].distance = res.info.data[i].distance.toFixed(2);
+							res.info.data[i].distance = parseFloat(res.info.data[i].distance).toFixed(2);
 						}
+						self.shopData = res.info.data[0];
 						uni.setStorageSync('shopData', res.info.data[0]);
 						uni.setStorageSync('shopList', res.info.data);
 						uni.setStorageSync('shopListTime', (new Date()).getTime()+30000);
-						self.shopData = uni.getStorageSync('shopData');
 						self.getActiveData();
 						self.getCoachData();
 						self.getClassData();
@@ -324,9 +324,9 @@
 					thirdapp_id:2
 				};
 				if(self.shopData){
-					postData.searchItem.shop_no = self.shopData.shop_no
+					postData.searchItem.shop_no = self.shopData.user_no
 				}else{
-					shop_no:uni.getStorageSync('shopData').user_no
+					postData.searchItem.shop_no = uni.getStorageSync('shopData').user_no
 				}
 				postData.getAfter = {
 					class:{

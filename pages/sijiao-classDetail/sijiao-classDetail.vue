@@ -11,7 +11,7 @@
 		<view class="content bg-white radius30-T px-2 p-r content">
 			<view class="pb-4 bB-f5">
 				<view class="flex pt-5 font-40 font-w">{{mainData.title}}</view>
-				<button open-type="share" class="shareSgin">
+				<button open-type="share" class="shareSgin"  :data-id="mainData.id">
 					<image src="../../static/images/course-icon2.png" class="fx-icon"></image>
 					<view>分享</view>
 				</button>
@@ -146,21 +146,50 @@
 				is_show:false,
 				mainData:{},
 				remarkData:[],
-				type:'Array'
+				type:'Array',
+				searchItem: {
+					thirdapp_id: 2,
+					type: 1,
+					user_type: 1
+				}
 			}
 		},
-		onLoad(){
+		onLoad(options){
 			const self = this;
-			self.mainData = uni.getStorageSync('sijiaoCourseDetail');
-			self.mainData.description = self.mainData.description.split(',')
-			self.type = typeof(self.mainData.coach)
-			console.log('type',self.type)
+			if(options.id){
+				self.searchItem.id = options.id;
+				self.getMainData()
+			}else{
+				if(uni.getStorageSync('leagueClassDetail')){
+					self.mainData = uni.getStorageSync('sijiaoCourseDetail');
+				}else{
+					uni.showToast({
+						title:'课程信息不存在',
+						duration:2000
+					})
+					self.$Router.navigateTo({route:{path:'/pages/index/index'}})
+				}
+			}
 		},
 		methods: {
 			
 			isShow(){
 				const self = this;
 				self.is_show = !self.is_show
+			},
+			
+			onShareAppMessage: function( options ){
+			　　var that = this;
+				
+				var path = '/pages/sijiao-classDetail/sijiao-classDetail?id='+options.target.dataset.id;
+				console.log('path',path);
+			　　// 设置菜单中的转发按钮触发转发事件时的转发内容
+			　　var shareObj = {
+			　　　　title: '怪力牛运动——'+that.mainData.title,        // 默认是小程序的名称(可以写slogan等)
+			　　　　path: path,        // 默认是当前页面，必须是以‘/’开头的完整路径
+			　　　　imgUrl: '',     //自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
+			　　};
+			　　return shareObj;
 			},
 			
 			goOrder(){
@@ -192,8 +221,25 @@
 						self.$Utils.finishFunc('getMessageData');
 					};
 					self.$apis.messageGet(postData, callback);
-				
-			}
+			},
+			
+			getMainData(){
+				const self = this;
+				const postData = {};
+				//postData.tokenFuncName = 'getProjectToken';
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data[0]);
+						self.mainData.description = self.mainData.description.split(',');
+					};
+					uni.setStorageSync('canClick', true);
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.productGet(postData, callback);
+			},
+			
 			
 		}
 	}

@@ -125,7 +125,7 @@
 					};
 				}
 				const callback = (res) => {
-					
+					console.log(res)
 					uni.setStorageSync('canClick', true);
 					if (res.solely_code == 100000) {
 						uni.showToast({
@@ -138,7 +138,10 @@
 							});
 						},2000)
 					} else {
-						self.$Utils.showToast('网络故障', 'none')
+						uni.showToast({
+						    title: res.mgs,
+						    duration: 2000,
+						});
 					}
 				};
 				self.$apis.orderLogAdd(postData, callback);

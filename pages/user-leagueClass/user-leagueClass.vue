@@ -158,7 +158,6 @@
 						self.mainData.push.apply(self.mainData, res.info.data);
 						for (var i = 0; i < self.mainData.length; i++) {
 							self.mainData[i].product[0].description_change= self.mainData[i].product[0].description.split(',');
-							console.log('self.mainData[i].product[0].description',self.mainData[i].product[0].description)
 							for(var j=0;j<self.mainData[i].orderLog.length;j++){
 								self.mainData[i].orderLog[j]['book_time_change'] = 
 								self.$Utils.timeto(parseInt(self.mainData[i].orderLog[j]['book_time'])*1000,'ymd-hm');
@@ -167,7 +166,7 @@
 					}else{
 						self.isLoadAll = true;					
 					};
-					console.log('main',self.mainData)
+					// console.log('main',self.mainData)
 					uni.setStorageSync('canClick', true);
 					self.$Utils.finishFunc('getMainData');
 				};

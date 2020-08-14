@@ -233,6 +233,7 @@
 											
 										}
 									});
+									self.changeNav(1);
 									/* setTimeout(function() {
 										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
 									}, 1000); */
@@ -254,9 +255,10 @@
 									
 								}
 							});
-							setTimeout(function() {
-								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
-							}, 1000);
+							self.changeNav(1);
+							// setTimeout(function() {
+							// 	self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+							// }, 1000);
 						};
 					} else {
 						uni.setStorageSync('canClick', true);
@@ -264,6 +266,7 @@
 							title: res.msg,
 							duration: 2000
 						});
+						self.changeNav(1);
 					};
 					uni.setStorageSync('canClick', true);
 				};

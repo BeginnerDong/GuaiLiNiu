@@ -56,15 +56,36 @@
 		onLoad(options) {
 			const self = this;
 			self.product_id = options.product_id;
-			self.price = options.price;
-			self.duration = options.duration
 			console.log('options', options)
 			self.getUserData()
-
+			
 			console.log('(new Date()).toLocaleDateString()', (new Date()).toLocaleDateString());
 			console.log('self.mainData', self.mainData);
 		},
 		methods: {
+			
+			getCardData() {
+				const self = this;
+				const postData = {};
+			
+				postData.tokenFuncName = 'getProjectToken';
+				postData.searchItem = {
+					 id:self.product_id
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.cardData = res.info.data[0];
+						self.price = self.cardData.price;
+						self.mainData.deadline =
+							self.userData.deadline != 0 ? self.userData.deadline+ parseInt(self.cardData.duration) *
+							86400 : Date.parse(new Date()) / 1000 + parseInt(self.cardData.duration) *
+							86400;
+			
+					}
+					console.log(self.mainData)
+				};
+				self.$apis.productGet(postData, callback);
+			},
 
 			getUserData() {
 				const self = this;
@@ -79,11 +100,9 @@
 						self.mainData.gender = self.userData.gender
 						self.mainData.birthday = self.userData.birthday
 						self.mainData.phone = self.userData.phone
-						self.mainData.deadline =
-							self.userData.deadline != 0 ? self.userData.deadline : Date.parse(new Date()) / 1000 + parseInt(self.duration) *
-							86400;
-
+	
 					}
+					self.getCardData();
 					console.log(self.mainData)
 				};
 				self.$apis.userInfoGet(postData, callback);
@@ -114,7 +133,7 @@
 				orderList.push({
 					product_id: self.product_id,
 					count: 1,
-					type: 1
+					type: 2
 				});
 				console.log('testnb');
 				wx.requestSubscribeMessage({
@@ -159,18 +178,30 @@
 				};
 
 				postData.tokenFuncName = 'getProjectToken',
-					postData.searchItem = {
-						id: self.orderId
-					};
-				postData.payAfter = [];
-				postData.payAfter.push({
-					tableName: 'UserInfo',
-					FuncName: 'update',
-					data: self.mainData,
-					searchItem: {
-						user_no: uni.getStorageSync('user_info').user_no
+				postData.searchItem = {
+					id: self.orderId
+				};
+				// postData.payAfter = [];
+				postData.payAfter = [
+					{
+						tableName: 'UserInfo',
+						FuncName: 'update',
+						data: self.mainData,
+						searchItem: {
+							user_no: uni.getStorageSync('user_info').user_no
+						}
+					},
+					{
+						tableName: 'User',
+						FuncName: 'update',
+						data: {
+						 shop_no: self.cardData.shop_no
+						},
+						searchItem: {
+							user_no: uni.getStorageSync('user_info').user_no
+						}
 					}
-				});
+				];
 
 				const callback = (res) => {
 					if (res.solely_code == 100000) {

@@ -95,7 +95,7 @@
 				var callback = function(res){
 					if(res.info.data.length>0){
 						for(var i=0;i<res.info.data.length;i++){
-							res.info.data[i].distance = res.info.data[i].distance.toFixed(2);
+							res.info.data[i].distance = parseFloat(res.info.data[i].distance).toFixed(2);
 						}
 						self.mainData.push.apply(self.mainData,res.info.data);	
 						console.log('self.mainData',self.mainData)

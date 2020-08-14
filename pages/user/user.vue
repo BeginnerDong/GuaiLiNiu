@@ -142,7 +142,6 @@
 					if (res.info.data.length > 0) {
 						self.articleData = res.info.data[0];
 					}
-					console.log('文章',self.articleData)
 					self.$Utils.finishFunc('getArticleData');
 				};
 				self.$apis.articleGet(postData, callback);
