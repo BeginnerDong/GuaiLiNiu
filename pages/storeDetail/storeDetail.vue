@@ -30,7 +30,7 @@
 				<view class="flex1">
 					<view class="dz avoidOverflow2 font-26 color6">地址：{{mainData.address?mainData.address:''}}</view>
 					<view class="flex4 font-20 color6">
-						<image src="../../static/images/stores details-icon.png" class="storeDz-icon mb-2"></image>
+						<image src="../../static/images/stores-details-icon.png" class="storeDz-icon mb-2"></image>
 						<view>距离{{distance}}KM</view>
 					</view>
 				</view>
@@ -52,23 +52,23 @@
 				</view>
 				<view class="flex1 color6 font-24">
 					<view class="flex4">
-						<image src="../../static/images/stores details-icon2.png" class="wh80 mb-2"></image>
+						<image src="../../static/images/stores-details-icon2.png" class="wh80 mb-2"></image>
 						<view>无线网络</view>
 					</view>
 					<view class="flex4">
-						<image src="../../static/images/stores details-icon3.png" class="wh80 mb-2"></image>
+						<image src="../../static/images/stores-details-icon3.png" class="wh80 mb-2"></image>
 						<view>储物柜</view>
 					</view>
 					<view class="flex4">
-						<image src="../../static/images/stores details-icon4.png" class="wh80 mb-2"></image>
+						<image src="../../static/images/stores-details-icon4.png" class="wh80 mb-2"></image>
 						<view>更衣室</view>
 					</view>
 					<view class="flex4">
-						<image src="../../static/images/stores details-icon5.png" class="wh80 mb-2"></image>
+						<image src="../../static/images/stores-details-icon5.png" class="wh80 mb-2"></image>
 						<view>饮水机</view>
 					</view>
 					<view class="flex4">
-						<image src="../../static/images/stores details-icon6.png" class="wh80 mb-2"></image>
+						<image src="../../static/images/stores-details-icon6.png" class="wh80 mb-2"></image>
 						<view>人脸识别</view>
 					</view>
 				</view>
@@ -124,23 +124,23 @@
 		</view>
 		
 		<!-- 客服 -->
-		<image src="../../static/images/stores details-icon1.png" class="kfImg" @click="isShow(1)"></image>
+		<image src="../../static/images/stores-details-icon1.png" class="kfImg" @click="isShow(1)"></image>
 		<!-- 客服弹窗 -->
 		<view class="bg-mask" v-show="kf_show">
 			<view class="p-r kf">
 				<view class="bg-white w-600 radius20 pb-5 font-24 p-r kfCon">
-					<image src="../../static/images/stores details-img4.png" class="wh120 kfLogo"></image>
+					<image src="../../static/images/stores-details-img4.png" class="wh120 kfLogo"></image>
 					<view class="font-30 text-center py-2">店长：大白</view>
 					<view class="mx-3 mb-2 px-3 py-2 flex kfBg radius10">
 						<view>联系方式：</view>
-						<image src="../../static/images/stores details-icon18.png" class="wh50 mx-3"></image>
-						<image src="../../static/images/stores details-icon19.png" class="wh50 mx-3"></image>
+						<image src="../../static/images/stores-details-icon18.png" class="wh50 mx-3"></image>
+						<image src="../../static/images/stores-details-icon19.png" class="wh50 mx-3"></image>
 					</view>
 					<view class="mx-3 mb-5 px-3 py-2 kfBg radius10 line-h-lg">
 						<view>联系方式：<br/>欢迎来到怪力牛运动外事学院店，本店24小时营业，疫情期间请做好个人防护，如有问题请联系微店长  15562362356（微信同号）</view>
 					</view>
 				</view>
-				<image src="../../static/images/stores details-icon20.png" class="wh30 m-4 xx" @click="isShow(1)"></image>
+				<image src="../../static/images/stores-details-icon20.png" class="wh30 m-4 xx" @click="isShow(1)"></image>
 			</view>
 		</view>
 		
@@ -170,7 +170,7 @@
 						</block>
 					</view>
 				</view>
-				<image src="../../static/images/stores details-icon21.png" class="wh30 p-a m-2 right-0 z-index100 top-0" @click="isShow(2)"></image>
+				<image src="../../static/images/stores-details-icon21.png" class="wh30 p-a m-2 right-0 z-index100 top-0" @click="isShow(2)"></image>
 			</view>
 		</view>
 		
@@ -187,22 +187,22 @@
 				kf_show:false,
 				sb_show:false,
 				equipment:[
-					{url:'../../static/images/stores details-icon11.png',name:'固定器械',key:'apparatus'},
-					{url:'../../static/images/stores details-icon12.png',name:'哑铃',key:'dumbbell'},
-					{url:'../../static/images/stores details-icon13.png',name:'深蹲架',key:'squat'},
-					{url:'../../static/images/stores details-icon14.png',name:'卧推',key:'bench'},
-					{url:'../../static/images/stores details-icon15.png',name:'动感单车',key:'bicycle'},
-					{url:'../../static/images/stores details-icon16.png',name:'跑步机',key:'run'},
-					{url:'../../static/images/stores details-icon17.png',name:'瑜伽垫',key:'yoga'}
+					{url:'../../static/images/stores-details-icon11.png',name:'固定器械',key:'apparatus'},
+					{url:'../../static/images/stores-details-icon12.png',name:'哑铃',key:'dumbbell'},
+					{url:'../../static/images/stores-details-icon13.png',name:'深蹲架',key:'squat'},
+					{url:'../../static/images/stores-details-icon14.png',name:'卧推',key:'bench'},
+					{url:'../../static/images/stores-details-icon15.png',name:'动感单车',key:'bicycle'},
+					{url:'../../static/images/stores-details-icon16.png',name:'跑步机',key:'run'},
+					{url:'../../static/images/stores-details-icon17.png',name:'瑜伽垫',key:'yoga'}
 				],
 				service:[
-					{url:'../../static/images/stores details-icon2.png',name:'无线网络',key:'wifi'},
-					{url:'../../static/images/stores details-icon3.png',name:'储物柜',key:'cabinet'},
-					{url:'../../static/images/stores details-icon4.png',name:'更衣室',key:'locker'},
-					{url:'../../static/images/stores details-icon5.png',name:'饮水机',key:'water'},
-					{url:'../../static/images/stores details-icon6.png',name:'人脸识别',key:'face'},
-					{url:'../../static/images/stores details-icon9.png',name:'充电宝',key:'charge'},
-					{url:'../../static/images/stores details-icon10.png',name:'沐浴房',key:'bathroom'}
+					{url:'../../static/images/stores-details-icon2.png',name:'无线网络',key:'wifi'},
+					{url:'../../static/images/stores-details-icon3.png',name:'储物柜',key:'cabinet'},
+					{url:'../../static/images/stores-details-icon4.png',name:'更衣室',key:'locker'},
+					{url:'../../static/images/stores-details-icon5.png',name:'饮水机',key:'water'},
+					{url:'../../static/images/stores-details-icon6.png',name:'人脸识别',key:'face'},
+					{url:'../../static/images/stores-details-icon9.png',name:'充电宝',key:'charge'},
+					{url:'../../static/images/stores-details-icon10.png',name:'沐浴房',key:'bathroom'}
 				],
 				mainData:{},
 				timeList:[],

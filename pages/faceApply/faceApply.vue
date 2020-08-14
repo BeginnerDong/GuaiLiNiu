@@ -2,9 +2,9 @@
 	<view>
 		
 		<view class="bg-white px-2">
-			<view class="py-3">绑定手机号：15623568947</view>
-			<view class="py-3 bT-e1">门店：西安外事学院</view>
-			<view class="py-3 bT-e1">店长手机号：13588647925</view>
+			<view class="py-3">绑定手机号：{{userData.info.phone}}</view>
+			<view class="py-3 bT-e1">门店：{{shopData.name}}</view>
+			<view class="py-3 bT-e1">店长手机号：{{shopData.phone}}</view>
 		</view>
 		
 		<view class="btnAuto applyBtn">提交申请</view>
@@ -16,8 +16,14 @@
 	export default {
 		data() {
 			return {
-				
+				shopData:{},
+				userData:{}
 			}
+		},
+		onLoad() {
+			const self = this;
+			self.shopData = uni.getStorageSync('shopData')
+			self.userData = uni.getStorageSync('user_info')
 		},
 		methods: {
 			

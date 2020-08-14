@@ -36,15 +36,15 @@
 				</view>
 				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view>
 				<!-- 其他 -->
-				<view class="py-3 d-flex j-end">
+				<view class="py-3 d-flex j-end" v-show="item.transport_status!=1">
 					<view class="btn b-e1" v-show="item.transport_status==0" @click="goNext('use',item)">立即使用</view>
 					<view class="btn b-e1" v-show="item.transport_status==2&&item.isremark==0" @click="goNext('comment',item)">立即评价</view>
 					<view class="btn b-e1" v-show="item.transport_status==3&&item.isremark==1" @click="goNext('checkComment',item)">查看评价</view>
 				</view>
 				<view>
 					<block v-for="(cc_item,index) in item.orderLog" :key="index">
-						<view >
-							<span>预约时间：{{cc_item.book_time_change}}{{cc_item.qrcode?'':'未成团'}}</span>
+						<view class="flex1 py-3">
+							<span>预约时间：{{cc_item.book_time_change}}{{cc_item.is_book==1?'已成团':'未成团'}}</span>
 							<img :src="cc_item.qrcode" style="width: 40px;height: 40px;" ></img>
 						</view>
 					</block>

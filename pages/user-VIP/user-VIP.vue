@@ -175,7 +175,7 @@
 			changeLeft(i){
 				const self = this;
 				self.leftCurr = i;
-				self.searchItem.book_time = ['in',[self.timeList[0].stime/1000,self.timeList[0].stime/1000+86400]];
+				self.searchItem.book_time = ['between',[self.timeList[i].stime/1000,self.timeList[i].stime/1000+86400]];
 				self.getMainData(true);
 				
 			}
