@@ -21,7 +21,7 @@
 					<view class="colorR" v-show="item.transport_status==3&&item.isremark==1">已评价</view>
 				</view>
 				<view class="flex1 py-3 bB-f5 w-100">
-					<image :src="item.product[0].mainImg&&item.product[0].mainImg[0]?item.product[0].mainImg[0].url:''" class="wh180"></image>
+					<image :src="item.product[0].mainImg&&item.product[0].mainImg[0]?item.product[0].mainImg[0].url:''" class="wh180 radius10"></image>
 					<view class="px-2 flex-1 flex-1">
 						<view class="font-30 font-w">{{item.product[0].title}}</view>
 						<view class="pt-2"><text class="font-w price">{{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>

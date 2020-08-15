@@ -42,7 +42,7 @@
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay-for-courses-icon2.png" class="wh30 mt"></image>
-					<view class="flex-1 pl-2">预计<text class="colorR">6月24日</text>开课<br />{{mainData.book_week_item}} {{mainData.book_time_item}}</view>
+					<view class="flex-1 pl-2">预计<text class="colorR">{{mainData.start_time}}</text>开课<br />{{mainData.book_week_item}} {{mainData.book_time_item}}</view>
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay-for-courses-icon3.png" class="dw-icon mt"></image>

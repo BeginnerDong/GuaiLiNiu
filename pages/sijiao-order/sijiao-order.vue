@@ -8,7 +8,7 @@
 					<view class="px-2 py-3 flex-1">
 						<view class="font-30 font-w pb-1">{{mainData.title}}</view>
 						<view><text class="price font-w">{{mainData.price}}</text>/{{mainData.score}}课时</view>
-						<view class="font-24 py-1 line-h-sm">Auger | {{mainData.book_week_item}}~{{mainData.book_time_item}}</view>
+						<view class="font-24 py-1 line-h-sm">{{mainData.coach[0].name}} | {{mainData.book_week_item}}~{{mainData.book_time_item}}</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in mainData.description_change" :key="c_index">
 								<view class="tag">{{c_item}}</view>
@@ -27,7 +27,7 @@
 				
 				<view class="py-4 flex1 bB-f5">
 					<view>教练</view>
-					<view class="color6">{{mainData.coach}}</view>
+					<view class="color6">{{mainData.coach[0].name}}</view>
 				</view>
 				
 				<view class="py-4 bB-f5">
@@ -87,7 +87,7 @@
 				<view class="px-3 mb-3 flex-1 flexY">
 					1、都必须为为和促进OK了
 				</view>
-				<view class="text-center colorf py-3 Mgb" @click="isShow">确定</view>
+				<view class="text-center colorf py-3 Mgb" @click="isShow()">确定</view>
 			</view>
 		</view>
 		
@@ -114,6 +114,7 @@
 			uni.removeStorageSync('chooseCoupon');
 			self.mainData = uni.getStorageSync('sijiaoCourseDetail');
 			self.shopData = uni.getStorageSync('shopData');
+			self.num = self.mainData.score;
 		},
 		onShow(){
 			const self = this;
@@ -127,7 +128,7 @@
 			
 			count(x){
 				const self = this;
-				if(self.num+x<=0){
+				if(self.num+x < self.mainData.score){
 					return;
 				}else{
 					self.num = self.num+x;
@@ -297,4 +298,5 @@ page{background-color: #f5f5f5;}
 .tc{font-size: 24rpx;line-height: 80rpx;text-align: center;border: 1px solid #e1e1e1;border-radius: 10rpx;width: 155rpx;color: #666;}
 .tcBox .on{border: 1px solid #FF633A;background: #FFEEE9;color: #000000;}
 .carBtn{border-radius: 0;}
+.xy{height: 1000rpx;margin-top: 15%;}
 </style>

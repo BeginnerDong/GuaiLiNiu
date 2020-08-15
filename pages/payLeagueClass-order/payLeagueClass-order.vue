@@ -12,7 +12,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="font-26 color6 py-3">课程有效期：15天 </view>
+			<view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view>
 		</view>
 		
 		<view class="mx-2">
@@ -32,7 +32,7 @@
 				<view>优惠券</view>
 				<view class="flex" @click="Router.navigateTo({route:{path:'/pages/payLeagueClass-coupon/payLeagueClass-coupon?standardPrice='+mainData.price*num}})">
 					<view class="color6">
-						{{chooseCoupon.id?'满'+chooseCoupon.snap_product.condition+'减'+chooseCoupon.snap_product.value:'无使用'}}
+						{{chooseCoupon.id?'满'+chooseCoupon.snap_coupon.condition+'减'+chooseCoupon.snap_coupon.value:'无使用'}}
 					</view>
 					<image src="../../static/images/the-order-icon3.png" class="R-icon ml-1"></image>
 				</view>
@@ -87,6 +87,7 @@
 			const self = this;
 			uni.removeStorageSync('chooseCoupon');
 			self.mainData = uni.getStorageSync('orderDetail');
+			self.num = self.mainData.score;
 			console.log('order',self.mainData.shopInfor,self.mainData.coach[0])
 		},
 		onShow(){
@@ -94,13 +95,13 @@
 			if(uni.getStorageSync('chooseCoupon')){
 				self.chooseCoupon = uni.getStorageSync('chooseCoupon')
 			}
-			
+			console.log('coupon',self.chooseCoupon)
 		},
 		methods: {
 			
 			count(x){
 				const self = this;
-				if(self.num+x<=0){
+				if(self.num+x<self.mainData.score){
 					return;
 				}else{
 					self.num = self.num+x;
@@ -202,6 +203,7 @@
 				});
 				
 				const callback = (res) => {
+					console.log(res)
 					if (res.solely_code == 100000) {
 						uni.setStorageSync('canClick', true);
 						if (res.info) {

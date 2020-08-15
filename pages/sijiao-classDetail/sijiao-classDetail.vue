@@ -196,7 +196,7 @@
 				const self = this;
 				self.mainData.shopInfor = self.shopData;
 				uni.setStorageSync('sijiaoCourseDetail',self.mainData);
-				self.$Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})
+				self.$Router.navigateTo({route:{path:'/pages/sijiao-order/sijiao-order'}})
 			},
 			
 			getMessageData(isNew){

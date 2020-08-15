@@ -133,7 +133,7 @@
 			<image src="../../static/images/home-img4.png" class="Img80"></image>
 			<view class="pl-2 pr-5 flex-1">店长送你一份信任见面礼，如需到店使用请提前预约~</view>
 			<view class="criBtn criBtn1">去领取</view>
-			<image src="../../static/images/my class-icon1.png" class="x-icon1" @click="isShow"></image>
+			<image src="../../static/images/my-class-icon1.png" class="x-icon1" @click="isShow"></image>
 		</view>
 		
 		

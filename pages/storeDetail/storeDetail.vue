@@ -77,7 +77,7 @@
 			<view class="pb-4 bB-f5">
 				<view class="flex1">
 					<view class="font-w t-indent20 line-h pt-4 pb-3 tit">门店私教</view>
-					<view class="color6 flex1" @click="Router.navigateTo({route:{path:'/pages/store-sijiao/store-sijiao'}})">
+					<view class="color6 flex1" @click="Router.navigateTo({route:{path:'/pages/store-sijiao/store-sijiao?shop_no='+shopData.user_no}})">
 						<view>查看全部</view>
 						<image src="../../static/images/the-order-icon3.png" class="R-icon ml-1"></image>
 					</view>
@@ -90,7 +90,7 @@
 						<view class="font-w py-2">{{item.name?item.name:''}}</view>
 						<view class="flex1">
 							<view class="font-22 color6">{{item.expertise?item.expertise:''}}</view>
-							<view class="font-20 color9">累计 105节</view>
+							<view class="font-20 color9">累计 {{item.class?item.class:0}}节</view>
 						</view>
 						<view class="tjSgin">店长推荐</view>
 					</view>
@@ -137,7 +137,7 @@
 						<image src="../../static/images/stores-details-icon19.png" class="wh50 mx-3"></image>
 					</view>
 					<view class="mx-3 mb-5 px-3 py-2 kfBg radius10 line-h-lg">
-						<view>联系方式：<br/>欢迎来到怪力牛运动外事学院店，本店24小时营业，疫情期间请做好个人防护，如有问题请联系微店长  15562362356（微信同号）</view>
+						<view>联系方式：<br/>欢迎来到怪力牛运动{{mainData.name}}，本店24小时营业，疫情期间请做好个人防护，如有问题请联系微店长  {{mainData.phone}}（微信同号）</view>
 					</view>
 				</view>
 				<image src="../../static/images/stores-details-icon20.png" class="wh30 m-4 xx" @click="isShow(1)"></image>
@@ -212,7 +212,8 @@
 				},
 				chooseTimestap:0,
 				start_time:0,
-				distance:''
+				distance:'',
+				shopData:{}
 			}
 		},
 		
@@ -220,6 +221,7 @@
 			const self = this;
 			self.id = options.id;
 			self.timeList = self.$Utils.getFutureDateList(5);
+			self.shopData = uni.getStorageSync('shopData')
 			self.distance = uni.getStorageSync('shopData').distance;
 			console.log('self.timeList',self.timeList);
 			self.chooseTimestap = self.timeList[0]['stime'];

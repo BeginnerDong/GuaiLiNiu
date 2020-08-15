@@ -10,7 +10,7 @@
 			</view>
 		</view>
 		
-		<view>
+		<view class="pb-3">
 			<block v-for="(item,index) in mainData" :key="index">
 				<view class="mt-3 colorf p-r" v-if="!item.snap_coupon" >
 					<image src="../../static/images/coupons-icon.png" class="couponImg"></image>

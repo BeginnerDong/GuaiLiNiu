@@ -79,7 +79,7 @@
 					<view class="tag" v-for="(c_item,c_index) of item.description" :key="c_index">{{c_item}}</view>
 				</view>
 			</view>
-			<view class="font-20 colorf kcSgin">差 {{mainData.standard-mainData.is_book}} 个人开课</view>
+			<view class="font-20 colorf kcSgin">差 {{item.standard-item.is_book}} 个人开课</view>
 		</view>
 	</view>
 </template>
