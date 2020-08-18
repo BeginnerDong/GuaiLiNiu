@@ -77,8 +77,28 @@
 			// console.log('(new Date()).toLocaleDateString()',(new Date()).toLocaleDateString());
 			// console.log('self.mainData',self.mainData);
 			console.log('submitData',self.submitData.mianImg)
+			self.getUserData();
 		},
 		methods: {
+			
+			getUserData() {
+				const self = this;
+				const postData = {};
+			
+				postData.tokenFuncName = 'getProjectToken';
+			
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.userData = res.info.data[0];
+						self.mainData.name = self.userData.name
+						self.mainData.gender = self.userData.gender
+						self.mainData.birthday = self.userData.birthday
+						self.mainData.phone = self.userData.phone
+					}
+					console.log(self.mainData)
+				};
+				self.$apis.userInfoGet(postData, callback);
+			},
 			
 			successSubmit() {
 				const self = this;

@@ -40,7 +40,7 @@
 		</view>
 		
 		<view class="bT-e1 p-2 bg-white bto">
-			<view class="btnAuto" @click="submit">确定</view>
+			<button class="btnAuto" open-type="getUserInfo" @click="successSubmit">确定</button>
 		</view>
 		
 	</view>
@@ -87,10 +87,26 @@
 				const self = this;
 				self.choosedHour = item;
 			},
+			
 			changeLeft(i){
 				const self = this;
 				self.leftCurr = i;
 			},
+			
+			successSubmit(){
+				const self = this;
+				wx.requestSubscribeMessage({
+					tmplIds: [
+						'BZ74KvhYwLWYKzcY-OunKaWIkbsBy_wWZ01LaZsGlKo',
+						'Z5oqs6UaEnLygi7S7XSZ_dQbU71cauG0peB9qrwqrF8'
+					],
+					success(res) {
+						console.log('res', res)
+						self.submit()
+					}
+				});
+			},
+			
 			submit(){
 				const self = this;
 				/* if(self.mainData.orderLog.length>=parseInt(self.mainData.standard)){

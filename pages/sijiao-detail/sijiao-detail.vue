@@ -98,7 +98,7 @@
 				</swiper>
 				
 				<view class="xx wh50 p-r" @click="isShow">
-					<image src="../../static/images/stores details-icon20.png" class="wh20 p-aXY m-a"></image>
+					<image src="../../static/images/stores-details-icon20.png" class="wh20 p-aXY m-a"></image>
 				</view>
 			</view>
 		</view>

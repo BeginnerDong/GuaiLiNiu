@@ -99,6 +99,7 @@
 		data() {
 			return {
 				Router:this.$Router,
+				Utils:this.$Utils,
 				tcCurr:0,
 				mainData:{},
 				num:1,
@@ -152,9 +153,15 @@
 				const self = this;
 				self.tcCurr = i
 			},
+			
+			successSubmit(){
+				const self = this;
+				self.Utils.stopMultiClick(self.submit)
+			},
+			
 			submit(){
 				const self = this;
-				uni.setStorageSync('canClick', false);
+				// uni.setStorageSync('canClick', false);
 				var orderList = []
 				if(self.isAgree){
 					orderList.push({
@@ -175,6 +182,7 @@
 						showCancel:false
 					})
 				}
+				uni.setStorageSync('canClick', true);
 			},
 			
 			addOrder(orderList) {
@@ -193,7 +201,7 @@
 							title: res.msg,
 							duration: 2000
 						});
-						uni.setStorageSync('canClick', true);
+						// uni.setStorageSync('canClick', true);
 					};		
 				};
 				self.$apis.addOrder(postData, callback);
@@ -237,7 +245,7 @@
 				
 				const callback = (res) => {
 					if (res.solely_code == 100000) {
-						uni.setStorageSync('canClick', true);
+						// uni.setStorageSync('canClick', true);
 						if (res.info) {
 							const payCallback = (payData) => {
 								console.log('payData', payData);
@@ -254,7 +262,7 @@
 										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
 									}, 1000);
 								} else {
-									uni.setStorageSync('canClick', true);
+									// uni.setStorageSync('canClick', true);
 									uni.showToast({
 										title: '支付失败',
 										duration: 2000
@@ -276,13 +284,13 @@
 							}, 1000);
 						};
 					} else {
-						uni.setStorageSync('canClick', true);
+						// uni.setStorageSync('canClick', true);
 						uni.showToast({
 							title: res.msg,
 							duration: 2000
 						});
 					};
-					uni.setStorageSync('canClick', true);
+					// uni.setStorageSync('canClick', true);
 				};
 				self.$apis.pay(postData, callback);
 			},

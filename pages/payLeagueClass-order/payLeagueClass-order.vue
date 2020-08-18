@@ -55,7 +55,7 @@
 		
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 			<view class="font-26">已预约{{mainData.is_book}}/{{mainData.max}}人</view>
-			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button>
+			<button class="carBtn" open-type="getUserInfo" @getuserinfo="successSubmit" >立即预约</button>
 		</view>
 		
 		<view class="bg-mask" v-show="is_show">
@@ -76,6 +76,7 @@
 		data() {
 			return {
 				Router:this.$Router,
+				Utils:this.$Utils,
 				is_show:false,
 				isAgree:false,
 				num:1,
@@ -117,9 +118,13 @@
 				}
 			},
 			
+			successSubmit(){
+				const self = this;
+				self.Utils.stopMultiClick(self.submit);
+			},
+			
 			submit(){
 				const self = this;
-				uni.setStorageSync('canClick', false);
 				var orderList = []
 				if(self.isAgree){
 					orderList.push({
@@ -132,16 +137,18 @@
 							shop_no:self.mainData.shop_no,
 						}
 					});
-					console.log('orderList2222',orderList);
+					// console.log('orderList2222',orderList);
 					//return;
 					self.addOrder(orderList)
+					console.log("点击了点击了")
 				}else{
 					uni.showModal({
-						title:'',
+						title:'提示',
 						content:'请先同意会员服务协议',
 						showCancel:false
 					})
 				}
+				uni.setStorageSync('canClick', true);
 			},
 			
 			addOrder(orderList) {
@@ -160,7 +167,7 @@
 							title: res.msg,
 							duration: 2000
 						});
-						uni.setStorageSync('canClick', true);
+						// uni.setStorageSync('canClick', true);
 					};		
 				};
 				self.$apis.addOrder(postData, callback);
@@ -222,7 +229,7 @@
 										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
 									}, 1000);
 								} else {
-									uni.setStorageSync('canClick', true);
+									// uni.setStorageSync('canClick', true);
 									uni.showToast({
 										title: '支付失败',
 										duration: 2000
@@ -245,13 +252,13 @@
 							}, 1000);
 						};
 					} else {
-						uni.setStorageSync('canClick', true);
+						// uni.setStorageSync('canClick', true);
 						uni.showToast({
 							title: res.msg,
 							duration: 2000
 						});
 					};
-					uni.setStorageSync('canClick', true);
+					// uni.setStorageSync('canClick', true);
 				};
 				self.$apis.pay(postData, callback);
 			},

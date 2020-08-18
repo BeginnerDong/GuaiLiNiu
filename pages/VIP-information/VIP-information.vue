@@ -43,6 +43,7 @@
 		data() {
 			return {
 				product_id: 0,
+				Utils:this.$Utils,
 				mainData: {
 					name: '',
 					gender: 0,
@@ -56,8 +57,8 @@
 		onLoad(options) {
 			const self = this;
 			self.product_id = options.product_id;
-			console.log('options', options)
-			self.getUserData()
+			console.log('options', options);
+			self.getUserData();
 			
 			console.log('(new Date()).toLocaleDateString()', (new Date()).toLocaleDateString());
 			console.log('self.mainData', self.mainData);
@@ -111,24 +112,24 @@
 			successSubmit() {
 				const self = this;
 				if (self.mainData.name == '') {
-					self.$Utils.showToast('请输入姓名', 'none')
+					self.$Utils.showToast('请输入姓名', 'none');
 				} else if (self.mainData.birthday == '') {
-					self.$Utils.showToast('请输入年龄', 'none')
+					self.$Utils.showToast('请输入年龄', 'none');
 				} else if (self.mainData.phone == '') {
-					self.$Utils.showToast('请输入电话', 'none')
+					self.$Utils.showToast('请输入电话', 'none');
 				} else {
 					var reg = /^1[3456789]\d{9}$/
 					if (reg.test(self.mainData.phone)) {
-						self.submit()
+						self.Utils.stopMultiClick(self.submit);
 					} else {
-						self.$Utils.showToast('电话号码格式错误', 'none')
+						self.$Utils.showToast('电话号码格式错误', 'none');
 					}
 				}
+				uni.setStorageSync('canClick',true);
 			},
 
 			submit() {
 				const self = this;
-
 				var orderList = []
 				orderList.push({
 					product_id: self.product_id,

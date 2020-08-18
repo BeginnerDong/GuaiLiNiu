@@ -78,7 +78,21 @@
 			
 			share(item){
 				const self = this;
-				console.log('share');
+				
+				wx.requestSubscribeMessage({
+					tmplIds: [
+						'uEfkFlQDr6pZYDBUWvQOHzRhKioUK_F1BnohDxr-2i4'
+					],
+					success(res) {
+						console.log('res', res)
+					},
+					fail(err){
+						uni.getStorageSync({
+							title:'拒绝后将不再接受分享的奖励提醒'
+						})
+					}
+				});
+				
 				self.$Router.navigateTo({
 					route:{path:'/pages/coupon/coupon?coupon_no='
 					+item.snap_coupon.coupon_no
@@ -180,7 +194,6 @@
 					}
 				});
 				self.addOrder(couponList)
-				
 			},
 			
 			addOrder(couponList) {

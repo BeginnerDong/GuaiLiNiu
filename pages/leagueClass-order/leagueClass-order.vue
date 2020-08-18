@@ -38,7 +38,7 @@
 		
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 			<view class="font-26">已预约{{mainData.is_book}}/{{mainData.max}}人</view>
-			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button>
+			<button class="carBtn" open-type="getUserInfo" @getuserinfo="successSubmit" >立即预约</button>
 		</view>
 		
 		<view class="bg-mask" v-show="is_show">
@@ -60,7 +60,8 @@
 			return {
 				is_show:false,
 				isAgree:false,
-				mainData:{}
+				mainData:{},
+				Utils:this.$Utils
 			}
 		},
 		onLoad(){
@@ -78,20 +79,27 @@
 					self.is_show = !self.is_show
 				}
 			},
+			
+			successSubmit(){
+				const self = this;
+				self.Utils.stopMultiClick(self.submit);
+			},
+			
 			submit(){
 				const self = this;
-				uni.setStorageSync('canClick', false);
+				// uni.setStorageSync('canClick', false);
 				var orderList = []
 				if(self.isAgree){
-					orderList.push({product_id:self.mainData.id,
-					count:1,
-					type:1,
-					data:{
-						course_type:self.mainData.course_type,
-						coach_no:self.mainData.coach_no,
-						shop_no:self.mainData.shop_no,
-					}
-				});
+					orderList.push({
+						product_id:self.mainData.id,
+						count:1,
+						type:1,
+						data:{
+							course_type:self.mainData.course_type,
+							coach_no:self.mainData.coach_no,
+							shop_no:self.mainData.shop_no,
+						}
+					});
 					self.addOrder(orderList)
 				}else{
 					uni.showModal({
@@ -100,6 +108,7 @@
 						showCancel:false
 					})
 				}
+				uni.setStorageSync('canClick', true);
 			},
 			
 			addOrder(orderList) {
@@ -118,7 +127,7 @@
 							title: res.msg,
 							duration: 2000
 						});
-						uni.setStorageSync('canClick', true);
+						// uni.setStorageSync('canClick', true);
 					};		
 				};
 				self.$apis.addOrder(postData, callback);
@@ -196,7 +205,7 @@
 							duration: 2000
 						});
 					};
-					uni.setStorageSync('canClick', true);
+					// uni.setStorageSync('canClick', true);
 				};
 				self.$apis.pay(postData, callback);
 			},
