@@ -2,7 +2,8 @@
 	<view>
 		
 		<view class="vipHead colorf font-24 line-h px-2">
-			<view class="flex py-3 font-30 font-w">
+			<view class="flex py-3 font-30 font-w"
+			@click="Router.navigateTo({route:{path:'/pages/store/store'}})">
 				<view>{{shopData.name}}</view>
 				<image src="../../static/images/members-icon.png" class="sj-icon"></image>
 			</view>
@@ -32,7 +33,7 @@
 					<view class="mt-2 px-2">
 						<view class="font-w py-4">选择套餐</view>
 						<view class="flex1 mb-4 tcBox">
-							<view class="tc b-e1 p-r radius10" 
+							<view class="tc b-e1 p-r radius10 mt-2" 
 							v-for="(item,index) in mainData" :key="index"
 							:class="tcCurr==index?'on':''" @click="changeTc(index,item)">
 								<view class="font-24 pb-3">{{item.title}}</view>
@@ -65,14 +66,16 @@
 						</view>
 					</view>
 					
-					<button class="btnAuto" 
-					v-show="userData.info.behavior==1"
-					open-type="getUserInfo"
-					@getuserinfo="Router.navigateTo({route:{
-						path:'/pages/VIP-information/VIP-information?product_id='
-						+product_id}})">
-						<text class="price">{{price}}</text>/{{mainData[tcCurr].title}} 立即续费
-					</button>
+					<view class="p-f left-0 right-0 bottom-0 py-3">
+						<button class="btnAuto "
+						v-show="userData.info.behavior==1"
+						open-type="getUserInfo"
+						@getuserinfo="Router.navigateTo({route:{
+							path:'/pages/VIP-information/VIP-information?product_id='
+							+product_id}})">
+							<text class="price">{{price}}</text>/{{mainData[tcCurr].title?mainData[tcCurr].title:''}} 立即续费
+						</button>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -126,11 +129,22 @@
 			self.$Utils.loadAll(['getMainData'], self);
 			
 		},
+		onShow() {
+			const self = this;
+			if(self.shopData.name != uni.getStorageSync('shopData').name){
+				self.shopData = uni.getStorageSync('shopData');
+				self.searchItem.shop_no = uni.getStorageSync('shopData')['user_no'];
+				self.getMainData(true)
+			}
+		},
 		methods: {
 			
-			getMainData() {
+			getMainData(isNew) {
 				const self = this;
 				const postData = {};
+				if(isNew){
+					self.mainData = []
+				};
 				//postData.tokenFuncName = 'getProjectToken';
 				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
 				const callback = (res) => {
@@ -165,6 +179,7 @@
 .vipBg1{height: 859rpx;}
 .m100{margin-top: -100rpx;}
 .tc{width: 220rpx;height: 140rpx;text-align: center;line-height: 1;padding-top: 30rpx;}
+.tc:nth-child(1),.tc:nth-child(2),.tc:nth-child(3){margin-top: 0;}
 .tcBox .on{background-color: #FFF5F2;border: 1px solid #FF633A;}
 .yes{width: 61rpx;height: 51rpx;position: absolute;bottom: 0;right: 0;}
 

@@ -35,7 +35,11 @@
 								<view>有效期至：{{item.invalid_time_change}}</view>
 							</view>
 						</view>
-						<button  open-type='share'  :data-couponNo="item.snap_coupon.coupon_no" :data-parentNo="item.snap_coupon.user_no" class="font-30 colorM pr-5" >分享</button>
+						<view class="flex4">
+							<button  open-type='share'  :data-couponNo="item.snap_coupon.coupon_no" :data-parentNo="item.snap_coupon.user_no" class="font-30 colorM pr-5 pb-2" >分享</button>
+							<view class="font-30 colorM pr-5"
+							@click="Router.navigateTo({route:{path:'/pages/index/index'}})">立即使用</view>
+						</view>
 					</view>
 					
 					<!-- <button type="default" @click="share(item)">分享</button>

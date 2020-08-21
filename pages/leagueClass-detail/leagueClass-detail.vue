@@ -9,7 +9,7 @@
 				</swiper-item>
 			</swiper>
 			
-			<view class="backBox" @click="Router.back({route:{dalta:-1}})">
+			<view class="backBox" @click="Router.back({route:{dalta:-1}})" :style="{marginTop:statusBar+'px'}">
 				<image src="../../static/images/back-icon.png" class="back"></image>
 			</view>
 		</view>
@@ -154,7 +154,7 @@
 		<view style="height: 200rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1">
 			<view class="font-26">已预约{{mainData.is_book}}/{{mainData.max}}人，还差<text class="colorR">{{mainData.standard-mainData.is_book}}</text>人开课</view>
-			<view class="criBtn" @click="goOrder">立即预约</view>
+			<view class="criBtn" @click="goOrder">{{userData.info.behavior==0?'购买会员':'立即预约'}}</view>
 		</view>
 		
 		
@@ -168,7 +168,7 @@
 				</view>
 				<view class="flex bT-f5">
 					<view class="py-4 w-50 bR-f5" @click="isShow">我知道了</view>
-					<view class="py-4 w-50 colorM">去看看</view>
+					<view class="py-4 w-50 colorM" @click="isShow(true)">去看看</view>
 				</view>
 			</view>
 		</view>
@@ -177,6 +177,7 @@
 </template>
 
 <script>
+	const app = getApp();
 	export default {
 		data() {
 			return {
@@ -187,11 +188,14 @@
 				mainData:{},
 				shopData:{},
 				remarkData:[],
-				isLoadAll:false
+				isLoadAll:false,
+				statusBar: app.globalData.statusBar,
+				userData:{}
 			}
 		},
 		onLoad(options){
 			const self = this;
+			self.userData = uni.getStorageSync('user_info');
 			if(options.id){
 				self.searchItem.id = options.id;
 				self.getMainData()
@@ -237,12 +241,16 @@
 			
 			goOrder(){
 				const self = this;
-				self.mainData.shopInfor = self.shopData;
-				uni.setStorageSync('orderDetail',self.mainData);
-				if(self.type == 0){
-					self.$Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})
+				if(self.userData.info.behavior == 1){
+					self.mainData.shopInfor = self.shopData;
+					uni.setStorageSync('orderDetail',self.mainData);
+					if(self.type == 0){
+						self.$Router.navigateTo({route:{path:'/pages/leagueClass-order/leagueClass-order'}})
+					}else{
+						self.$Router.navigateTo({route:{path:'/pages/payLeagueClass-order/payLeagueClass-order'}})
+					}
 				}else{
-					self.$Router.navigateTo({route:{path:'/pages/payLeagueClass-order/payLeagueClass-order'}})
+					self.is_show = !self.is_show;
 				}
 			},
 			
@@ -250,9 +258,13 @@
 				const self = this;
 				self.navCurr = i
 			},
-			isShow(){
+			
+			isShow(type){
 				const self = this;
 				self.is_show = !self.is_show
+				if(type){
+					self.$Router.navigateTo({route:{path:'/pages/VIP/VIP'}})
+				}
 			},
 			
 			getMessageData(isNew){

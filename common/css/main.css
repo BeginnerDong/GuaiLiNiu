@@ -76,7 +76,7 @@ uni-button:after{border: 0;}
 .shadowM{box-shadow: 0 0 6rpx 0 rgba(0,0,0,0.15);}
 
 /* 返回按钮 */
-.backBox{position: absolute;top: 30rpx;left: 0;padding: 20rpx;z-index: 100;}
+.backBox{position: absolute;top: 0;left: 0;padding: 20rpx;z-index: 100;}
 .back{width: 40rpx;height: 40rpx;}
 
 /* 按钮 */
@@ -128,7 +128,7 @@ uni-button:after{border: 0;}
 .R-icon{width: 10rpx;height: 18rpx;}
 .zs-icon{width: 26rpx;height: 26rpx;}
 .Img80{width: 80rpx;height: 80rpx;}
-.x-icon1{width: 40rpx;height: 40rpx;position: absolute;right: 0;top: 0;}
+.x-icon1{width: 50rpx;height: 50rpx;position: absolute;right: -15rpx;top: -16rpx;z-index: 20;}
 .sj-icon{width: 17rpx;height: 8rpx;margin-left: 8rpx;}
 .dw-icon{width: 26rpx;height: 32rpx;}
 .fx-icon{width: 24rpx;height: 26rpx;}

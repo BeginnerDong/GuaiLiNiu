@@ -55,12 +55,12 @@
 			goToDetail(item){
 				const self = this;
 				if(item.course_type==3){
-					self.$Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail?coach_no='+item.coach_no}});
+					uni.setStorageSync('sijiaoCourseDetail',item);
+					self.$Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail'}});
 				}else{
 					uni.setStorageSync('leagueClassDetail',item);
 					self.$Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=1'}});
 				};
-				
 			},
 			
 			change(index){

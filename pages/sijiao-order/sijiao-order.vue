@@ -65,10 +65,13 @@
 					</view>
 				</view>
 				
-				<view class="flex py-4 font-24">
+				<view class="flex py-4 font-24" @click="isShow('agree')">
 					<image src="../../static/images/the-order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
 					<image src="../../static/images/the-order-icon4.png" class="wh30 mr-2" v-else></image>
-					<view><text @click="isShow('agree')">同意</text> <text class="colorB" @click="isShow()">《怪力牛运动会员服务协议》</text></view>
+					<view>
+						<text>同意</text> 
+						<text class="colorB" @click="isShow()">《怪力牛运动会员服务协议》</text>
+					</view>
 				</view>
 			</view>
 		</view>

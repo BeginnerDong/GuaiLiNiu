@@ -44,10 +44,10 @@
 					<view class="color6">微信支付</view>
 				</view>
 			</view>
-			<view class="flex py-4 font-24">
+			<view class="flex py-4 font-24" @click="isShow('agree')">
 				<image src="../../static/images/the-order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
 				<image src="../../static/images/the-order-icon4.png" class="wh30 mr-2" v-else></image>
-				<view><text @click="isShow('agree')">同意</text> <text class="colorB" @click="isShow()">《怪力牛运动会员服务协议》</text></view>
+				<view><text>同意</text> <text class="colorB" @click="isShow()">《怪力牛运动会员服务协议》</text></view>
 			</view>
 		</view>
 		
@@ -81,7 +81,8 @@
 				isAgree:false,
 				num:1,
 				mainData:{},
-				chooseCoupon:{}
+				chooseCoupon:{},
+				orderDetail:{}
 			}
 		},
 		onLoad(){
@@ -100,6 +101,12 @@
 		},
 		methods: {
 			
+			goNext(){
+				const self = this;
+				self.getOrderData(true,self.mainData.id);
+				self.Router.navigateTo({route:{path:'/pages/user-sijiaoTime/user-sijiaoTime'}});
+			},
+			
 			count(x){
 				const self = this;
 				if(self.num+x<self.mainData.score){
@@ -117,6 +124,7 @@
 					self.is_show = !self.is_show
 				}
 			},
+			
 			
 			successSubmit(){
 				const self = this;
@@ -140,7 +148,6 @@
 					// console.log('orderList2222',orderList);
 					//return;
 					self.addOrder(orderList)
-					console.log("点击了点击了")
 				}else{
 					uni.showModal({
 						title:'提示',
@@ -226,7 +233,8 @@
 										}
 									});
 									setTimeout(function() {
-										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+										// self.goNext()
+										// self.$Router.redirectTo({route:{path:'/pages/user/user'}})
 									}, 1000);
 								} else {
 									// uni.setStorageSync('canClick', true);

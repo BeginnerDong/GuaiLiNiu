@@ -2,15 +2,9 @@
 	<view>
 		
 		<!-- banner -->
-		<view class="banner m-2">
-			<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" indicator-active-color="#fff">
-				<swiper-item v-for="(item,index) of sliderData" :key="index" @click="">
-					<view class="swiper-item">
-						<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" ></image>
-					</view>
-				</swiper-item>
-			</swiper>
-		</view>
+		<container>
+			<ls-swiper :list="sliderData" imgKey="imgUrl" :loop="true" :dots='true' :autoplay='true' height='125' imgRadius='10' imgWidth='355'/>
+		</container>
 		
 		<!-- 金刚区 -->
 		<view class="flex2 py-3">
@@ -63,7 +57,7 @@
 									class="swiper-item" 
 									@click="Router.navigateTo({route:{path:'/pages/limitedTime/limitedTime?id='+$event.currentTarget.dataset.id}})"
 							>
-								<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" ></image>
+								<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="radius10"></image>
 							</view>
 						</swiper-item>
 					</swiper>
@@ -81,8 +75,11 @@
 						<view class="shadowM radius10 flex-shrink overflow-h mr-3 p-r"  v-for="(item,index) in classData" :key="index" @click="goToDetail(item,1)">
 							<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="kcImg"></image>
 							<view class="p-3">
-								<view class="font-30 font-w">{{item.title?item.title:''}}</view>
-								<view class="font-24 pt-3">{{item.coach&&item.coach[0]?item.coach[0].name:''}} | {{item.start_time}}~{{item.end_time}}</view>
+								<view class="font-30 font-w">
+									{{item.title?item.title:''}}
+									<text class="color9 font-24 pl-1">({{item.course_type==1?'免费团课':(item.course_type==2?'付费团课':'私教课')}})</text>
+								</view>
+								<view class="font-24 pt-3">{{item.coach&&item.coach[0]?item.coach[0].name:''}} | 有效期：{{item.duration}}天</view><!-- {{item.start_time}}~{{item.end_time}} -->
 							</view>
 							<view class="font-20 colorf kcSgin">差{{item.is_book?item.standard-item.is_book:item.standard}}个人开课</view>
 						</view>
@@ -114,7 +111,7 @@
 									</view>
 									<view class="flex">
 										<view class="price font-26 pr-5">{{item.class&&item.class[0]?item.class[0].price:'0'}}/节</view>
-										<view class="font-18 color9 pl-4">累计：{{mainData.class?mainData.class:0}}节</view>
+										<view class="font-22 color9 pl-4">累计：{{mainData.class?mainData.class:0}}节</view>
 									</view>
 								</view>
 							</view>
@@ -129,10 +126,13 @@
 		</view>
 		
 		
-		<view v-if="id_free==0" class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;" v-show="is_show" @click="Router.navigateTo({route:{path:'/pages/experienceCoupon/experienceCoupon'}})">
-			<image src="../../static/images/home-img4.png" class="Img80"></image>
-			<view class="pl-2 pr-5 flex-1">店长送你一份信任见面礼，如需到店使用请提前预约~</view>
-			<view class="criBtn criBtn1">去领取</view>
+		<view v-if="id_free==0" class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;" v-show="is_show">
+			<view class="flex1"
+			 @click="Router.navigateTo({route:{path:'/pages/experienceCoupon/experienceCoupon'}})">
+				<image src="../../static/images/home-img4.png" class="Img80"></image>
+				<view class="pl-2 pr-5 flex-1">店长送你一份信任见面礼，如需到店使用请提前预约~</view>
+				<view class="criBtn criBtn1">去领取</view>
+			</view>
 			<image src="../../static/images/my-class-icon1.png" class="x-icon1" @click="isShow"></image>
 		</view>
 		
@@ -154,6 +154,8 @@
 </template>
 
 <script>
+	import container from '../../components/container/index.vue'
+	import LsSwiper from '../../components/ls-swiper/index.vue'
 	export default {
 		data() {
 			return {
@@ -170,29 +172,36 @@
 		
 		onLoad() {
 			const self = this;
-			self.$Utils.loadAll(['getSliderData','getLocation'], self);
+			self.$Utils.loadAll(['getSliderData'], self);
+			if(!uni.getStorageSync('shopData')){
+				self.getLocation();
+			}
 		},
 		
 		onShow() {
 			const self = this;
 			if(self.shopData.name != uni.getStorageSync('shopData').name){
-				self.shopData = uni.getStorageSync('shopData');
+				self.shopData = uni.getStorageSync('shopData')
 				self.getActiveData();
 				self.getCoachData();
 				self.getClassData();
+				self.id_free = uni.getStorageSync('user_info').info.id_free;
 			}
-			console.log('activeData',self.activeData)
-			console.log('coachData',self.coachData)
-			console.log('classData',self.classData)
+		},
+		
+		components: {
+			container,
+			LsSwiper
 		},
 		
 		methods: {
 			
-			
 			goToDetail(item,type){
 				const self = this;
 				if(type == 1){
-					item.description = item.description.split(',')
+					if(typeof(item.description) == 'string'){
+						item.description = item.description.split(',')
+					}
 					uni.setStorageSync('leagueClassDetail',item);
 					if(item.course_type == 1){
 						self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}});
@@ -244,7 +253,6 @@
 						self.getCoachData();
 						self.getClassData();
 						self.id_free = uni.getStorageSync('user_info').info.id_free;
-						console.log('self.shopData',self.shopData)
 					}else{
 						uni.showModal({
 							title:'提示',
@@ -377,17 +385,19 @@
 				};
 				var callback = function(res){
 					if(res.info.data.length>0){
-						self.sliderData = res.info.data
+						for(var i=0; i<res.info.data.length;i++){
+							self.sliderData.push(res.info.data[i].mainImg[0].url)
+						}
 					}
 					self.$Utils.finishFunc('getSliderData');
 				};
 				self.$apis.articleGet(postData, callback);
 			},
 			
-			getMainData() {
-				const self = this;
+			// getMainData() {
+			// 	const self = this;
 				
-			},
+			// },
 			
 			isShow(){
 				const self = this;
@@ -413,5 +423,7 @@ swiper{height: 250rpx;}
 .criBtn1{width: 110rpx;line-height: 40rpx;border-radius: 20rpx;}
 
 .sijiaoBox{min-height: 800rpx;}
+
+/* .x-icon1{width: 40rpx;height: 40rpx;} */
 
 </style>

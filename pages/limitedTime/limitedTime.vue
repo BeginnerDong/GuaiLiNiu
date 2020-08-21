@@ -1,8 +1,8 @@
 <template>
 	<view class="font-26 line-h">
 		
-		<view class="top text-center py-2 colorf">距离活动结束：
-			
+		<view class="top text-center py-2 colorf">
+			<view class="pb-1">距离活动结束：</view>
 			<countdown-timer ref="countdown" :time="time">
 			    <template v-slot="{day, hour, minute, second}">
 			        <!-- 你的样式部分 Start -->

@@ -4,9 +4,12 @@
 		<view class="px-2 bg-white">
 			<view class="flex1 py-4 bB-f5">
 				<view class="flex-1">上传照片</view>
-				<image src="../../static/images/img3.png" class="scImg" 
-				@click="upLoadImg('mainImg')" v-if="submitData.mainImg.length<=0"></image>
-				<image :src="submitData.mainImg[0].url" class="scImg" v-else></image>
+				<view v-if="">
+					<image src="../../static/images/img3.png" class="scImg"
+					@click="upLoadImg('mainImg')" v-if="submitData.mainImg.length<=0"></image>
+					<image :src="submitData.mainImg[0].url" class="scImg" v-else></image>
+				</view>
+				<!-- <image src="../../static/images/Vpreferential-img.png" class="scImg"></image> -->
 			</view>
 			<view class="flex1 py-4 bB-f5">
 				<view class="flex-1">姓名</view>
@@ -56,7 +59,8 @@
 					phone:'',
 					deadline:0,
 					behavior:1,
-					id_free:1
+					id_free:1,
+					mainImg:[]
 				},
 				submitData:{
 					mainImg:[]
@@ -95,6 +99,8 @@
 						self.mainData.birthday = self.userData.birthday
 						self.mainData.phone = self.userData.phone
 					}
+					console.log(res)
+					console.log(self.userData)
 					console.log(self.mainData)
 				};
 				self.$apis.userInfoGet(postData, callback);
@@ -120,11 +126,37 @@
 				}
 			},
 			
+			// submit(){
+			// 	const self = this;
+			// 	const postData = {
+			// 		data:self.submitData
+			// 	};
+			// 	postData.tokenFuncName = 'getProjectToken';
+			// 	const callback = (res) => {
+			// 		uni.setStorageSync('canClick', true);
+			// 		if (res.solely_code == 100000) {
+			// 			uni.showToast({
+			// 			    title: '提交成功',
+			// 			    duration: 2000,
+			// 			});
+			// 			setTimeout(function(){
+			// 				uni.navigateTo({
+			// 				    path: '/pages/experienceUser/experienceUser'
+			// 				});
+			// 			},2000);
+			// 		} else {
+			// 			self.$Utils.showToast('网络故障', 'none')
+			// 		};
+			// 	};
+			// 	self.$apis.userUpdate(postData, callback);
+			// },
+			
 			submit(){
 				const self = this;
 				const postData = {};
 				postData.tokenFuncName = 'getProjectToken';
-				self.mainData.mainImg.push(self.searchItem.mainImg[0]);
+				self.mainData.mainImg[0] = self.searchItem.mainImg[0];
+				console.log('submit',self.submitData,'main',self.mainData)
 				postData.data = self.mainData;	
 				const callback = (res) => {
 					if (res.solely_code == 100000) {
@@ -137,17 +169,16 @@
 						});
 					}
 				};
-				self.$apis.userInfoUpdate(postData, callback);
+				self.$apis.userUpdate(postData, callback);
 			},
 			
 			upLoadImg(type) {
-				const self = this;			
-				
+				const self = this;	
 				const callback = (res) => {
 					console.log('res', res)
 					if (res.solely_code == 100000) {
 						self.submitData['mainImg'].push({url:res.info.url,type:'image'})
-						console.log(self.submitData.mainImg[0])
+						console.log(self.submitData)
 					}else {
 						self.$Utils.showToast('网络故障', 'none')
 					}
@@ -171,6 +202,10 @@
 					},			
 				})			
 			}
+			
+			
+			
+			
 			
 		}
 	}

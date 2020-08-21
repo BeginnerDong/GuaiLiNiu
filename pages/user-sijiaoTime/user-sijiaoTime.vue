@@ -1,10 +1,10 @@
 <template>
-	<view class="h-100">
+	<view class="h-100 flex5">
 		
 		<view class="flex1 py-3 px-2 bB-e1 w-100 bg-white top">
-			<image :src="mainData.product[0].mainImg[0].url" class="wh120 radius10"></image>
+			<image :src="mainData&&mainData.product&&mainData.product[0]&&mainData.product[0].mainImg&&mainData.product[0].mainImg[0]&&mainData.product[0].mainImg[0].url" class="wh120 radius10"></image>
 			<view class="px-2 flex5 flex-1 h-120">
-				<view class="font-30 font-w flex-1">{{mainData.product[0].title}}</view>
+				<view class="font-30 font-w flex-1">{{mainData&&minData.product&&mainData.product[0]&&mainData.product[0].title}}</view>
 				<view class="flex">
 					<block v-for="(c_item,c_index) in mainData.product[0].description_change" :key="c_index">
 						<view class="tag">{{c_item}}</view>
@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		
-		<view class="d-flex cnter">
+		<view class="d-flex cnter flex-1">
 			<view class="left bR-e1 h-100 bg-f5">
 				<block v-for="(item,index) in timeList" :key="index">
 					<view class="py-3 bB-e1" :class="leftCurr==index?'on':''" @click="changeLeft(index)">
@@ -172,15 +172,15 @@ page{height: 100%;}
 .h-120{height: 120rpx;}
 .btnAuto{width: 710rpx;}
 
-.left{width: 140rpx;text-align: center;overflow-y: auto;height: 918rpx;}
+.left{width: 140rpx;text-align: center;overflow-y: auto;height: 100%;}
 .left .on{background-color: #fff;color: #FF633A;}
 .left .on .date{color: #FF633A;}
-.right{padding: 30rpx 30rpx 80rpx;overflow-y: auto;height: 918rpx;}
+.right{padding: 30rpx 30rpx 80rpx;overflow-y: auto;height: 100%;}
 .jl{margin-right: 68rpx;width: 140rpx;line-height: 80rpx;text-align: center;}
 .jl:nth-child(3n){margin-right: 0;}
 
 .wh26{position: absolute;top: -10rpx;right: -10rpx;}
-.top{position: sticky;top: 0;}
-.bto{position: sticky;bottom: 0;}
-.center{padding: 160rpx 0;}
+/* .top{position: sticky;top: 0;} */
+/* .bto{position: sticky;bottom: 0;} */
+/* .center{padding: 160rpx 0;} */
 </style>
