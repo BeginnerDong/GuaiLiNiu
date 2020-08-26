@@ -136,7 +136,8 @@
 				const postData = {};
 				postData.searchItem = {
 					thirdapp_id: 2,
-					menu_id: 5
+					menu_id: 5,
+					title:'开业大酬宾'
 				};
 				const callback = (res) => {
 					if (res.info.data.length > 0) {

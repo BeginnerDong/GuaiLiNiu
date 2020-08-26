@@ -60,9 +60,9 @@
 		
 		<view class="bg-mask" v-show="is_show">
 			<view class="bg-white radius20 mx-4 flexY xy">
-				<view class="font-30 text-center py-3">《怪力牛会员购买服务协议》</view>
+				<view class="font-30 text-center py-3">《怪力牛购买服务协议》</view>
 				<view class="px-3 mb-3 flex-1 flexY">
-					1、都必须为为和促进OK了
+					<view v-html="serviceData.content"></view>
 				</view>
 				<view class="text-center colorf py-3 Mgb" @click="isShow()">确定</view>
 			</view>
@@ -82,7 +82,8 @@
 				num:1,
 				mainData:{},
 				chooseCoupon:{},
-				orderDetail:{}
+				orderDetail:{},
+				serviceData:{}
 			}
 		},
 		onLoad(){
@@ -91,6 +92,7 @@
 			self.mainData = uni.getStorageSync('orderDetail');
 			self.num = self.mainData.score;
 			console.log('order',self.mainData.shopInfor,self.mainData.coach[0])
+			self.getServiceData();
 		},
 		onShow(){
 			const self = this;
@@ -101,10 +103,22 @@
 		},
 		methods: {
 			
-			goNext(){
+			getServiceData(){
 				const self = this;
-				self.getOrderData(true,self.mainData.id);
-				self.Router.navigateTo({route:{path:'/pages/user-sijiaoTime/user-sijiaoTime'}});
+				const postData = {};
+				postData.searchItem = {
+					menu_id: 5,
+					thirdapp_id: 2,
+					title:'服务协议'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.serviceData =  res.info.data[0];
+					};
+					uni.setStorageSync('canClick', true);
+					self.$Utils.finishFunc('getServiceData');
+				};
+				self.$apis.articleGet(postData, callback);
 			},
 			
 			count(x){
@@ -233,8 +247,7 @@
 										}
 									});
 									setTimeout(function() {
-										// self.goNext()
-										// self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+										self.Router.navigateTo({route:{path:'/pages/user-leagueClass/user-leagueClass'}});
 									}, 1000);
 								} else {
 									// uni.setStorageSync('canClick', true);
@@ -256,7 +269,7 @@
 							});
 							uni.removeStorageSync('chooseCoupon');
 							setTimeout(function() {
-								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+								self.Router.navigateTo({route:{path:'/pages/user-leagueClass/user-leagueClass'}});
 							}, 1000);
 						};
 					} else {

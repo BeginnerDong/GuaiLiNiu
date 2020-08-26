@@ -7,7 +7,8 @@
 				<view v-if="">
 					<image src="../../static/images/img3.png" class="scImg"
 					@click="upLoadImg('mainImg')" v-if="submitData.mainImg.length<=0"></image>
-					<image :src="submitData.mainImg[0].url" class="scImg" v-else></image>
+					<image :src="submitData.mainImg[0].url" class="scImg" 
+					@click="upLoadImg('mainImg')" v-else></image>
 				</view>
 				<!-- <image src="../../static/images/Vpreferential-img.png" class="scImg"></image> -->
 			</view>
@@ -126,48 +127,24 @@
 				}
 			},
 			
-			// submit(){
-			// 	const self = this;
-			// 	const postData = {
-			// 		data:self.submitData
-			// 	};
-			// 	postData.tokenFuncName = 'getProjectToken';
-			// 	const callback = (res) => {
-			// 		uni.setStorageSync('canClick', true);
-			// 		if (res.solely_code == 100000) {
-			// 			uni.showToast({
-			// 			    title: '提交成功',
-			// 			    duration: 2000,
-			// 			});
-			// 			setTimeout(function(){
-			// 				uni.navigateTo({
-			// 				    path: '/pages/experienceUser/experienceUser'
-			// 				});
-			// 			},2000);
-			// 		} else {
-			// 			self.$Utils.showToast('网络故障', 'none')
-			// 		};
-			// 	};
-			// 	self.$apis.userUpdate(postData, callback);
-			// },
-			
 			submit(){
 				const self = this;
-				const postData = {};
+				const postData = {
+					data:self.submitData
+				};
 				postData.tokenFuncName = 'getProjectToken';
-				self.mainData.mainImg[0] = self.searchItem.mainImg[0];
-				console.log('submit',self.submitData,'main',self.mainData)
-				postData.data = self.mainData;	
 				const callback = (res) => {
+					uni.setStorageSync('canClick', true);
 					if (res.solely_code == 100000) {
-						uni.removeStorageSync('user_token');
-						self.$Router.redirectTo({route:{path:'/pages/user/user'}})
-					}else{
 						uni.showToast({
-							title: res.msg,
-							duration: 2000
+						    title: '提交成功',
+						    duration: 2000,
 						});
-					}
+						uni.removeStorageSync('user_token');
+						self.$Router.redirectTo({route:{path:'/pages/user/user'}});
+					} else {
+						self.$Utils.showToast('网络故障', 'none')
+					};
 				};
 				self.$apis.userUpdate(postData, callback);
 			},
@@ -177,6 +154,9 @@
 				const callback = (res) => {
 					console.log('res', res)
 					if (res.solely_code == 100000) {
+						if(self.submitData['mainImg'].length > 0){
+							self.submitData['mainImg'] = []
+						}
 						self.submitData['mainImg'].push({url:res.info.url,type:'image'})
 						console.log(self.submitData)
 					}else {

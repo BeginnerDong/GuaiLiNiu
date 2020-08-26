@@ -45,7 +45,8 @@
 					<block v-for="(cc_item,index) in item.orderLog" :key="index">
 						<view class="flex1 py-3">
 							<span>预约时间：{{cc_item.book_time_change}}{{cc_item.is_book==1?'已成团':'未成团'}}</span>
-							<img :src="cc_item.qrcode" style="width: 40px;height: 40px;" ></img>
+							<img :src="cc_item.qrcode" style="width: 40px;height: 40px;"
+							@click="bigImg(cc_item.qrcode)"></img>
 						</view>
 					</block>
 					
@@ -88,8 +89,9 @@
 			self.$Utils.loadAll(['getMainData'], self);
 		},
 		// onShow(){
-		// 	const self = this;
-		// 	self.getMainData(true);
+			// const self = this;
+			// if(self.mainData)
+			// self.getMainData(true);
 		// },
 		onReachBottom() {
 			const self = this;
@@ -99,6 +101,16 @@
 			};
 		},
 		methods: {
+			
+			bigImg(url){
+				let _this = this;
+				let imgsArray = [];
+				imgsArray[0] = url
+				uni.previewImage({
+					current: 0,
+					urls: imgsArray
+				});
+			},
 				
 			goNext(type,item){
 				const self = this;

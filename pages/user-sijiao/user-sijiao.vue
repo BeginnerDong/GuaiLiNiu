@@ -14,13 +14,16 @@
 				<view class="font-24 color6 flex1 py-3 bB-f5">
 					<view>订单编号：{{item.order_no}}</view>
 					<view class="colorR" v-show="item.transport_status==0">待使用</view>
-					<view class="colorR" v-show="item.transport_status==1&&item.isremark==0">待评价</view>
-					<view class="colorR" v-show="item.transport_status==1&&item.isremark==1">已评价</view>
+					<view class="colorR" v-show="item.transport_status==1">使用中</view>
+					<view class="colorR" v-show="item.transport_status==2&&item.isremark==0">待评价</view>
+					<view class="colorR" v-show="item.transport_status==2&&item.isremark==1">已评价</view>
 				</view>
 				<view class="flex1 py-3 bB-f5 w-100">
 					<image :src="item.product[0].mainImg[0].url" class="wh180 radius10"></image>
 					<view class="px-2 py-1 flex-1 d-flex flex-column j-sb h-180">
-						<view class="font-30 font-w">{{item.product[0].title}}</view>
+						<view class="font-30 font-w">{{item.product[0].title}}
+							<text class="colorR font-28 pl-2">(共{{item.standard}}节)</text>
+						</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in item.product[0].description" :key="c_index">
 								<view class="tag">{{c_item}}</view>
@@ -29,19 +32,28 @@
 						<view class="colorR">{{item.coach.name}} |<text class="price"> {{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
 					</view>
 				</view>
-				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view>
+				<view class="font-26 color6 py-3 bB-f5 flex1">
+					<view>课程有效期：{{item.product[0].duration}}天</view>
+					<view v-show="item.transport_status==1">已使用{{item.orderLog.length}}节，剩余<text class="colorR">{{item.standard-item.orderLog.length}}</text>节</view>
+				</view>
 				<!-- 其他 -->
-				<view class="py-3 d-flex j-end">
-					<view class="btn b-e1" @click="goNext('use',item)" v-show="item.transport_status==0">立即使用</view>
-					<view class="btn b-e1" @click="goNext('comment',item)" v-show="item.transport_status==1&&item.isremark==0">立即评价</view>
-					<view class="btn b-e1" @click="goNext('checkComment',item)" v-show="item.transport_status==1&&item.isremark==1">查看评价</view>
+				<view class="d-flex j-end bB-f5">
+					<view class="btn b-e1 my-3" @click="goNext('use',item)" v-show="item.transport_status==0||item.transport_status==1">立即使用</view>
+					<view class="btn b-e1 my-3" @click="goNext('comment',item)" v-show="item.transport_status==2&&item.isremark==0">立即评价</view>
+					<view class="btn b-e1 my-3" @click="goNext('checkComment',item)" v-show="item.transport_status==2&&item.isremark==1">查看评价</view>
 				</view>
 
 				<!-- 进行中 -->
-				<!-- <view class="py-3 flex1">
-					<view>核销码：</view>
-					<image src="../../static/images/my class-img.png" class="wh80"></image>
-				</view> -->
+				<view class="py-3 flex1 bB-f5" v-show="item.transport_status==1"
+				v-for="(c_item,c_index) in item.orderLog" :key="c_index">
+					<span>预约时间：
+						{{c_item.book_time_change+' '}}
+						<text class="colorM">{{time}}</text> 
+						{{c_item.is_use==1?'已结束':''}}
+					</span>
+					<image :src="c_item.qrcode" class="wh80" 
+					@click="bigImg(c_item.qrcode)" v-show="c_item.qrcode&&c_item.is_use!=1"></image>
+				</view>
 			</view>
 		</block>
 
@@ -58,14 +70,18 @@
 				mainData: [],
 				searchItem: {
 					thirdapp_id: 2,
-					course_type: 3
+					course_type: 3,
+					pay_status:1
 				},
-				isLoadAll: false
+				isLoadAll: false,
+				time:'',
+				page:0
 			}
 		},
 
 		onLoad(options) {
 			const self = this;
+			self.page = 0;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.$Utils.loadAll(['getMainData'], self);
 		},
@@ -78,11 +94,22 @@
 		},
 		onShow() {
 			const self = this;
-			for(var i=0;i<self.mainData.length;i++){
-				// self.
+			console.log('参数',self.page)
+			if(self.page == 1){
+				self.getMainData(true)
 			}
 		},
 		methods: {
+			
+			bigImg(url){
+				let _this = this;
+				let imgsArray = [];
+				imgsArray[0] = url
+				uni.previewImage({
+					current: 0,
+					urls: imgsArray
+				});
+			},
 
 			goNext(type, item) {
 				const self = this;
@@ -156,9 +183,21 @@
 						self.isLoadAll = true;
 					};
 					for (var i = 0; i < self.mainData.length; i++) {
-						self.mainData[i].product[0].description = self.mainData[i].product[0].description.split(',')
+						self.mainData[i].product[0].description = self.mainData[i].product[0].description.split(',');
+						const timeArr = self.mainData[i].product[0].book_time_item.split(',');
+						for(var j=0;j<self.mainData[i].orderLog.length;j++){
+							const book_time = '';
+							book_time = self.$Utils.timeto(parseInt(self.mainData[i].orderLog[j]['book_time'])*1000,'ymd-hm');
+							for(var k=0; k<timeArr.length; k++){
+								if(book_time.split(' ')[1]==timeArr[k].split('-')[0]){
+									self.time = timeArr[k]
+								}
+							}
+							self.mainData[i].orderLog[j]['book_time_change'] = book_time.split(' ')[0];
+						}
 					}
 					uni.setStorageSync('canClick', true);
+					// console.log('订单',self.mainData)
 					self.$Utils.finishFunc('getMainData');
 				};
 				self.$apis.orderGet(postData, callback);
@@ -185,7 +224,8 @@
 						self.searchItem = {
 							thirdapp_id: 2,
 							course_type: 3,
-							transport_status: 1
+							transport_status: 2,
+							isremark: 0
 						};
 						break;
 					case 3:
@@ -193,7 +233,7 @@
 							thirdapp_id: 2,
 							course_type: 3,
 							transport_status: 2,
-							isremark: 0
+							isremark: 1
 						};
 						break;
 				};

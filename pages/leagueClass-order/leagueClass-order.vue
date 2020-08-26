@@ -43,9 +43,9 @@
 		
 		<view class="bg-mask" v-show="is_show">
 			<view class="bg-white radius20 mx-4 flexY xy">
-				<view class="font-30 text-center py-3">《怪力牛会员购买服务协议》</view>
+				<view class="font-30 text-center py-3">《怪力牛购买服务协议》</view>
 				<view class="px-3 mb-3 flex-1 flexY">
-					1、都必须为为和促进OK了
+					<view v-html="serviceData.content"></view>
 				</view>
 				<view class="text-center colorf py-3 Mgb" @click="isShow()">确定</view>
 			</view>
@@ -61,13 +61,15 @@
 				is_show:false,
 				isAgree:false,
 				mainData:{},
-				Utils:this.$Utils
+				Utils:this.$Utils,
+				serviceData:{}
 			}
 		},
 		onLoad(){
 			const self = this;
 			self.mainData = uni.getStorageSync('orderDetail');
 			console.log('order',self.mainData.shopInfor,self.mainData)
+			self.getServiceData();
 		},
 		methods: {
 			
@@ -78,6 +80,25 @@
 				}else{
 					self.is_show = !self.is_show
 				}
+			},
+			
+			getServiceData(){
+				const self = this;
+				const postData = {};
+				postData.searchItem = {
+					menu_id: 5,
+					thirdapp_id: 2,
+					title:'服务协议'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.serviceData =  res.info.data[0];
+					};
+					uni.setStorageSync('canClick', true);
+					console.log('服务',self.serviceData)
+					self.$Utils.finishFunc('getServiceData');
+				};
+				self.$apis.articleGet(postData, callback);
 			},
 			
 			successSubmit(){
@@ -173,7 +194,7 @@
 										}
 									});
 									setTimeout(function() {
-										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+										self.Router.navigateTo({route:{path:'/pages/user-leagueClass/user-leagueClass'}});
 									}, 1000);
 								} else {
 									uni.setStorageSync('canClick', true);
@@ -195,7 +216,7 @@
 							});
 							uni.removeStorageSync('chooseCoupon');
 							setTimeout(function() {
-								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+								self.Router.navigateTo({route:{path:'/pages/user-leagueClass/user-leagueClass'}});
 							}, 1000);
 						};
 					} else {

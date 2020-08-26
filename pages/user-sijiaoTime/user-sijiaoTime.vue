@@ -4,9 +4,9 @@
 		<view class="flex1 py-3 px-2 bB-e1 w-100 bg-white top">
 			<image :src="mainData&&mainData.product&&mainData.product[0]&&mainData.product[0].mainImg&&mainData.product[0].mainImg[0]&&mainData.product[0].mainImg[0].url" class="wh120 radius10"></image>
 			<view class="px-2 flex5 flex-1 h-120">
-				<view class="font-30 font-w flex-1">{{mainData&&minData.product&&mainData.product[0]&&mainData.product[0].title}}</view>
+				<view class="font-30 font-w flex-1">{{mainData.product[0].title}}</view>
 				<view class="flex">
-					<block v-for="(c_item,c_index) in mainData.product[0].description_change" :key="c_index">
+					<block v-for="(c_item,c_index) in mainData.product[0].description" :key="c_index">
 						<view class="tag">{{c_item}}</view>
 					</block>
 				</view>
@@ -28,8 +28,8 @@
 				<view class="d-flex flex-wrap">
 					<block v-for="(item,index) in canChooseHour" :key="index">
 						<view class="jl color6 shadowM p-r mt-5" @click="chooseHour(item)" >
-							<view>{{item}}</view>
-							<image src="../../static/images/yuyue-icon-01.png" class="wh26" v-if="choosedHour == item"></image>
+							<view>{{item.split('-')[0]}}</view>
+							<image src="../../static/images/yuyue-icon-01.png" class="wh26" v-if="choosedHour == item.split('-')[0]"></image>
 							<image src="../../static/images/yuyue-icon-02.png" class="wh26" v-else></image>
 						</view>
 					</block>
@@ -76,8 +76,17 @@
 			self.data.shop_no = self.mainData.shop_no;
 			self.data.coach_no = self.mainData.product[0].coach_no;
 			
-			self.timeList = self.$Utils.getFutureDateList(13);
-			self.canChooseWeek = self.mainData.product[0].book_week_item.split(',');
+			
+			console.log('timeList',self.timeList)
+			const timeList = self.$Utils.getFutureDateList(13);
+			const week = self.mainData.product[0].book_week_item.split(',');
+			for(var i=0; i<timeList.length; i++){
+				for(var j=0; j<week.length; j++){
+					if(week[j] == timeList[i].ds)
+					self.timeList.push(timeList[i])
+				}
+			}
+			// console.log('week',week,self.canChooseWeek)
 			self.canChooseHour = self.mainData.product[0].book_time_item.split(',');
 			uni.setStorageSync('canClick', true);
 		},
@@ -85,7 +94,7 @@
 			
 			chooseHour(item){
 				const self = this;
-				self.choosedHour = item;
+				self.choosedHour = item.split('-')[0];
 			},
 			
 			changeLeft(i){
@@ -118,6 +127,7 @@
 				+'-'+self.timeList[self.leftCurr].m
 				+'-'+self.timeList[self.leftCurr].d
 				+'  '+self.choosedHour;
+				console.log('时间',self.data.book_time)
 				const postData = {
 					data:self.data
 				};
@@ -149,8 +159,13 @@
 						    duration: 2000,
 						});
 						setTimeout(function(){
+							let pages = getCurrentPages();  //获取所有页面栈实例列表
+							let nowPage = pages[ pages.length - 1];  //当前页页面实例
+							let prevPage = pages[ pages.length - 2 ];  //上一页页面实例
+							console.log(prevPage)
+							prevPage.$vm.page = 1;   //修改上一页data里面的searchVal参数值为1211
 							uni.navigateBack({
-							    delta: 1
+								delta: 1
 							});
 						},2000)
 					} else {

@@ -245,6 +245,7 @@
 						for(var i=0;i<res.info.data.length;i++){
 							res.info.data[i].distance = parseFloat(res.info.data[i].distance).toFixed(2);
 						}
+						console.log('店铺',res.info.data)
 						self.shopData = res.info.data[0];
 						uni.setStorageSync('shopData', res.info.data[0]);
 						uni.setStorageSync('shopList', res.info.data);

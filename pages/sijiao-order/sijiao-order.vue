@@ -88,7 +88,7 @@
 			<view class="bg-white radius20 mx-4 flexY xy">
 				<view class="font-30 text-center py-3">《怪力牛会员购买服务协议》</view>
 				<view class="px-3 mb-3 flex-1 flexY">
-					1、都必须为为和促进OK了
+					<view v-html="serviceData.content"></view>
 				</view>
 				<view class="text-center colorf py-3 Mgb" @click="isShow()">确定</view>
 			</view>
@@ -110,7 +110,8 @@
 				isAgree:false,
 				chooseCoupon:{},
 				shopData:{},
-				totle:0
+				totle:0,
+				serviceData:{}
 			}
 		},
 		onLoad(){
@@ -119,6 +120,7 @@
 			self.mainData = uni.getStorageSync('sijiaoCourseDetail');
 			self.shopData = uni.getStorageSync('shopData');
 			self.num = self.mainData.score;
+			self.getServiceData();
 		},
 		onShow(){
 			const self = this;
@@ -129,6 +131,24 @@
 			self.totlePrice();
 		},
 		methods: {
+			
+			getServiceData(){
+				const self = this;
+				const postData = {};
+				postData.searchItem = {
+					menu_id: 5,
+					thirdapp_id: 2,
+					title:'服务协议'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.serviceData =  res.info.data[0];
+					};
+					uni.setStorageSync('canClick', true);
+					self.$Utils.finishFunc('getServiceData');
+				};
+				self.$apis.articleGet(postData, callback);
+			},
 			
 			count(x){
 				const self = this;
@@ -175,17 +195,22 @@
 							course_type:self.mainData.course_type,
 							coach_no:self.mainData.coach_no,
 							shop_no:self.mainData.shop_no,
+							standard:self.num
 						}
-				});
+					});
 					self.addOrder(orderList)
 				}else{
 					uni.showModal({
-						title:'',
+						title:'提示',
 						content:'请先同意会员服务协议',
 						showCancel:false
 					})
 				}
 				uni.setStorageSync('canClick', true);
+			},
+			
+			orderUpdate(id){
+				
 			},
 			
 			addOrder(orderList) {
@@ -218,7 +243,7 @@
 				if(uni.getStorageSync('chooseCoupon')){
 					postData.couponPay = [{
 						id:uni.getStorageSync('chooseCoupon').id,
-						price:parseFloat(uni.getStorageSync('chooseCoupon').value)
+						price:parseFloat(uni.getStorageSync('chooseCoupon').value).toFixed(2)
 					}];
 					postData.wxPay = {
 						price:(self.totle - parseFloat(uni.getStorageSync('chooseCoupon').value)).toFixed(2) 
@@ -239,7 +264,7 @@
 					tableName: 'Order',
 					FuncName: 'update',
 					data: {
-						standard:self.mainData.score
+						standard:self.num
 					},
 					searchItem:{
 						id:self.orderId
@@ -262,7 +287,7 @@
 										}
 									});
 									setTimeout(function() {
-										self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+										self.Router.navigateTo({route:{path:'/pages/user-sijiao/user-sijiao'}});
 									}, 1000);
 								} else {
 									// uni.setStorageSync('canClick', true);
@@ -283,7 +308,7 @@
 								}
 							});
 							setTimeout(function() {
-								self.$Router.redirectTo({route:{path:'/pages/user/user'}})
+								self.Router.navigateTo({route:{path:'/pages/user-sijiao/user-sijiao'}});
 							}, 1000);
 						};
 					} else {

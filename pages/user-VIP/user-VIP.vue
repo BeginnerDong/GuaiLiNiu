@@ -22,7 +22,7 @@
 					<block v-for="(item,index) in mainData" :key="index">
 						<view class="flex py-2" >
 							<view class="time">{{item.bookhm}}</view>
-							<image :src="item.user.headImgUrl" class="wh80 mx-2"></image>
+							<image :src="item.user.headImgUrl" class="wh80 mx-2 radius-5"></image>
 							<view>
 								<view>{{item.userInfo.name}}</view>
 								<view class="font-26">{{item.userInfo.phone}}</view>
@@ -56,7 +56,7 @@
 		onLoad(options) {
 			const self = this;
 			self.timeList = self.$Utils.getFutureDateList(13);
-			self.searchItem.book_time = ['in',[self.timeList[0].stime/1000,self.timeList[0].stime/1000+86400]];
+			self.searchItem.book_time = ['between',[self.timeList[0].stime/1000,self.timeList[0].stime/1000+86400]];
 			self.$Utils.loadAll(['getMainData'], self);
 		},
 		methods: {
