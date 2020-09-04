@@ -4,7 +4,11 @@
 		<view class="px-2 bg-white">
 			<view class="flex1 py-4 bB-f5">
 				<view class="flex-1">上传照片</view>
-				<view v-if="">
+				<view v-if="mainData.mainImg.length>0">
+					<image :src="mainData.mainImg[0].url" class="scImg"
+					@click="upLoadImg('mainImg')" ></image>
+				</view>
+				<view v-else>
 					<image src="../../static/images/img3.png" class="scImg"
 					@click="upLoadImg('mainImg')" v-if="submitData.mainImg.length<=0"></image>
 					<image :src="submitData.mainImg[0].url" class="scImg" 
@@ -99,6 +103,7 @@
 						self.mainData.gender = self.userData.gender
 						self.mainData.birthday = self.userData.birthday
 						self.mainData.phone = self.userData.phone
+						self.mainData.mainImg = self.userData.mainImg
 					}
 					console.log(res)
 					console.log(self.userData)

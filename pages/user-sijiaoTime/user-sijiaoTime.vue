@@ -126,7 +126,7 @@
 				self.timeList[self.leftCurr].y
 				+'-'+self.timeList[self.leftCurr].m
 				+'-'+self.timeList[self.leftCurr].d
-				+'  '+self.choosedHour;
+				+' '+self.choosedHour;
 				console.log('时间',self.data.book_time)
 				const postData = {
 					data:self.data
@@ -162,7 +162,6 @@
 							let pages = getCurrentPages();  //获取所有页面栈实例列表
 							let nowPage = pages[ pages.length - 1];  //当前页页面实例
 							let prevPage = pages[ pages.length - 2 ];  //上一页页面实例
-							console.log(prevPage)
 							prevPage.$vm.page = 1;   //修改上一页data里面的searchVal参数值为1211
 							uni.navigateBack({
 								delta: 1

@@ -105,7 +105,9 @@
 						<view class="font-20 color6">{{item.m}}.{{item.d}}</view>
 					</view>
 				</view>
-				<view class="shadow radius20 m-a p-r mb-3 overflow-h tkBox" v-for="(item,index) in mainData.product" :key="index">
+				<view class="shadow radius20 m-a p-r mb-3 overflow-h tkBox" 
+				v-for="(item,index) in mainData.product" :key="index"
+				@click="goToDetail(item)">
 					<image :src="item.mainImg[0].url" class="kcImg"></image>
 					<view class="px-2 py-3">
 						<view class="font-30 flex1">
@@ -233,6 +235,12 @@
 		
 		
 		methods: {
+			
+			goToDetail(item){
+				const self = this;
+				uni.setStorageSync('leagueClassDetail',item);
+				self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}});
+			},
 			
 			changeTime(i){
 				const self = this;

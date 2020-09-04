@@ -6,13 +6,13 @@
 				<image :src="mainData&&mainData.mainImg&&mainData.mainImg[0]&&mainData.mainImg[0].url" class="wh180 radius20"></image>
 				<view class="px-2 py-3 flex-1">
 					<view class="font-30 font-w">{{mainData.title}}</view>
-					<view class="font-24 py-2">{{mainData.coach[0].name}} | {{mainData.start_time}}~{{mainData.end_time}}</view>
+					<view class="font-24 py-2">{{mainData.coach[0].name}} <!-- | {{mainData.start_time}}~{{mainData.end_time}} --></view>
 					<view class="flex">
 						<view class="tag" v-for="(c_item,c_index) of mainData.description" :key="c_index">{{c_item}}</view>
 					</view>
 				</view>
 			</view>
-			<view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view>
+			<!-- <view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view> -->
 		</view>
 		
 		<view class="mx-2">
@@ -26,7 +26,7 @@
 			</view>
 			<view class="py-4 flex1 bB-f5">
 				<view>课时套餐</view>
-				<view class="color6">（￥{{mainData.price}}/{{mainData.score}}课时）</view>
+				<view class="color6">（￥{{mainData.price}}/<!-- {{mainData.score}} -->课时）</view>
 			</view>
 			<view class="flex py-4 font-24" @click="isShow('agree')">
 				<image src="../../static/images/the-order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
@@ -58,6 +58,7 @@
 	export default {
 		data() {
 			return {
+				Router:this.$Router,
 				is_show:false,
 				isAgree:false,
 				mainData:{},

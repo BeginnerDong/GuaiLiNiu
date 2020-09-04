@@ -25,7 +25,7 @@
 					</view>
 				</view>
 				
-				<view class="font-20 pt-3"><text class="font-36 font-w price">{{mainData.price}}</text>/{{mainData.score}}课时</view>
+				<view class="font-20 pt-3"><text class="font-36 font-w price">{{mainData.price}}</text>/<!-- {{mainData.score}} -->课时</view>
 			</view>
 			
 			<view class="font-26 pt-4 ">
@@ -115,7 +115,7 @@
 		
 		<view style="height: 100rpx;"></view>
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1">
-			<view class="font-26">已预约{{mainData.is_book?mainData.is_book:0}}/{{mainData.max}}人，还差<text class="colorR">{{mainData.is_book?mainData.standard-mainData.is_book:mainData.standard}}</text>人开课</view>
+			<!-- <view class="font-26">已预约{{mainData.is_book?mainData.is_book:0}}/{{mainData.max}}人，还差<text class="colorR">{{mainData.is_book?mainData.standard-mainData.is_book:mainData.standard}}</text>人开课</view> -->
 			<view class="criBtn" @click="goOrder">立即购买</view>
 		</view>
 		
@@ -256,7 +256,7 @@
 .lcIcon5{width: 40rpx;height: 44rpx;margin-bottom: 30rpx;}
 .GZ::before{content: "";border-left: 1px solid #e1e1e1;position: absolute;left: 0;height: 60rpx;}
 .courIcon{width: 26rpx;height: 43rpx;}
-.criBtn{line-height: 80rpx;border-radius: 40rpx;margin: 0;width: 260rpx;}
+.criBtn{line-height: 80rpx;border-radius: 40rpx;margin: 0;width: 100%;}
 
 .noVip{width: 620rpx;margin-top: 65%;}
 </style>

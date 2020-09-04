@@ -50,7 +50,8 @@
 					birthday: '',
 					phone: '',
 					deadline: 0,
-					behavior: 1
+					behavior: 1,
+					shop_no:''
 				}
 			}
 		},
@@ -81,9 +82,9 @@
 							self.userData.deadline != 0 ? self.userData.deadline+ parseInt(self.cardData.duration) *
 							86400 : Date.parse(new Date()) / 1000 + parseInt(self.cardData.duration) *
 							86400;
-			
+						self.mainData.shop_no = self.cardData.shop_no;
 					}
-					console.log(self.mainData)
+					console.log(self.cardData,'carData')
 				};
 				self.$apis.productGet(postData, callback);
 			},
@@ -97,14 +98,15 @@
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
 						self.userData = res.info.data[0];
-						self.mainData.name = self.userData.name
-						self.mainData.gender = self.userData.gender
-						self.mainData.birthday = self.userData.birthday
-						self.mainData.phone = self.userData.phone
-	
+						self.mainData.name = self.userData.name;
+						self.mainData.gender = self.userData.gender;
+						self.mainData.birthday = self.userData.birthday;
+						self.mainData.phone = self.userData.phone;
+						self.mainData.shop_no = self.userData.shop_no;
 					}
 					self.getCardData();
-					console.log(self.mainData)
+					console.log(self.userData,'用户')
+					console.log(self.mainData,'mainData')
 				};
 				self.$apis.userInfoGet(postData, callback);
 			},
@@ -134,7 +136,10 @@
 				orderList.push({
 					product_id: self.product_id,
 					count: 1,
-					type: 2
+					type: 2,
+					data:{
+						shop_no: self.cardData.shop_no
+					}
 				});
 				console.log('testnb');
 				wx.requestSubscribeMessage({
@@ -196,7 +201,7 @@
 						tableName: 'User',
 						FuncName: 'update',
 						data: {
-						 shop_no: self.cardData.shop_no
+						  shop_no: self.cardData.shop_no
 						},
 						searchItem: {
 							user_no: uni.getStorageSync('user_info').user_no

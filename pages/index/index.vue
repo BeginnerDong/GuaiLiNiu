@@ -79,9 +79,9 @@
 									{{item.title?item.title:''}}
 									<text class="color9 font-24 pl-1">({{item.course_type==1?'免费团课':(item.course_type==2?'付费团课':'私教课')}})</text>
 								</view>
-								<view class="font-24 pt-3">{{item.coach&&item.coach[0]?item.coach[0].name:''}} | 有效期：{{item.duration}}天</view><!-- {{item.start_time}}~{{item.end_time}} -->
+								<view class="font-24 pt-3">授课教练：{{item.coach&&item.coach[0]?item.coach[0].name:''}}  </view><!-- 有效期：{{item.duration}}天 --><!-- {{item.start_time}}~{{item.end_time}} -->
 							</view>
-							<view class="font-20 colorf kcSgin">差{{item.is_book?item.standard-item.is_book:item.standard}}个人开课</view>
+							<view class="font-20 colorf kcSgin" v-show="item.course_type!=3">差{{item.is_book?item.standard-item.is_book:item.standard}}个人开课</view>
 						</view>
 					</view>
 				</view>

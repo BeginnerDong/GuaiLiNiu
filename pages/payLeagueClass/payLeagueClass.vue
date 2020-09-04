@@ -42,7 +42,7 @@
 					<view class="font-w">{{item.title}}</view>
 					<view><text class="price font-w">{{item.price}}</text>/{{item.score}}课时</view>
 				</view>
-				<view class="font-24 py-2">{{item.coach[0].name}} | {{item.start_time}}~{{item.end_time}}</view>
+				<view class="font-24 py-2">{{item.coach[0].name}} | {{changeTime}}~{{item.book_time_item}}</view>
 				<view class="flex">
 					<view class="tag tagY" v-for="(v,i) in item.description" :key="i">{{v}}</view>
 				</view>
@@ -68,7 +68,9 @@
 				},
 				courseCurr:-1,
 				courseType:[],
-				isLoadAll:false
+				isLoadAll:false,
+				week:['周日','周一','周二','周三','周四','周五','周六'],
+				changeTime:[]
 			}
 		},
 		onLoad(options) {
@@ -89,6 +91,17 @@
 			};
 		},
 		methods: {
+			
+			weekTime(time){
+				const self = this;
+				self.changeTime = [];
+				for(var i=0; i<time.length; i++){
+					if(self.week[time[i]]){
+						self.changeTime.push(self.week[time[i]]);
+					}
+				}
+				self.changeTime = self.changeTime.toString();
+			},
 			
 			load(){
 				const self = this;
@@ -178,10 +191,12 @@
 							if(self.mainData[i].standard-self.mainData[i].is_book <= 0){
 								self.mainData[i].is_book = 0
 							}
+							self.weekTime(self.mainData[i].book_week_item.split(','));
 							self.mainData[i].description = self.mainData[i].description.split(',');
 							self.mainData[i].start_time = self.$Utils.timeto(parseInt(self.mainData[i].start_time),'hm')
 							self.mainData[i].end_time = self.$Utils.timeto(parseInt(self.mainData[i].end_time),'hm')
 						}
+						console.log(self.mainData)
 					}else{
 						self.isLoadAll  =true;
 					}

@@ -22,10 +22,12 @@
 				</view>
 				<view class="flex1 py-3 bB-f5 w-100">
 					<image :src="item.product[0].mainImg&&item.product[0].mainImg[0]?item.product[0].mainImg[0].url:''" class="wh180 radius10"></image>
-					<view class="px-2 flex-1 flex-1">
+					<view class="px-2 flex-1 flex-1 w490">
 						<view class="font-30 font-w">{{item.product[0].title}}</view>
-						<view class="pt-2"><text class="font-w price">{{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
-						<view class="font-24 py-1 line-h-sm">{{item.coach.name}} | {{item.product[0].book_week_item}}~{{item.product[0].book_time_item}}</view>
+						<view class="pt-2"><text class="font-w price">{{item.product[0].price}}</text>/课时</view>
+						<view class="font-24 py-1 line-h-sm avoidOverflow">{{item.coach.name}} 
+							<text class="ml-1" v-show="item.product[0].course_type==2">| {{changeTime}}~{{item.product[0].book_time_item}}</text>
+						</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in item.product[0].description_change" :key="c_index">
 								<view class="tag">{{c_item}}</view>
@@ -34,7 +36,8 @@
 						</view>
 					</view>
 				</view>
-				<view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view>
+				<!-- <view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view> -->
+				
 				<!-- 其他 -->
 				<view class="py-3 d-flex j-end" v-show="item.transport_status!=1">
 					<view class="btn b-e1" v-show="item.transport_status==0" @click="goNext('use',item)">立即使用</view>
@@ -76,7 +79,9 @@
 					course_type:['in',[1,2]],
 					pay_status:1
 				},
-				isLoadAll:false
+				isLoadAll:false,
+				week:['周日','周一','周二','周三','周四','周五','周六'],
+				changeTime:[]
 			}
 		},
 		onLoad(options) {
@@ -101,6 +106,17 @@
 			};
 		},
 		methods: {
+			
+			weekTime(time){
+				const self = this;
+				self.changeTime = [];
+				for(var i=0; i<time.length; i++){
+					if(self.week[time[i]]){
+						self.changeTime.push(self.week[time[i]]);
+					}
+				}
+				self.changeTime = self.changeTime.toString();
+			},
 			
 			bigImg(url){
 				let _this = this;
@@ -170,6 +186,10 @@
 						self.mainData.push.apply(self.mainData, res.info.data);
 						for (var i = 0; i < self.mainData.length; i++) {
 							self.mainData[i].product[0].description_change= self.mainData[i].product[0].description.split(',');
+							if(self.mainData[i].product[0].course_type==2){
+								self.weekTime(self.mainData[i].product[0].book_week_item.split(','));
+							}
+							console.log('周数',self.mainData[i].product[0].book_week_item)
 							for(var j=0;j<self.mainData[i].orderLog.length;j++){
 								self.mainData[i].orderLog[j]['book_time_change'] = 
 								self.$Utils.timeto(parseInt(self.mainData[i].orderLog[j]['book_time'])*1000,'ymd-hm');
@@ -194,21 +214,24 @@
 					case 0:
 					self.searchItem = {
 						thirdapp_id:2,
-						course_type:['in',[1,2]]
+						course_type:['in',[1,2]],
+						pay_status:1
 					};
 					break;
 					case 1:
 					self.searchItem = {
 						thirdapp_id:2,
 						course_type:['in',[1,2]],
-						transport_status:0
+						transport_status:0,
+						pay_status:1
 					};
 					break;
 					case 2:
 					self.searchItem = {
 						thirdapp_id:2,
 						course_type:['in',[1,2]],
-						transport_status:1
+						transport_status:1,
+						pay_status:1
 					};
 					break;
 					case 3:
@@ -216,7 +239,8 @@
 						thirdapp_id:2,
 						course_type:['in',[1,2]],
 						transport_status:2,
-						isremark:0
+						isremark:0,
+						pay_status:1
 					};
 					break;
 					case 4:
@@ -224,7 +248,8 @@
 						thirdapp_id:2,
 						course_type:['in',[1,2]],
 						transport_status:2,
-						isremark:1
+						isremark:1,
+						pay_status:1
 					};
 					break;
 				};

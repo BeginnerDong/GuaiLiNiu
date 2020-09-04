@@ -2,7 +2,7 @@
 	<view>
 		
 		<view class="p-r">
-			<view class="backBox" @click="Router.back({route:{dalta:-1}})">
+			<view class="backBox" @click="Router.back({route:{dalta:-1}})" :style="{marginTop:statusBar+'px'}">
 				<image src="../../static/images/back-icon1.png" class="back"></image>
 			</view>
 			

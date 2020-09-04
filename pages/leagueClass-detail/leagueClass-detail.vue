@@ -32,7 +32,7 @@
 				</view>
 				
 				<!-- 付费团课展示 -->
-				<view class="font-20 pt-3" v-show="type==1"><text class="font-36 font-w price">{{mainData.price}}</text>/{{mainData.score}}课时</view>
+				<view class="font-20 pt-3" v-show="type==1"><text class="font-36 font-w price">{{mainData.price}}</text>/<!-- {{mainData.score}} -->课时</view>
 			</view>
 			
 			<view class="font-26 pt-4 ">
@@ -42,7 +42,7 @@
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay-for-courses-icon2.png" class="wh30 mt"></image>
-					<view class="flex-1 pl-2">预计<text class="colorR">{{mainData.start_time}}</text>开课<br />{{mainData.book_week_item}} {{mainData.book_time_item}}</view>
+					<view class="flex-1 pl-2"><!-- 预计<text class="colorR">{{mainData.start_time}}</text>开课<br /> -->{{changeTime}} <text class="colorR pl-2">{{mainData.book_time_item}}</text>开课</view>
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/pay-for-courses-icon3.png" class="dw-icon mt"></image>
@@ -190,7 +190,9 @@
 				remarkData:[],
 				isLoadAll:false,
 				statusBar: app.globalData.statusBar,
-				userData:{}
+				userData:{},
+				week:['周日','周一','周二','周三','周四','周五','周六'],
+				changeTime:[]
 			}
 		},
 		onLoad(options){
@@ -202,6 +204,7 @@
 			}else{
 				if(uni.getStorageSync('leagueClassDetail')){
 					self.mainData = uni.getStorageSync('leagueClassDetail');
+					self.weekTime(self.mainData.book_week_item);
 				}else{
 					uni.showToast({
 						title:'课程信息不存在',
@@ -224,6 +227,17 @@
 			};
 		},
 		methods: {
+			
+			weekTime(time){
+				const self = this;
+				self.changeTime = [];
+				for(var i=0; i<time.length; i++){
+					if(self.week[time[i]]){
+						self.changeTime.push(self.week[time[i]]);
+					}
+				}
+				self.changeTime = self.changeTime.toString();
+			},
 			
 			onShareAppMessage: function( options ){
 			　　var that = this;
@@ -301,7 +315,10 @@
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data[0]);
 						self.mainData.description = self.mainData.description.split(',');
+						self.weekTime(self.mainData.book_week_item.split(','));
 					};
+					
+					
 					uni.setStorageSync('canClick', true);
 					self.$Utils.finishFunc('getMainData');
 				};

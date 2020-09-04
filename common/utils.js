@@ -740,7 +740,7 @@ export default {
 				" " + date.getHours() + seperator2 + date.getMinutes() +
 				seperator2 + date.getSeconds();
 		} else if (type == "ymd-hm") {
-			//转年月日 时分秒
+			//转年月日 时分
 			var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
 				" " + hour + seperator2 + minutes ;
 		} else if (type == "hms") {

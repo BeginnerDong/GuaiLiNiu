@@ -57,7 +57,9 @@
 				},
 				isLoadAll:false,
 				paginate:{},
-				bookStatus:['预约中','已成团']
+				bookStatus:['预约中','已成团'],
+				coach:{}
+				
 			}
 		},
 		onReachBottom() {
@@ -70,6 +72,8 @@
 		onLoad(options) {
 			const self = this;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.coach = uni.getStorageSync('coach_info');
+			console.log('登陆教练',self.coach);
 			self.$Utils.loadAll(['getMainData'], self);
 		},
 		methods: {
@@ -157,6 +161,7 @@
 				postData.tokenFuncName = 'getCoachToken';
 				postData.paginate = self.$Utils.cloneForm(self.paginate);
 				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				postData.searchItem.user_no = self.coach.user_no;
 				postData.getAfter = {
 					product:{
 						tableName:'Product',

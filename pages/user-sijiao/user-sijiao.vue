@@ -20,7 +20,7 @@
 				</view>
 				<view class="flex1 py-3 bB-f5 w-100">
 					<image :src="item.product[0].mainImg[0].url" class="wh180 radius10"></image>
-					<view class="px-2 py-1 flex-1 d-flex flex-column j-sb h-180">
+					<view class="px-2 py-1 flex-1 d-flex flex-column j-sb h-180 w490">
 						<view class="font-30 font-w">{{item.product[0].title}}
 							<text class="colorR font-28 pl-2">(共{{item.standard}}节)</text>
 						</view>
@@ -29,12 +29,12 @@
 								<view class="tag">{{c_item}}</view>
 							</block>
 						</view>
-						<view class="colorR">{{item.coach.name}} |<text class="price"> {{item.product[0].price}}</text>/{{item.product[0].score}}课时</view>
+						<view class="colorR">{{item.coach.name}} |<text class="price"> {{item.product[0].price}}</text>/<!-- {{item.product[0].score}} -->课时</view>
 					</view>
 				</view>
-				<view class="font-26 color6 py-3 bB-f5 flex1">
-					<view>课程有效期：{{item.product[0].duration}}天</view>
-					<view v-show="item.transport_status==1">已使用{{item.orderLog.length}}节，剩余<text class="colorR">{{item.standard-item.orderLog.length}}</text>节</view>
+				<view class="font-26 color6 py-3 bB-f5 flex1" v-show="item.transport_status==1">
+					<!-- <view>课程有效期：{{item.product[0].duration}}天</view> -->
+					<view>已使用{{item.orderLog.length}}节，剩余<text class="colorR">{{item.standard-item.orderLog.length}}</text>节</view>
 				</view>
 				<!-- 其他 -->
 				<view class="d-flex j-end bB-f5">
@@ -46,14 +46,16 @@
 				<!-- 进行中 -->
 				<view class="py-3 flex1 bB-f5" v-show="item.transport_status==1"
 				v-for="(c_item,c_index) in item.orderLog" :key="c_index">
-					<span>预约时间：
-						{{c_item.book_time_change+' '}}
-						<text class="colorM">{{time}}</text> 
-						{{c_item.is_use==1?'已结束':''}}
-					</span>
 					<image :src="c_item.qrcode" class="wh80" 
 					@click="bigImg(c_item.qrcode)" v-show="c_item.qrcode&&c_item.is_use!=1"></image>
+					<text class="flex-1 pl-1 line-h-md">预约时间：
+						{{c_item.book_time_change+' '}}
+						<text class="colorM">{{c_item.time}}</text> 
+						{{c_item.is_use==1?'已结束':''}}
+					</text>
+					<view class="btn b-e1" @click="remove(c_item.id)" >取消预约</view>
 				</view>
+				
 			</view>
 		</block>
 
@@ -134,6 +136,11 @@
 					})
 				}
 			},
+			
+			remove(id){
+				const self = this;
+				
+			},
 
 
 			getMainData(isNew) {
@@ -190,7 +197,7 @@
 							book_time = self.$Utils.timeto(parseInt(self.mainData[i].orderLog[j]['book_time'])*1000,'ymd-hm');
 							for(var k=0; k<timeArr.length; k++){
 								if(book_time.split(' ')[1]==timeArr[k].split('-')[0]){
-									self.time = timeArr[k]
+									self.mainData[i].orderLog[j]['time'] = timeArr[k]
 								}
 							}
 							self.mainData[i].orderLog[j]['book_time_change'] = book_time.split(' ')[0];
@@ -210,13 +217,15 @@
 					case 0:
 						self.searchItem = {
 							thirdapp_id: 2,
-							course_type: 3
+							course_type: 3,
+							pay_status:1
 						};
 						break;
 					case 1:
 						self.searchItem = {
 							thirdapp_id: 2,
 							course_type: 3,
+							pay_status:1,
 							transport_status: 0
 						};
 						break;
@@ -224,6 +233,7 @@
 						self.searchItem = {
 							thirdapp_id: 2,
 							course_type: 3,
+							pay_status:1,
 							transport_status: 2,
 							isremark: 0
 						};
@@ -232,6 +242,7 @@
 						self.searchItem = {
 							thirdapp_id: 2,
 							course_type: 3,
+							pay_status:1,
 							transport_status: 2,
 							isremark: 1
 						};

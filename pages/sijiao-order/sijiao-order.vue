@@ -16,7 +16,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view>
+				<!-- <view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view> -->
 			</view>
 			
 			<view class="mx-2">
@@ -32,7 +32,7 @@
 				
 				<view class="py-4 bB-f5">
 					<view class="pb-4 flex1">
-						<view>课时套餐（￥{{mainData.price}}/{{mainData.score}}课时）</view>
+						<view>课时套餐（￥{{mainData.price}}/<!-- {{mainData.score}} -->课时）</view>
 						<view class="flex">
 							<image src="../../static/images/the-order-icon.png" class="wh40" @click="count(-1)"></image>
 							<view class="num">{{num}}</view>
@@ -119,16 +119,22 @@
 			uni.removeStorageSync('chooseCoupon');
 			self.mainData = uni.getStorageSync('sijiaoCourseDetail');
 			self.shopData = uni.getStorageSync('shopData');
-			self.num = self.mainData.score;
+			if(self.mainData.score == 0){
+				self.num =1;
+			}else{
+				self.num = self.mainData.score;
+			}
 			self.getServiceData();
 		},
 		onShow(){
 			const self = this;
 			if(uni.getStorageSync('chooseCoupon')){
 				self.chooseCoupon = uni.getStorageSync('chooseCoupon')
+				self.totlePrice(self.chooseCoupon.snap_coupon.value);
+			}else{
+				self.totlePrice();
 			}
 			console.log('self.chooseCoupon',self.chooseCoupon)
-			self.totlePrice();
 		},
 		methods: {
 			
@@ -152,16 +158,24 @@
 			
 			count(x){
 				const self = this;
-				if(self.num+x < self.mainData.score){
+				if(self.num+x < self.mainData.score || self.num+x < 1){
 					return;
 				}else{
 					self.num = self.num+x;
 				}
 				self.totlePrice();
 			},
-			totlePrice(){
+			
+			totlePrice(coupon){
 				const self = this;
-				self.totle = parseFloat(self.mainData.price ) * self.num
+				if(coupon){
+					self.totle = (parseFloat(self.mainData.price ) * self.num - coupon).toFixed(2);
+					if(self.totle <= 0){
+						self.totle = 0
+					}
+				}else{
+					self.totle = (parseFloat(self.mainData.price ) * self.num).toFixed(2)
+				}
 			},
 			
 			isShow(type){
@@ -207,10 +221,6 @@
 					})
 				}
 				uni.setStorageSync('canClick', true);
-			},
-			
-			orderUpdate(id){
-				
 			},
 			
 			addOrder(orderList) {

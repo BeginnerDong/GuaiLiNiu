@@ -161,7 +161,7 @@
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);
 						for (var i = 0; i < self.mainData.length; i++) {
-							self.mainData[i].bookhm = self.$Utils.timeto(parseInt(self.mainData[i].book_time),'hm')
+							self.mainData[i].bookhm = self.$Utils.timeto(parseInt(self.mainData[i].book_time * 1000),'ymd-hm').substring(11)
 						};
 					}else{
 						self.isLoadAll = true;

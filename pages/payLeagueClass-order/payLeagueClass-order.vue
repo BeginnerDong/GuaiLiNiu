@@ -6,13 +6,13 @@
 				<image :src="mainData&&mainData.mainImg&&mainData.mainImg[0]&&mainData.mainImg[0].url" class="wh180 radius20"></image>
 				<view class="px-2 py-3 flex-1">
 					<view class="font-30 font-w">{{mainData.title}}</view>
-					<view class="font-24 py-2">{{mainData.coach[0].name}} | {{mainData.start_time}}~{{mainData.end_time}}</view>
+					<view class="font-24 py-2">{{mainData.coach[0].name}} <!-- | {{mainData.start_time}}~{{mainData.end_time}} --></view>
 					<view class="flex">
 						<view class="tag" v-for="(c_item,c_index) of mainData.description" :key="c_index">{{c_item}}</view>
 					</view>
 				</view>
 			</view>
-			<view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view>
+			<!-- <view class="font-26 color6 py-3">课程有效期：{{mainData.duration}}天 </view> -->
 		</view>
 		
 		<view class="mx-2">
@@ -21,7 +21,7 @@
 				<view class="color6">{{mainData.shopInfor.address}}</view>
 			</view>
 			<view class="py-4 flex1 bB-f5">
-				<view>课时套餐（￥{{mainData.price}}/{{mainData.score}}课时）</view>
+				<view>课时套餐（￥{{mainData.price}}/<!-- {{mainData.score}} -->课时）</view>
 				<view class="flex">
 					<image src="../../static/images/the-order-icon.png" class="wh40" @click="count(-1)"></image>
 					<view class="num">{{num}}</view>

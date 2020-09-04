@@ -37,7 +37,7 @@
 						</view>
 						<view class="flex4">
 							<button  open-type='share'  :data-couponNo="item.snap_coupon.coupon_no" :data-parentNo="item.snap_coupon.user_no" class="font-30 colorM pr-5 pb-2" >分享</button>
-							<view class="font-30 colorM pr-5"
+							<view class="font-30 colorM pr-5" v-show="navCurr==1"
 							@click="Router.navigateTo({route:{path:'/pages/index/index'}})">立即使用</view>
 						</view>
 					</view>

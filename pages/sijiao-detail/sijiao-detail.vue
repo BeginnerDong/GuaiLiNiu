@@ -93,12 +93,12 @@
 				v-if="mainData.certificate.length>0" >
 					<block v-for="(item,index) in mainData.certificate" :key="index">
 						<swiper-item>
-							{{mainData.certificate.length}}
+							<!-- {{mainData.certificate.length}} -->
 								<image :src="item.url" ></image>
 						</swiper-item>
 					</block>
 				</swiper>
-				<image src="../../static/images/null.png" style="width: 600rpx;height: 400rpx;margin: 0 auto;" ></image>
+				<image src="../../static/images/null.png" style="width: 600rpx;height: 400rpx;margin: 0 auto;" v-else></image>
 				
 				<view class="xx wh50 p-r" @click="isShow">
 					<image src="../../static/images/stores-details-icon20.png" class="wh20 p-aXY m-a"></image>
