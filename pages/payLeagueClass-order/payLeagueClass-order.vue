@@ -55,7 +55,7 @@
 		
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 			<view class="font-26">已预约{{mainData.is_book}}/{{mainData.max}}人</view>
-			<button class="carBtn" open-type="getUserInfo" @getuserinfo="successSubmit" >立即预约</button>
+			<button class="carBtn" open-type="getUserInfo" @getuserinfo="successSubmit" >立即支付</button>
 		</view>
 		
 		<view class="bg-mask" v-show="is_show">

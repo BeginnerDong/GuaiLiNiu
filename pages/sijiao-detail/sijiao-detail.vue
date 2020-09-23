@@ -59,7 +59,7 @@
 						<image :src="item.mainImg[0].url" class="kcImg"></image>
 						<view class="py-3 px-2 line-h">
 							<view class="font-30 font-w">{{item.title}}</view>
-							<view class="pt-3"><text class="font-30 font-w price">{{item.price}}</text>/{{item.score}}课时</view>
+							<view class="pt-3"><text class="font-30 font-w price">{{item.price}}</text>/课时</view>
 						</view>
 					</view>
 				</block>

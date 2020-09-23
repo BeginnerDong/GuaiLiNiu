@@ -47,13 +47,14 @@
 				<view class="py-3 flex1 bB-f5" v-show="item.transport_status==1"
 				v-for="(c_item,c_index) in item.orderLog" :key="c_index">
 					<image :src="c_item.qrcode" class="wh80" 
-					@click="bigImg(c_item.qrcode)" v-show="c_item.qrcode&&c_item.is_use!=1"></image>
+					@click="bigImg(c_item.qrcode)" v-show="c_item.qrcode&&c_item.is_use!=1&&c_item.removeBtn"></image>
 					<text class="flex-1 pl-1 line-h-md">预约时间：
 						{{c_item.book_time_change+' '}}
 						<text class="colorM">{{c_item.time}}</text> 
 						{{c_item.is_use==1?'已结束':''}}
 					</text>
-					<view class="btn b-e1" @click="remove(c_item.id)" >取消预约</view>
+					<view class="btn b-e1" @click="remove(c_item.id)" v-show="c_item.removeBtn">取消预约</view>
+					<view class="colorM" v-show="!c_item.removeBtn">课程已过期</view>
 				</view>
 				
 			</view>
@@ -77,7 +78,8 @@
 				},
 				isLoadAll: false,
 				time:'',
-				page:0
+				page:0,
+				removeBtn:true
 			}
 		},
 
@@ -115,17 +117,17 @@
 
 			goNext(type, item) {
 				const self = this;
-				uni.setStorageSync('orderDetail', item);
 				if (type == "comment") {
 					self.Router.navigateTo({
 						route: {
 							path: '/pages/user-comment/user-comment?type=0'
 						}
 					});
+					uni.setStorageSync('orderDetail', item);
 				} else if (type == "use") {
 					self.Router.navigateTo({
 						route: {
-							path: '/pages/user-sijiaoTime/user-sijiaoTime'
+							path: '/pages/user-sijiaoTime/user-sijiaoTime?id='+item.id
 						}
 					});
 				} else if (type == "checkComment") {
@@ -134,12 +136,35 @@
 							path: '/pages/user-commentDetail/user-commentDetail?type=0'
 						}
 					})
+					uni.setStorageSync('orderDetail', item);
 				}
 			},
 			
+			//取消预约
 			remove(id){
 				const self = this;
-				
+				const postData = {};
+				postData.tokenFuncName = 'getProjectToken';
+				postData.saveAfter = [
+					{
+						tableName:'OrderLog',
+						FuncName: 'update',
+						searchItem:{id:id},
+						data:{
+							status:-1
+						}
+					}
+				]
+				const callback = (res) => {
+					console.log('orderLog',res)
+					self.$Utils.finishFunc('remove');
+					uni.showToast({
+					    title: '取消预约成功',
+					    duration: 2000,
+					});
+					self.getMainData(true);
+				}
+				self.$apis.orderLogUpdate(postData, callback);
 			},
 
 
@@ -181,6 +206,15 @@
 						},
 						condition: '=',
 						info: ['name']
+					},
+					course: {
+						tableName: 'Course',
+						middleKey: 'product_id',
+						key: 'id',
+						searchItem: {
+							status: 1
+						},
+						condition: '='
 					}
 				};
 				const callback = (res) => {
@@ -191,8 +225,17 @@
 					};
 					for (var i = 0; i < self.mainData.length; i++) {
 						self.mainData[i].product[0].description = self.mainData[i].product[0].description.split(',');
+						var nowTime = Date.parse(new Date())/1000;
 						const timeArr = self.mainData[i].product[0].book_time_item.split(',');
 						for(var j=0;j<self.mainData[i].orderLog.length;j++){
+							if(nowTime >= self.mainData[i].orderLog[j]['book_time']){
+								self.removeBtn = false;
+								self.mainData[i].orderLog[j]['removeBtn'] = false;
+							}else{
+								self.removeBtn = true;
+								self.mainData[i].orderLog[j]['removeBtn'] = true;
+							}
+							
 							const book_time = '';
 							book_time = self.$Utils.timeto(parseInt(self.mainData[i].orderLog[j]['book_time'])*1000,'ymd-hm');
 							for(var k=0; k<timeArr.length; k++){
@@ -226,7 +269,7 @@
 							thirdapp_id: 2,
 							course_type: 3,
 							pay_status:1,
-							transport_status: 0
+							transport_status: ['in',[0,1]]
 						};
 						break;
 					case 2:

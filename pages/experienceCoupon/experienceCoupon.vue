@@ -6,7 +6,9 @@
 			
 			<view class="con colorf p-aXY">
 				<view>
-					1、激活成功可享受7天的会员权益
+					<view class="content ql-editor" style="padding:0;" v-html="articleData.content">
+						
+					</view>
 				</view>
 				
 				<view class="btnTxt p-aX" @click="Router.navigateTo({route:{path:'/pages/experienceInfor/experienceInfor'}})">立即激活</view>
@@ -20,11 +22,33 @@
 	export default {
 		data() {
 			return {
-				Router:this.$Router
+				Router:this.$Router,
+				articleData:{}
 			}
+		},
+		onLoad() {
+			const self = this;
+			self.$Utils.loadAll(['getArticleData'], self);
 		},
 		methods: {
 			
+				
+				getArticleData(){
+					const self = this;
+					const postData = {};
+					postData.searchItem = {
+						thirdapp_id: 2,
+						menu_id: 5,
+						title:'新人专享'
+					};
+					const callback = (res) => {
+						if (res.info.data.length > 0) {
+							self.articleData = res.info.data[0];
+						}
+						self.$Utils.finishFunc('getArticleData');
+					};
+					self.$apis.articleGet(postData, callback);
+				},
 		}
 	}
 </script>

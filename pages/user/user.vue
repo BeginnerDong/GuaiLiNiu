@@ -74,7 +74,7 @@
 		<view class="pl-2 font-24 colorf p-r mt-5">
 			<image src="../../static/images/about-img2.png" class="userImg"></image>
 			<view class="p-aXY txt">
-				<view   class="content ql-editor" style="padding:0;" v-html="articleData.content">
+				<view class="content ql-editor" style="padding:0;" v-html="articleData.content">
 					
 				</view>
 			</view>

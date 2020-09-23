@@ -12,7 +12,7 @@
 					<view class="font-30 font-w">{{orderDetail.product[0].title}}</view>
 					
 					<!-- 团课评价显示 -->
-					<view v-show="type==0"><text class="font-w price">{{orderDetail.product[0].price}}</text>/{{orderDetail.product[0].score}}课时</view>
+					<view v-show="type==0"><text class="font-w price">{{orderDetail.product[0].price}}</text>/课时</view>
 					<view class="font-24 line-h-sm" v-show="type==0">Auger | {{orderDetail.product[0].book_week_item}}~{{orderDetail.product[0].book_time_item}}</view>
 					
 					<view class="flex">
@@ -25,7 +25,7 @@
 					<view class="colorR" v-show="type==1"><text class="price">{{orderDetail.product[0].price}}</text>/课时</view>
 				</view>
 			</view>
-			<view class="font-26 color6 py-3 bB-f5">课程有效期：{{orderDetail.product[0].duration}}天 </view>
+			<!-- <view class="font-26 color6 py-3 bB-f5">课程有效期：{{orderDetail.product[0].duration}}天 </view> -->
 		</view>
 		
 		<view class="shadowM bg-white mx-2 mt-2 px-2 py-1 radius10">

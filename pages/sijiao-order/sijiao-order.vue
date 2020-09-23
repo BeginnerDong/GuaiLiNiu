@@ -7,7 +7,7 @@
 					<image :src="mainData&&mainData.mainImg&&mainData.mainImg[0]&&mainData.mainImg[0].url" class="wh180 radius20"></image>
 					<view class="px-2 py-3 flex-1">
 						<view class="font-30 font-w pb-1">{{mainData.title}}</view>
-						<view><text class="price font-w">{{mainData.price}}</text>/{{mainData.score}}课时</view>
+						<view><text class="price font-w">{{mainData.price}}</text>/课时</view>
 						<view class="font-24 py-1 line-h-sm">{{mainData.coach[0].name}} | {{mainData.book_week_item}}~{{mainData.book_time_item}}</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in mainData.description_change" :key="c_index">
@@ -49,7 +49,7 @@
 				
 				<view class="py-4 flex1 bB-f5">
 					<view>优惠券</view>
-					<view class="flex" @click="Router.navigateTo({route:{path:'/pages/payLeagueClass-coupon/payLeagueClass-coupon?standardPrice='+mainData.price}})">
+					<view class="flex" @click="Router.navigateTo({route:{path:'/pages/payLeagueClass-coupon/payLeagueClass-coupon?standardPrice='+mainData.price*num}})">
 						<view class="color6">
 							{{chooseCoupon.id?'满'+chooseCoupon.snap_coupon.condition+'减'+chooseCoupon.snap_coupon.value:'无使用'}}
 						</view>
@@ -81,7 +81,7 @@
 		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 carBot pl-3 bT-e1">
 			<view class="font-26">总计：<text class="colorR font-36 price">{{totle}}</text></view>
 			
-			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button>
+			<button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即支付</button>
 		</view>
 		
 		<view class="bg-mask" v-show="is_show">
@@ -111,7 +111,8 @@
 				chooseCoupon:{},
 				shopData:{},
 				totle:0,
-				serviceData:{}
+				serviceData:{},
+				couponPrice:0
 			}
 		},
 		onLoad(){
@@ -129,12 +130,12 @@
 		onShow(){
 			const self = this;
 			if(uni.getStorageSync('chooseCoupon')){
-				self.chooseCoupon = uni.getStorageSync('chooseCoupon')
-				self.totlePrice(self.chooseCoupon.snap_coupon.value);
-			}else{
-				self.totlePrice();
+				self.chooseCoupon = uni.getStorageSync('chooseCoupon');
+				self.couponPrice = self.chooseCoupon.snap_coupon.value
+				// self.totlePrice();
 			}
-			console.log('self.chooseCoupon',self.chooseCoupon)
+			self.totlePrice();
+			// console.log('self.chooseCoupon',self.chooseCoupon)
 		},
 		methods: {
 			
@@ -166,15 +167,11 @@
 				self.totlePrice();
 			},
 			
-			totlePrice(coupon){
+			totlePrice(){
 				const self = this;
-				if(coupon){
-					self.totle = (parseFloat(self.mainData.price ) * self.num - coupon).toFixed(2);
-					if(self.totle <= 0){
-						self.totle = 0
-					}
-				}else{
-					self.totle = (parseFloat(self.mainData.price ) * self.num).toFixed(2)
+				self.totle = (parseFloat(self.mainData.price ) * self.num - self.couponPrice).toFixed(2);
+				if(self.totle <= 0){
+					self.totle = 0
 				}
 			},
 			

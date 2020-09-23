@@ -126,7 +126,7 @@
 		</view>
 		
 		
-		<view v-if="id_free==0" class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;" v-show="is_show">
+		<view v-if="is_show" class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;">
 			<view class="flex1"
 			 @click="Router.navigateTo({route:{path:'/pages/experienceCoupon/experienceCoupon'}})">
 				<image src="../../static/images/home-img4.png" class="Img80"></image>
@@ -166,7 +166,7 @@
 				activeData:[],
 				coachData:[],
 				classData:[],
-				id_free:1
+				behavior:0,
 			}
 		},
 		
@@ -185,7 +185,10 @@
 				self.getActiveData();
 				self.getCoachData();
 				self.getClassData();
-				self.id_free = uni.getStorageSync('user_info').info.id_free;
+				self.behavior = uni.getStorageSync('user_info').info.behavior;
+				if(self.behavior==1){
+					self.is_show = false
+				}
 			}
 		},
 		

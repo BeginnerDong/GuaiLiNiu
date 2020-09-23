@@ -4,15 +4,13 @@
 		<view class="px-2 bg-white">
 			<view class="flex1 py-4 bB-f5">
 				<view class="flex-1">上传照片</view>
-				<view v-if="mainData.mainImg.length>0">
-					<image :src="mainData.mainImg[0].url" class="scImg"
-					@click="upLoadImg('mainImg')" ></image>
+				<view class="scImg" v-if="submitData.mainImg.length>0" >
+					<image :src="submitData.mainImg[0].url" class="scImg"
+					@click="upLoadImg('mainImg')"></image>
 				</view>
-				<view v-else>
+				<view class="scImg" v-else>
 					<image src="../../static/images/img3.png" class="scImg"
-					@click="upLoadImg('mainImg')" v-if="submitData.mainImg.length<=0"></image>
-					<image :src="submitData.mainImg[0].url" class="scImg" 
-					@click="upLoadImg('mainImg')" v-else></image>
+					@click="upLoadImg('mainImg')"></image>
 				</view>
 				<!-- <image src="../../static/images/Vpreferential-img.png" class="scImg"></image> -->
 			</view>
@@ -65,9 +63,11 @@
 					deadline:0,
 					behavior:1,
 					id_free:1,
+					photo:'',
 					mainImg:[]
 				},
 				submitData:{
+					photo:'',
 					mainImg:[]
 				}
 			}
@@ -99,11 +99,13 @@
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
 						self.userData = res.info.data[0];
-						self.mainData.name = self.userData.name
-						self.mainData.gender = self.userData.gender
-						self.mainData.birthday = self.userData.birthday
-						self.mainData.phone = self.userData.phone
-						self.mainData.mainImg = self.userData.mainImg
+						self.mainData.name = self.userData.name;
+						self.mainData.gender = self.userData.gender;
+						self.mainData.birthday = self.userData.birthday;
+						self.mainData.phone = self.userData.phone;
+						self.mainData.photo = self.userData.photo;
+						self.mainData.mainImg = self.userData.mainImg;
+						self.submitData.mainImg = self.userData.mainImg;
 					}
 					console.log(res)
 					console.log(self.userData)
@@ -114,7 +116,7 @@
 			
 			successSubmit() {
 				const self = this;
-				if(self.submitData.mainImg.length <= 0){
+				if(self.submitData.photo == ''){
 					self.$Utils.showToast('请上传图片', 'none')
 				}else if (self.mainData.name == '') {
 					self.$Utils.showToast('请输入姓名', 'none')
@@ -140,6 +142,7 @@
 				postData.tokenFuncName = 'getProjectToken';
 				const callback = (res) => {
 					uni.setStorageSync('canClick', true);
+					res = JSON.parse(res.slice(7));
 					if (res.solely_code == 100000) {
 						uni.showToast({
 						    title: '提交成功',
@@ -147,23 +150,32 @@
 						});
 						uni.removeStorageSync('user_token');
 						self.$Router.redirectTo({route:{path:'/pages/user/user'}});
+						
 					} else {
 						self.$Utils.showToast('网络故障', 'none')
 					};
 				};
-				self.$apis.userUpdate(postData, callback);
+				self.$apis.userInfoUpdate(postData, callback);
 			},
 			
 			upLoadImg(type) {
 				const self = this;	
 				const callback = (res) => {
 					console.log('res', res)
-					if (res.solely_code == 100000) {
-						if(self.submitData['mainImg'].length > 0){
-							self.submitData['mainImg'] = []
-						}
-						self.submitData['mainImg'].push({url:res.info.url,type:'image'})
-						console.log(self.submitData)
+					if (res) {
+						self.submitData.photo = res;
+						// console.log(self.submitData,'submitData')
+						self.$Utils.showToast('上传成功，去提交', 'none')
+					}else {
+						self.$Utils.showToast('网络故障', 'none')
+					}
+				};
+				const callbackTwo = (res) => {
+					console.log('res', res)
+					if (res) {
+						self.submitData.mainImg = [{'url':res.info.url,'type':'image'}];
+						// console.log(res.info,'本地服务器')
+						self.$Utils.showToast('数据更新成功', 'none')
 					}else {
 						self.$Utils.showToast('网络故障', 'none')
 					}
@@ -176,11 +188,43 @@
 						var file = res.tempFiles[0];
 						var obj = res.tempFiles[0].path.lastIndexOf(".");
 						var ext = res.tempFiles[0].path.substr(obj+1);
-						console.log(callback)
-						console.log('img',self.submitData)
+						
+						// 上传本地服务器
 						self.$Utils.uploadFile(tempFilePaths, 'file', {
-							tokenFuncName: 'getProjectToken',ext:ext,md5:'md5',totalSize:file.size,start:0,chunkSize:file.size,originName:'headImg'
-						}, callback)
+							tokenFuncName: 'getProjectToken',ext:ext,md5:'md5',totalSize:file.size,start:0,chunkSize:file.size,originName:'mainImg'
+						}, callbackTwo)
+						
+						// 上传硬件服务器
+						wx.uploadFile({
+							url: 'https://www.airenche.com/shop/UploadImage?tk=5381',
+							filePath: tempFilePaths,
+							name: 'pic',
+							formData: {},	
+							success: function(res) {
+								console.log('callbackp',res)
+								if (res.data) {
+									res.data = res.data.match(/"filename":"(\S*)"},"msg"/)[1];
+									self.submitData.photo = res.data;
+								};
+								if (res.data.solely_code == '200000') {
+									token[formData.tokenFuncName](c_callback, {
+										refreshToken: true
+									});
+								} else {
+									callback && callback(res.data);
+								};
+							},
+							fail: function(err) {
+								wx.showToast({
+									title: '网络故障',
+									icon: 'fail',
+									duration: 2000,
+									mask: true,
+								});
+							}
+						})
+						
+						
 					},
 					fail: function(err) {
 						uni.hideLoading();
@@ -203,7 +247,7 @@ page{background-color: #f5f5f5;}
 .inforIcon1{width: 32rpx;height: 30rpx;}
 .inforIcon2{width: 32rpx;height: 28rpx;}
 input{width: 400rpx;text-align: right;font-size: 26rpx;}
-.scImg{width: 210rpx;height: 130rpx;border-radius: 20rpx;}
+.scImg{width: 210rpx;height: 130rpx;border-radius: 20rpx;background-color: #f5f5f5;}
 
 .btnAuto{margin-top: 200rpx;}
 </style>

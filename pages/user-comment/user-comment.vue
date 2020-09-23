@@ -7,13 +7,13 @@
 				<view class="colorR">待评价</view>
 			</view>
 			<view class="flex1 py-3 bB-f5 w-100">
-				<image :src="mainData.product[0].mainImg[0].url" class="wh180"></image>
+				<image :src="mainData.product[0].mainImg[0].url" class="wh180 radius10"></image>
 				<view class="px-2 flex-1 d-flex flex-column j-sb h-180">
 					<view class="font-30 font-w">{{mainData.product[0].title}}</view>
 					
 					<!-- 团课评价显示 -->
-					<view v-show="type==0"><text class="font-w price">{{mainData.product[0].price}}</text>/{{mainData.product[0].score}}课时</view>
-					<view class="font-24 line-h-sm" v-show="type==0">Auger | {{mainData.product[0].book_week_item}}~{{mainData.product[0].book_time_item}}</view>
+					<view v-show="type==0"><text class="font-w price">{{mainData.product[0].price}}</text>/课时</view>
+					<view class="font-24 line-h-sm" v-show="type==0"><!-- Auger | {{mainData.product[0].book_week_item}}~ -->{{mainData.product[0].book_time_item}}</view>
 					
 					<view class="flex">
 						<block v-for="(c_item,c_index) in mainData.product[0].description_change" :key="c_index">
@@ -25,7 +25,7 @@
 					<view class="colorR" v-show="type==1"><text class="price">{{mainData.product[0].price}}</text>/课时</view>
 				</view>
 			</view>
-			<view class="font-26 color6 py-3 bB-f5">课程有效期：{{mainData.product[0].duration}}天 </view>
+			<!-- <view class="font-26 color6 py-3 bB-f5">课程有效期：{{mainData.product[0].duration}}天 </view> -->
 		</view>
 		
 		<view class="shadowM bg-white mx-2 mt-2 px-2 py-3 radius10">

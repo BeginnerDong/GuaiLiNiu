@@ -49,9 +49,7 @@
 					gender: 0,
 					birthday: '',
 					phone: '',
-					deadline: 0,
-					behavior: 1,
-					shop_no:''
+					deadline: 0
 				}
 			}
 		},
@@ -82,7 +80,7 @@
 							self.userData.deadline != 0 ? self.userData.deadline+ parseInt(self.cardData.duration) *
 							86400 : Date.parse(new Date()) / 1000 + parseInt(self.cardData.duration) *
 							86400;
-						self.mainData.shop_no = self.cardData.shop_no;
+						// self.mainData.shop_no = self.cardData.shop_no;
 					}
 					console.log(self.cardData,'carData')
 				};
@@ -102,7 +100,8 @@
 						self.mainData.gender = self.userData.gender;
 						self.mainData.birthday = self.userData.birthday;
 						self.mainData.phone = self.userData.phone;
-						self.mainData.shop_no = self.userData.shop_no;
+						self.mainData.deadline = self.userData.deadline;
+						// self.mainData.shop_no = self.userData.shop_no;
 					}
 					self.getCardData();
 					console.log(self.userData,'用户')
@@ -188,6 +187,7 @@
 					id: self.orderId
 				};
 				// postData.payAfter = [];
+				self.mainData.behavior = 1;
 				postData.payAfter = [
 					{
 						tableName: 'UserInfo',

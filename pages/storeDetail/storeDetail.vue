@@ -1,6 +1,6 @@
 <template>
 	<view :style="sb_show?'height:100%;overflow:hidden':''">
-		<view class="backBox" @click="Router.back({route:{dalta:-1}})">
+		<view class="backBox" @click="Router.back({route:{dalta:-1}})" :style="{marginTop:statusBar+'px'}">
 			<image src="../../static/images/back-icon.png" class="back"></image>
 		</view>
 		<!-- banner -->
@@ -132,7 +132,7 @@
 			<view class="p-r kf">
 				<view class="bg-white w-600 radius20 pb-5 font-24 p-r kfCon">
 					<image src="../../static/images/stores-details-img4.png" class="wh120 kfLogo"></image>
-					<view class="font-30 text-center py-2">店长：大白</view>
+					<view class="font-30 text-center py-2">{{mainData.name}}</view>
 					<view class="mx-3 mb-2 px-3 py-2 flex kfBg radius10">
 						<view>联系方式：</view>
 						<image src="../../static/images/stores-details-icon18.png" class="wh50 mx-3"></image>
@@ -181,10 +181,12 @@
 </template>
 
 <script>
+	const app = getApp();
 	export default {
 		data() {
 			return {
 				Router:this.$Router,
+				statusBar: app.globalData.statusBar,
 				timeCurr:0,
 				kf_show:false,
 				sb_show:false,
@@ -240,6 +242,23 @@
 				const self = this;
 				uni.setStorageSync('leagueClassDetail',item);
 				self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}});
+			},
+			
+			onShareAppMessage: function( options ){
+			　　var that = this;
+				
+				var path = '/pages/coupon/coupon?coupon_no='
+					+options.target.dataset.couponno
+					+'&&parent_no='
+					+options.target.dataset.parentno;
+				console.log('path',path);
+			　　// 设置菜单中的转发按钮触发转发事件时的转发内容
+			　　var shareObj = {
+			　　　　title: '怪力牛运动',        // 默认是小程序的名称(可以写slogan等)
+			　　　　path: path,        // 默认是当前页面，必须是以‘/’开头的完整路径
+			　　　　imgUrl: '',     //自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
+			　　};
+			　　return shareObj;
 			},
 			
 			changeTime(i){
@@ -329,7 +348,7 @@
 
 .kfImg{width: 130rpx;height: 110rpx;position: fixed;top: 60%;right: 0;}
 .kfLogo{position: absolute;left: 0;right: 0;margin: auto;top: -50rpx;}
-.kf{margin: 40% 75rpx 0;}
+.kf{margin: 400rpx 75rpx 0;}
 .kfCon{padding-top: 70rpx;}
 .kfBg{background-color: #FFF9F5;}
 .xx{margin: 100rpx auto;}
