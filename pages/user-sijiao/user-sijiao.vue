@@ -32,7 +32,7 @@
 						<view class="colorR">{{item.coach.name}} |<text class="price"> {{item.product[0].price}}</text>/<!-- {{item.product[0].score}} -->课时</view>
 					</view>
 				</view>
-				<view class="font-26 color6 py-3 bB-f5 flex1" v-show="item.transport_status==1">
+				<view class="font-26 color6 py-3 bB-f5 flex1" v-show="item.transport_status==0">
 					<!-- <view>课程有效期：{{item.product[0].duration}}天</view> -->
 					<view>已使用{{item.orderLog.length}}节，剩余<text class="colorR">{{item.standard-item.orderLog.length}}</text>节</view>
 				</view>
@@ -44,7 +44,7 @@
 				</view>
 
 				<!-- 进行中 -->
-				<view class="py-3 flex1 bB-f5" v-show="item.transport_status==1"
+				<view class="py-3 flex1 bB-f5" v-show="item.orderLog.length>0"
 				v-for="(c_item,c_index) in item.orderLog" :key="c_index">
 					<image :src="c_item.qrcode" class="wh80" 
 					@click="bigImg(c_item.qrcode)" v-show="c_item.qrcode&&c_item.is_use!=1&&c_item.removeBtn"></image>
@@ -108,7 +108,7 @@
 			bigImg(url){
 				let _this = this;
 				let imgsArray = [];
-				imgsArray[0] = url
+				imgsArray[0] = url;
 				uni.previewImage({
 					current: 0,
 					urls: imgsArray
@@ -127,7 +127,7 @@
 				} else if (type == "use") {
 					self.Router.navigateTo({
 						route: {
-							path: '/pages/user-sijiaoTime/user-sijiaoTime?id='+item.id
+							path: '/pages/user-sijiaoTime/user-sijiaoTime?type=3&id='+item.id
 						}
 					});
 				} else if (type == "checkComment") {

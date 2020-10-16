@@ -60,14 +60,19 @@
 				searchItem:{
 					
 				},
-				isLoadAll:false
-				
+				isLoadAll:false,
+				paginate: {
+					count: 0,
+					currentPage: 1,
+					is_page: true,
+					pagesize: 10
+				}
 			}
 		},
 		onLoad(options) {
 			const self = this;
 			self.shopData = uni.getStorageSync('shopData');
-			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			// self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.searchItem.shop_no = self.shopData.user_no;
 			self.$Utils.loadAll(['getMainData'], self);
 		},

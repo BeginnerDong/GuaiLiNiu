@@ -87,7 +87,8 @@
 			const self = this;
 			var userInfo = uni.getStorageSync('user_info');
 			
-			self.searchItem.id = option.id;
+			self.searchItem.id = Number(option.id);
+			self.searchItem.course_type = Number(option.type);
 			self.getMainData();
 		},
 		methods: {

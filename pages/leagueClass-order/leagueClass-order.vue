@@ -43,7 +43,7 @@
 		
 		<view class="bg-mask" v-show="is_show">
 			<view class="bg-white radius20 mx-4 flexY xy">
-				<view class="font-30 text-center py-3">《怪力牛购买服务协议》</view>
+				<view class="font-30 text-center py-3">{{serviceData.title}}</view>
 				<view class="px-3 mb-3 flex-1 flexY">
 					<view v-html="serviceData.content"></view>
 				</view>
@@ -89,7 +89,7 @@
 				postData.searchItem = {
 					menu_id: 5,
 					thirdapp_id: 2,
-					title:'服务协议'
+					title:'怪力牛运动会员服务协议'
 				};
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
@@ -139,6 +139,15 @@
 				postData.orderList = self.$Utils.cloneForm(orderList);
 				postData.tokenFuncName = 'getProjectToken';
 				console.log('addOrder',postData);
+				postData.saveAfter = [
+					{
+						tableName: 'Order',
+						FuncName: 'update',
+						searchItem:{
+							id:self.mainData.id
+						}
+					}
+				];
 				const callback = (res) => {
 					
 					if (res && res.solely_code == 100000) {

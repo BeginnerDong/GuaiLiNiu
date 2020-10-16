@@ -91,7 +91,7 @@
 				postData.tokenFuncName = 'getProjectToken';
 				const callback = (res) => {
 					uni.setStorageSync('canClick', true);
-					res = JSON.parse(res.slice(7));
+					console.log('正在提交')
 					if (res.solely_code == 100000) {
 						uni.showToast({
 						    title: '提交成功',
@@ -197,6 +197,6 @@ page{background-color: #000000;}
 .photo{width: 440rpx;height: 440rpx;margin: 130rpx auto 0;}
 .img{width: 109rpx;height: 92rpx;position: absolute;margin: auto;left: 0;top: 0;right: 0;bottom: 0;}
 .wh300{margin: 70rpx;}
-.uploadImg{width: 100%;}
+.uploadImg{width: 100%;max-height: 600rpx;}
 .btnAuto{width: 600rpx;margin-top: 200rpx;}
 </style>

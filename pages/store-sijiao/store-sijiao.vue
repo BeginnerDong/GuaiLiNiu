@@ -9,7 +9,7 @@
 			@click="Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail?id='+$event.currentTarget.dataset.id}})">
 				<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="sjImg1"></image>
 				<view class="px-2">
-					<view class="font-w py-2">{{item.name}}</view>
+					<view class="font-w py-2 txt">{{item.name}}</view>
 					<view class="flex">
 						<image src="../../static/images/sijiao-icon.png" class="bq-icon"></image>
 						<view class="font-22 color6 pl-1">{{item.expertise}}</view>
@@ -36,15 +36,29 @@
 				mainData:[],
 				searchItem:{
 					thirdapp_id:2
+				},
+				paginate: {
+					count: 0,
+					currentPage: 1,
+					is_page: true,
+					pagesize: 10
 				}
 			}
 		},
 		
 		onLoad(options) {
 			const self = this;
-			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			// self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.searchItem.shop_no = options.shop_no;
 			self.$Utils.loadAll(['getMainData'], self);
+		},
+		
+		onReachBottom() {
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
 		},
 		
 		methods: {
@@ -110,6 +124,8 @@
 .sj{width: 340rpx;}
 .sjImg1{width: 340rpx;height: 200rpx;}
 .sjSgin{font-size: 22rpx;color: #fff;line-height: 36rpx;padding: 0 8rpx;background-color: rgba(0,0,0,0.3);display: inline-block;position: absolute;right: 10rpx;top: 154rpx;border-radius: 5rpx;}
+
+.txt{min-height: 68rpx;}
 
 .bq-icon{width: 25rpx;height: 27rpx;}
 </style>

@@ -8,10 +8,10 @@
 					<view>{{activityName}}</view>
 					<view>仅限门店{{shopData.name}}</view>
 				</view>
-				<view class="colorM">
+				<!-- <view class="colorM">
 					<view class="font-w">VIP</view>
 					<view>年卡</view>
-				</view>
+				</view> -->
 			</view>
 		</view>
 		<view class="px-2 bg-white">

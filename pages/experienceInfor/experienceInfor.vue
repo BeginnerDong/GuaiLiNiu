@@ -142,7 +142,8 @@
 				postData.tokenFuncName = 'getProjectToken';
 				const callback = (res) => {
 					uni.setStorageSync('canClick', true);
-					res = JSON.parse(res.slice(7));
+					// res = JSON.parse(res.slice(7));
+					console.log(res)
 					if (res.solely_code == 100000) {
 						uni.showToast({
 						    title: '提交成功',

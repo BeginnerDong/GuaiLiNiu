@@ -23,7 +23,9 @@
 				<view class="flex1 py-3 bB-f5 w-100">
 					<image :src="item.product[0].mainImg&&item.product[0].mainImg[0]?item.product[0].mainImg[0].url:''" class="wh180 radius10"></image>
 					<view class="px-2 flex-1 flex-1 w490">
-						<view class="font-30 font-w">{{item.product[0].title}}</view>
+						<view class="font-30 font-w">{{item.product[0].title}}
+							<text class="colorR font-28 pl-2" v-show="item.course_type==2">(共{{item.count}}节)</text>
+						</view>
 						<view class="pt-2"><text class="font-w price">{{item.product[0].price}}</text>/课时</view>
 						<view class="font-24 py-1 line-h-sm avoidOverflow">{{item.coach.name}} 
 							<text class="ml-1" v-show="item.product[0].course_type==2">| {{changeTime}}~{{item.product[0].book_time_item}}</text>
@@ -37,7 +39,9 @@
 					</view>
 				</view>
 				<!-- <view class="font-26 color6 py-3 bB-f5">课程有效期：{{item.product[0].duration}}天 </view> -->
-				
+				<view class="font-26 color6 py-3 bB-f5 flex1" v-show="item.transport_status==0&&item.course_type==2">
+					<view>已使用{{item.orderLog.length}}节，剩余<text class="colorR">{{item.count-item.orderLog.length}}</text>节</view>
+				</view>
 				<!-- 其他 -->
 				<view class="py-3 d-flex j-end" v-show="item.transport_status!=1">
 					<view class="btn b-e1" v-show="item.transport_status==0" @click="goNext('use',item)">立即使用</view>
@@ -46,10 +50,10 @@
 				</view>
 				<view>
 					<block v-for="(cc_item,index) in item.orderLog" :key="index">
-						<view class="flex1 py-3">
+						<view class="flex1 py-3 bT-f5">
 							<span>预约时间：{{cc_item.book_time_change}}{{cc_item.is_book==1?'已成团':'未成团'}}</span>
 							<img :src="cc_item.qrcode" style="width: 40px;height: 40px;"
-							@click="bigImg(cc_item.qrcode)"></img>
+							@click="bigImg(cc_item.qrcode)" v-show="cc_item.qrcode"></img>
 						</view>
 					</block>
 					
@@ -134,7 +138,7 @@
 				if(type=="comment"){
 					self.Router.navigateTo({route:{path:'/pages/user-comment/user-comment?type=0'}});
 				}else if(type=="use"){
-					self.Router.navigateTo({route:{path:'/pages/user-sijiaoTime/user-sijiaoTime'}});
+					self.Router.navigateTo({route:{path:'/pages/user-sijiaoTime/user-sijiaoTime?type='+item.course_type+'&id='+item.id}});
 				}else if(type=="checkComment"){
 					self.Router.navigateTo({route:{path:'/pages/user-commentDetail/user-commentDetail?type=0'}})
 				}
@@ -230,7 +234,7 @@
 					self.searchItem = {
 						thirdapp_id:2,
 						course_type:['in',[1,2]],
-						transport_status:1,
+						transport_status:0,
 						pay_status:1
 					};
 					break;
