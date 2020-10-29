@@ -76,7 +76,8 @@
 				<view class="font-30 font-w">{{item.title?item.title:''}}</view>
 				<view class="font-24 py-2">{{item.coach&&item.coach[0]?item.coach[0].name:''}} | {{item.start_time}}~{{item.end_time}}</view>
 				<view class="flex">
-					<view class="tag" v-for="(c_item,c_index) of item.description" :key="c_index">{{c_item}}</view>
+					<view class="tag"  v-if="c_item"
+					v-for="(c_item,c_index) of item.description" :key="c_index">{{c_item}}</view>
 				</view>
 			</view>
 			<view class="font-20 colorf kcSgin">差 {{item.standard-item.is_book}} 个人开课</view>

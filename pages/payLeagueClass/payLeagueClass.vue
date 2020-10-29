@@ -44,7 +44,7 @@
 				</view>
 				<view class="font-24 py-2">{{item.coach[0].name}} | {{changeTime}}~{{item.book_time_item}}</view>
 				<view class="flex">
-					<view class="tag tagY" v-for="(v,i) in item.description" :key="i">{{v}}</view>
+					<view class="tag tagY" v-for="(v,i) in item.description" :key="i" v-if="v">{{v}}</view>
 				</view>
 			</view>
 			<view class="font-20 colorf kcSgin">差{{item.is_book?item.standard-item.is_book:item.standard}}个人开课</view>

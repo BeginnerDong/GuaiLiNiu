@@ -22,9 +22,10 @@
 						<view>
 							<view class="flex font-30 font-w">
 								<image src="../../static/images/members-icon2.png" class="vip-icon"></image>
-								<view>{{userData.info.behavior==1?'会员':'VIP会员'}}</view>
+								<view v-if="type==0">{{userData.info.behavior==1?'会员':'VIP会员'}}</view>
+								<view v-else>会员已过期</view>
 							</view>
-							<view class="pt-4 font-24" v-if="userData.info.deadline>0">有效期：{{userData.info.deadline_change}}</view>
+							<view class="pt-4 font-24" v-if="userData.info.deadline>0">{{type==0?'有效期':'过期时间'}}：{{userData.info.deadline_change}}</view>
 							<view class="pt-4 font-24" v-else>享受更多的优惠权益</view>
 						</view>
 						<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/VIP/VIP?vip=0'}})">{{userData.info.behavior==1?'立即续费':'立即开通'}}</view>
@@ -105,7 +106,8 @@
 				Router:this.$Router,
 				statusBar: app.globalData.statusBar,
 				userData:{},
-				articleData:{}
+				articleData:{},
+				type:0
 			}
 		},
 		onLoad(){
@@ -122,7 +124,12 @@
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
 						self.userData = res.info.data[0];
-						self.userData.info.deadline_change = self.$Utils.timeto(parseInt(self.userData.info.deadline*1000),'ymd-hm')
+						self.userData.info.deadline_change = self.$Utils.timeto(parseInt(self.userData.info.deadline*1000),'ymd-hm');
+						var nowTime = Date.parse(new Date());
+						if(self.userData.info.deadline < nowTime/1000 && self.userData.info.deadline!=0){
+							self.type = 1;
+						}
+						console.log(self.userData.info.deadline,nowTime/1000)
 						// self.userData.info.deadline_change = self.userData.info.deadline.substring(0,10)
 						// console.log('会员时间',self.userData)
 					}

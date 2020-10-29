@@ -25,12 +25,12 @@
 			<view class="flex1 py-4 bB-f5">
 				<view class="flex-1">性别</view>
 				<view class="font-26 flex">
-					<view class="flex" @click="mainData.gender=0">
+					<view class="flex" @click="changeGender(0)">
 						<image v-if="mainData.gender==0" src="../../static/images/members-information-icon4.png" class="wh32 mr-1"></image>
 						<image v-else src="../../static/images/members-information-icon5.png" class="wh32 mr-1"></image>
 						<view>男</view>
 					</view>
-					<view class="flex pl-5" @click="mainData.gender=1">
+					<view class="flex pl-5" @click="changeGender(1)">
 						<image v-if="mainData.gender==1" src="../../static/images/members-information-icon4.png" class="wh32 mr-1"></image>
 						<image v-else src="../../static/images/members-information-icon5.png" class="wh32 mr-1"></image>
 						<view>女</view>
@@ -89,6 +89,10 @@
 			self.getUserData();
 		},
 		methods: {
+			changeGender(type){
+				const self = this;
+				self.mainData.gender = type;
+			},
 			
 			getUserData() {
 				const self = this;
@@ -106,10 +110,13 @@
 						self.mainData.photo = self.userData.photo;
 						self.mainData.mainImg = self.userData.mainImg;
 						self.submitData.mainImg = self.userData.mainImg;
+						self.submitData.photo = self.userData.photo;
+						self.submitData.deadline = self.userData.deadline;
 					}
 					console.log(res)
 					console.log(self.userData)
 					console.log(self.mainData)
+					console.log(self.submitData)
 				};
 				self.$apis.userInfoGet(postData, callback);
 			},
@@ -127,6 +134,14 @@
 				} else {
 					var reg = /^1[3456789]\d{9}$/
 					if (reg.test(self.mainData.phone)) {
+						self.submitData.name = self.mainData.name;
+						self.submitData.birthday = self.mainData.birthday;
+						self.submitData.phone = self.mainData.phone;
+						self.submitData.gender = self.mainData.gender;
+						self.submitData.id_free = 0;
+						self.submitData.behavior = 1;
+						self.submitData.deadline =Date.parse(new Date())/1000 + 7 *86400;
+						console.log(self.submitData)
 						self.submit()
 					} else {
 						self.$Utils.showToast('电话号码格式错误', 'none')
@@ -165,7 +180,7 @@
 					console.log('res', res)
 					if (res) {
 						self.submitData.photo = res;
-						// console.log(self.submitData,'submitData')
+						console.log(self.submitData,'submitData')
 						self.$Utils.showToast('上传成功，去提交', 'none')
 					}else {
 						self.$Utils.showToast('网络故障', 'none')
@@ -175,7 +190,7 @@
 					console.log('res', res)
 					if (res) {
 						self.submitData.mainImg = [{'url':res.info.url,'type':'image'}];
-						// console.log(res.info,'本地服务器')
+						console.log(res.info,'本地服务器')
 						self.$Utils.showToast('数据更新成功', 'none')
 					}else {
 						self.$Utils.showToast('网络故障', 'none')

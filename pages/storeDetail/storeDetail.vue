@@ -247,10 +247,8 @@
 			onShareAppMessage: function( options ){
 			　　var that = this;
 				
-				var path = '/pages/coupon/coupon?coupon_no='
-					+options.target.dataset.couponno
-					+'&&parent_no='
-					+options.target.dataset.parentno;
+				var path = '/pages/storeDetail/storeDetail?id='
+					+self.mainData.id;
 				console.log('path',path);
 			　　// 设置菜单中的转发按钮触发转发事件时的转发内容
 			　　var shareObj = {

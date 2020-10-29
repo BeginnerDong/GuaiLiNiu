@@ -21,7 +21,8 @@
 						私教课
 					</view>
 					<view class="flex pl-2">
-						<view class="tag" v-for="(item,index) in mainData.description" :key="index">{{item}}</view>
+						<view class="tag" v-for="(item,index) in mainData.description" :key="index"
+						v-if="item">{{item}}</view>
 					</view>
 				</view>
 				

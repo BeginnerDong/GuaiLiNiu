@@ -40,7 +40,7 @@
 		</block>
 		
 		
-		<image src="../../static/images/sijiao yuyue-img2.png" class="wh100 p-f" @click="getScancode"></image>
+		<image src="../../static/images/sijiao-yuyue-img2.png" class="wh100 p-f" @click="getScancode"></image>
 		
 	</view>
 </template>

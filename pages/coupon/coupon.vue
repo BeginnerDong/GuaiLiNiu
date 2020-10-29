@@ -16,7 +16,7 @@
 							<view class="font-40 pb-5 mb-3">满{{couponData.condition}}元减{{couponData.value}}元</view>
 							<view class="font-22">有效期至：{{couponData.valid_time}}天</view>
 						</view>
-						<view class="font-30 colorM pr-5">已领取优惠卷</view>
+						<view class="font-30 colorM pr-5" @click="submit()">领取优惠卷</view>
 					</view>
 				</view>
 				<view class="px-2 py-4">
@@ -81,7 +81,46 @@
 					self.$Utils.finishFunc('getCouponData');
 				};
 				self.$apis.couponGet(postData, callback);
-			}
+			},
+			
+			submit(item){
+				const self = this;
+				// self.couponData = item;
+				uni.setStorageSync('canClick', false);
+				var couponList = []
+				
+				couponList.push({
+					coupon_id:self.couponData.id,
+					count:1,
+					type:1,
+					data:{
+						course_type:self.couponData.course_type
+					}
+				});
+				self.addOrder(couponList)
+			},
+			
+			addOrder(couponList) {
+				const self = this;	
+				const postData = {}; 
+				postData.couponList = self.$Utils.cloneForm(couponList);
+				postData.tokenFuncName = 'getProjectToken';
+				console.log('addOrder',postData);
+				const callback = (res) => {
+					
+					if (res && res.solely_code == 100000) {
+						self.orderId = res.info.id;
+						// self.goPay()
+					} else {		
+						uni.showToast({
+							title: res.msg,
+							duration: 2000
+						});
+						uni.setStorageSync('canClick', true);
+					};		
+				};
+				self.$apis.addCoupon(postData, callback);
+			},
 		}
 	}
 </script>

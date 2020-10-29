@@ -190,7 +190,8 @@
 				uni.setStorageSync('canClick', false);
 				var couponList = []
 				
-				couponList.push({coupon_id:self.chooseCouponData.id,
+				couponList.push({
+					coupon_id:self.chooseCouponData.id,
 					count:1,
 					type:1,
 					data:{

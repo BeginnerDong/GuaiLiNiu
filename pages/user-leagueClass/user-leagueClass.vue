@@ -16,7 +16,7 @@
 				<view class="font-24 color6 flex1 py-3 bB-f5">
 					<view>订单编号：{{item.order_no}}</view>
 					<view class="colorR" v-show="item.transport_status==0">待使用</view>
-					<view class="colorR" v-show="item.transport_status==1">使用中</view>
+					<view class="colorR" v-show="item.transport_status==1">预约中</view>
 					<view class="colorR" v-show="item.transport_status==2&&item.isremark==0">待评价</view>
 					<view class="colorR" v-show="item.transport_status==3&&item.isremark==1">已评价</view>
 				</view>
@@ -27,12 +27,12 @@
 							<text class="colorR font-28 pl-2" v-show="item.course_type==2">(共{{item.count}}节)</text>
 						</view>
 						<view class="pt-2"><text class="font-w price">{{item.product[0].price}}</text>/课时</view>
-						<view class="font-24 py-1 line-h-sm avoidOverflow">{{item.coach.name}} 
+						<view class="font-24 py-1 line-h-sm avoidOverflow">{{item.coach.name?item.coach.name:''}} 
 							<text class="ml-1" v-show="item.product[0].course_type==2">| {{changeTime}}~{{item.product[0].book_time_item}}</text>
 						</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in item.product[0].description_change" :key="c_index">
-								<view class="tag">{{c_item}}</view>
+								<view class="tag" v-if="c_item">{{c_item}}</view>
 							</block>
 							
 						</view>
@@ -51,7 +51,7 @@
 				<view>
 					<block v-for="(cc_item,index) in item.orderLog" :key="index">
 						<view class="flex1 py-3 bT-f5">
-							<span>预约时间：{{cc_item.book_time_change}}{{cc_item.is_book==1?'已成团':'未成团'}}</span>
+							<span>预约时间：{{cc_item.book_time_change}} {{cc_item.is_book==1?'已成团':'未成团'}}</span>
 							<img :src="cc_item.qrcode" style="width: 40px;height: 40px;"
 							@click="bigImg(cc_item.qrcode)" v-show="cc_item.qrcode"></img>
 						</view>
@@ -85,7 +85,15 @@
 				},
 				isLoadAll:false,
 				week:['周日','周一','周二','周三','周四','周五','周六'],
-				changeTime:[]
+				changeTime:[],
+				data:{
+					order_no:'',
+					product_id:'',
+					course_type:'',
+					book_time:'',
+					shop_no:''
+				},
+				paginate:{}
 			}
 		},
 		onLoad(options) {
@@ -95,7 +103,8 @@
 				thirdapp_id:2,
 				course_type:['in',[1,2]]
 			};
-			self.$Utils.loadAll(['getMainData'], self);
+			self.getMainData();
+			// self.$Utils.loadAll(['getMainData'], self);
 		},
 		// onShow(){
 			// const self = this;
@@ -138,7 +147,21 @@
 				if(type=="comment"){
 					self.Router.navigateTo({route:{path:'/pages/user-comment/user-comment?type=0'}});
 				}else if(type=="use"){
-					self.Router.navigateTo({route:{path:'/pages/user-sijiaoTime/user-sijiaoTime?type='+item.course_type+'&id='+item.id}});
+					console.log(item.id)
+					if(item.course_type==1){
+						uni.setStorageSync('Canclick',false);
+						self.data.order_no = item.order_no;
+						self.data.product_id = item.product[0].id;
+						self.data.course_type = item.course_type;
+						self.data.shop_no = item.shop_no;
+						self.data.coach_no = item.shop_no;
+						
+						self.data.book_time = self.$Utils.timeto(parseInt(item.product[0].start_time),'ymd-hm');
+						console.log(self.data)
+						self.successSubmit(item.id);
+					}else{
+						self.Router.navigateTo({route:{path:'/pages/user-sijiaoTime/user-sijiaoTime?type='+item.course_type+'&id='+item.id}});
+					}
 				}else if(type=="checkComment"){
 					self.Router.navigateTo({route:{path:'/pages/user-commentDetail/user-commentDetail?type=0'}})
 				}
@@ -162,8 +185,7 @@
 						searchItem:{
 							status:1
 						},
-						condition:'=',
-						//info:['book_week_item','book_time_item','coach_no','score','id','mainImg','book_end_time','book_start_time','title','description','duration','price','score']
+						condition:'='
 					},
 					orderLog:{
 						tableName:'OrderLog',
@@ -216,51 +238,106 @@
 				
 				switch(i) {
 					case 0:
-					self.searchItem = {
-						thirdapp_id:2,
-						course_type:['in',[1,2]],
-						pay_status:1
-					};
-					break;
+						self.searchItem = {
+							thirdapp_id:2,
+							course_type:['in',[1,2]],
+							pay_status:1
+						};
+						delete self.searchItem.transport_status;
+						delete self.searchItem.isremark;
+						break;
 					case 1:
-					self.searchItem = {
-						thirdapp_id:2,
-						course_type:['in',[1,2]],
-						transport_status:0,
-						pay_status:1
-					};
-					break;
+						self.searchItem = {
+							thirdapp_id:2,
+							course_type:['in',[1,2]],
+							transport_status:['in',[0,1]],
+							pay_status:1
+						};
+						break;
 					case 2:
-					self.searchItem = {
-						thirdapp_id:2,
-						course_type:['in',[1,2]],
-						transport_status:0,
-						pay_status:1
-					};
-					break;
+						self.searchItem = {
+							thirdapp_id:2,
+							course_type:['in',[1,2]],
+							transport_status:1,
+							pay_status:1
+						};
+						break;
 					case 3:
-					self.searchItem = {
-						thirdapp_id:2,
-						course_type:['in',[1,2]],
-						transport_status:2,
-						isremark:0,
-						pay_status:1
-					};
-					break;
+						self.searchItem = {
+							thirdapp_id:2,
+							course_type:['in',[1,2]],
+							transport_status:2,
+							isremark:0,
+							pay_status:1
+						};
+						break;
 					case 4:
-					self.searchItem = {
-						thirdapp_id:2,
-						course_type:['in',[1,2]],
-						transport_status:2,
-						isremark:1,
-						pay_status:1
-					};
-					break;
+						self.searchItem = {
+							thirdapp_id:2,
+							course_type:['in',[1,2]],
+							transport_status:2,
+							isremark:1,
+							pay_status:1
+						};
+						break;
 				};
 				
 				self.getMainData(true);
 				
-			}
+			},
+			
+			successSubmit(id){
+				const self = this;
+				wx.requestSubscribeMessage({
+					tmplIds: [
+						'BZ74KvhYwLWYKzcY-OunKaWIkbsBy_wWZ01LaZsGlKo',
+						'Z5oqs6UaEnLygi7S7XSZ_dQbU71cauG0peB9qrwqrF8'
+					],
+					success(res) {
+						// console.log('res', res)
+						self.submit(id)
+					}
+				});
+			},
+			
+			submit(id){
+				const self = this;
+				console.log('时间',self.data.book_time)
+				const postData = {
+					data:self.data
+				};
+				postData.tokenFuncName = 'getProjectToken';
+				postData.saveAfter = [
+					{
+						tableName: 'Order',
+						FuncName: 'update',
+						searchItem:{
+							id:id
+						},
+						data:{
+							transport_status:1
+						}
+					}
+				];
+				const callback = (res) => {
+					console.log(res)
+					uni.setStorageSync('canClick', true);
+					if (res.solely_code == 100000) {
+						uni.showToast({
+						    title: '使用成功',
+						    duration: 2000,
+						});
+						self.changeNav(1);
+					} else {
+						uni.showToast({
+						    title: res.msg,
+						    duration: 2000,
+						});
+					}
+				};
+				self.$apis.orderLogAdd(postData, callback);
+			},
+			
 		}
 	}
 </script>

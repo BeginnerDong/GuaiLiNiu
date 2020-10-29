@@ -8,7 +8,7 @@
 				<view class="font-24">{{mainData&&mainData.coach&&mainData.coach[0]&&mainData.coach[0].name}}</view>
 				<view class="flex">
 					<block v-for="(c_item,c_index) in mainData.product[0].description" :key="c_index">
-						<view class="tag">{{c_item}}</view>
+						<view class="tag" v-if="c_item">{{c_item}}</view>
 					</block>
 				</view>
 			</view>
@@ -26,7 +26,7 @@
 			
 			<view class="flex-1 h-100 flexY right">
 				
-				<view class="d-flex flex-wrap">
+				<view class="d-flex flex-wrap" v-if="type!=1">
 					<block v-for="(item,index) in canChooseHour" :key="index">
 						<view class="jl color6 shadowM p-r mt-5" >
 							<view class="p-aXY zzz" v-show="isUse[index]==0"></view>
@@ -39,7 +39,21 @@
 							</view>
 						</view>
 					</block>
-					
+				</view>
+				
+				<view class="d-flex flex-wrap" v-else>
+					<block v-for="(item,index) in canChooseHour" :key="index">
+						<view class="jl color6 shadowM p-r mt-5" >
+							<view class="p-aXY zzz" v-show="isUse[index]==0"></view>
+							<view @click="chooseHour(item)">
+								<view>{{isUse[index]==1?item.split('-')[0]:'已被预约'}}</view>
+								<view v-show="isUse[index]==1">
+									<image src="../../static/images/yuyue-icon-01.png" class="wh26" v-if="choosedHour == item.split('-')[0]"></image>
+									<image src="../../static/images/yuyue-icon-02.png" class="wh26" v-else></image>
+								</view>
+							</view>
+						</view>
+					</block>
 				</view>
 				
 			</view>
@@ -80,12 +94,14 @@
 				product:{},
 				productTime:[],
 				timeData:[],
-				isUse:[]
+				isUse:[],
+				type:1
 			}
 		},
 		onLoad(option){
 			const self = this;
 			var userInfo = uni.getStorageSync('user_info');
+			self.type = option.type;
 			
 			self.searchItem.id = Number(option.id);
 			self.searchItem.course_type = Number(option.type);
@@ -107,12 +123,20 @@
 				
 				for(var i=0; i<self.canChooseHour.length; i++){
 					var date1 = '';
+					var hour = '';
+					if(self.type==3){
+						hour = self.canChooseHour[i].replace('.',':');
+					}else if(self.type==2){
+						hour = self.canChooseHour[i].split('-')[0];
+					}
 					date1 = self.timeList[self.leftCurr].y
 				        +'-'+self.timeList[self.leftCurr].m
 				        +'-'+self.timeList[self.leftCurr].d
-				        +' '+self.canChooseHour[i].split('-')[0];
+				        +' '+hour;
 					//日期格式转时间戳
 					var time1 = new Date(date1);
+					// console.log(date1+',',time1+',',Date.parse(time1)/1000)
+					// console.log('self.canChooseHour[i]',self.canChooseHour[i])
 					self.timeData.push(Date.parse(time1)/1000)
 				}
 				// console.log('重复时间',self.timeData,self.productTime)
@@ -125,7 +149,7 @@
 						}
 					}
 				}
-				console.log('可以使用的时间',self.isUse)
+				// console.log('可以使用的时间',self.isUse)
 			},
 			
 			getProductData(){
@@ -200,6 +224,12 @@
 						}
 					}
 					self.canChooseHour = self.mainData.product[0].book_time_item.split(',');
+					if(self.type==1){
+						
+					}else{
+						
+					}
+					console.log(self.timeList)
 			
 					self.data.order_no = self.mainData.order_no;
 					self.data.product_id = self.mainData.product_id;
@@ -209,6 +239,7 @@
 					
 					self.searchItem1.id = self.mainData.product_id;
 					self.getProductData();
+					
 			
 					uni.setStorageSync('canClick', true);
 					console.log('订单详情信息',self.mainData)
@@ -238,10 +269,6 @@
 			
 			submit(){
 				const self = this;
-				/* if(self.mainData.orderLog.length>=parseInt(self.mainData.standard)){
-					self.$Utils.showToast('预约次数已经完成', 'none')
-					return;
-				}; */
 				self.data.book_time = 
 				self.timeList[self.leftCurr].y
 				+'-'+self.timeList[self.leftCurr].m
@@ -280,10 +307,10 @@
 						    duration: 2000,
 						});
 						setTimeout(function(){
-							let pages = getCurrentPages();  //获取所有页面栈实例列表
-							let nowPage = pages[ pages.length - 1];  //当前页页面实例
-							let prevPage = pages[ pages.length - 2 ];  //上一页页面实例
-							prevPage.$vm.page = 1;   //修改上一页data里面的searchVal参数值为1211
+							// let pages = getCurrentPages();  //获取所有页面栈实例列表
+							// let nowPage = pages[ pages.length - 1];  //当前页页面实例
+							// let prevPage = pages[ pages.length - 2 ];  //上一页页面实例
+							// prevPage.$vm.page = 1;   //修改上一页data里面的searchVal参数值为1211
 							uni.navigateBack({
 								delta: 1
 							});
@@ -292,6 +319,7 @@
 						uni.showToast({
 						    title: res.msg,
 						    duration: 2000,
+							icon:'none'
 						});
 					}
 				};

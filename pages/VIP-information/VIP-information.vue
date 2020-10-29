@@ -32,8 +32,24 @@
 			<view class="flex-1 pl-2">电话</view>
 			<input type="text" v-model="mainData.phone" placeholder="请输入" />
 		</view>
+		<view class="flex py-4 font-24" @click="isShow('agree')">
+			<image src="../../static/images/the-order-icon5.png" class="wh30 mr-2" v-if="isAgree"></image>
+			<image src="../../static/images/the-order-icon4.png" class="wh30 mr-2" v-else></image>
+			<view><text>同意</text> <text class="colorB" @click="isShow()">《{{serviceData.title}}》</text></view>
+		</view>
 		<!-- <button class="carBtn" open-type="getUserInfo" @getuserinfo="submit" >立即预约</button> -->
 		<button class="btnAuto" @click="successSubmit">确认</button>
+		
+		
+		<view class="bg-mask" v-show="is_show">
+			<view class="bg-white radius20 mx-4 flexY xy">
+				<view class="font-30 text-center py-3">{{serviceData.title}}</view>
+				<view class="px-3 mb-3 flex-1 flexY">
+					<view v-html="serviceData.content"></view>
+				</view>
+				<view class="text-center colorf py-3 Mgb" @click="isShow()">确定</view>
+			</view>
+		</view>
 
 	</view>
 </template>
@@ -50,7 +66,10 @@
 					birthday: '',
 					phone: '',
 					deadline: 0
-				}
+				},
+				serviceData:{},
+				is_show:false,
+				isAgree:false
 			}
 		},
 		onLoad(options) {
@@ -58,11 +77,38 @@
 			self.product_id = options.product_id;
 			console.log('options', options);
 			self.getUserData();
-			
+			self.getServiceData();
 			console.log('(new Date()).toLocaleDateString()', (new Date()).toLocaleDateString());
 			console.log('self.mainData', self.mainData);
 		},
 		methods: {
+			
+			isShow(type){
+				const self = this;
+				if(type){
+					self.isAgree = !self.isAgree;
+				}else{
+					self.is_show = !self.is_show
+				}
+			},
+			
+			getServiceData(){
+				const self = this;
+				const postData = {};
+				postData.searchItem = {
+					menu_id: 5,
+					title:'怪力牛会员卡协议'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.serviceData =  res.info.data[0];
+					};
+					uni.setStorageSync('canClick', true);
+					console.log('服务',self.serviceData)
+					self.$Utils.finishFunc('getServiceData');
+				};
+				self.$apis.articleGet(postData, callback);
+			},
 			
 			getCardData() {
 				const self = this;
@@ -76,10 +122,21 @@
 					if (res.info.data.length > 0) {
 						self.cardData = res.info.data[0];
 						self.price = self.cardData.price;
-						self.mainData.deadline =
-							self.userData.deadline != 0 ? self.userData.deadline+ parseInt(self.cardData.duration) *
-							86400 : Date.parse(new Date()) / 1000 + parseInt(self.cardData.duration) *
-							86400;
+						var nowTime = Date.parse(new Date());
+						if(self.userData.deadline!=0){
+							console.log(self.userData.deadline)
+							if(self.userData.deadline<nowTime){
+								self.userData.deadline = nowTime/1000;
+							}
+							self.mainData.deadline =self.userData.deadline+ parseInt(self.cardData.duration) *86400;
+							console.log(self.mainData.deadline,nowTime)
+							// self.mainData.deadline =
+							// 	self.userData.deadline != 0 ? self.userData.deadline+ parseInt(self.cardData.duration) *
+							// 	86400 : Date.parse(new Date()) / 1000 + parseInt(self.cardData.duration) *
+							// 	86400;
+						}else{
+							self.mainData.deadline =nowTime/1000 + parseInt(self.cardData.duration) *86400;
+						}
 						// self.mainData.shop_no = self.cardData.shop_no;
 					}
 					console.log(self.cardData,'carData')
@@ -118,7 +175,9 @@
 					self.$Utils.showToast('请输入年龄', 'none');
 				} else if (self.mainData.phone == '') {
 					self.$Utils.showToast('请输入电话', 'none');
-				} else {
+				} else if(!self.isAgree) {
+					self.$Utils.showToast('请确认同意服务协议', 'none');
+				}else {
 					var reg = /^1[3456789]\d{9}$/
 					if (reg.test(self.mainData.phone)) {
 						self.Utils.stopMultiClick(self.submit);
@@ -297,4 +356,7 @@
 	.btnAuto {
 		margin-top: 200rpx;
 	}
+	
+	.colorB{color: #63D1F8;}
+	.xy{height: 1000rpx;margin-top: 15%;}
 </style>

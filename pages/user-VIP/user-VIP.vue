@@ -20,13 +20,14 @@
 				
 				<view class="d-flex flex-wrap">
 					<block v-for="(item,index) in mainData" :key="index">
-						<view class="flex py-2" >
+						<view class="flex py-2 w-100" >
 							<view class="time">{{item.bookhm}}</view>
 							<image :src="item.user.headImgUrl" class="wh80 mx-2 radius-5"></image>
-							<view>
+							<view class="flex-1">
 								<view>{{item.userInfo.name}}</view>
 								<view class="font-26">{{item.userInfo.phone}}</view>
 							</view>
+							<view class="colorM" v-if="item.is_use==1">已扫码</view>
 						</view>
 					</block>
 					
@@ -34,7 +35,7 @@
 				
 			</view>
 		</view>
-		<image src="../../static/images/sijiao yuyue-img2.png" class="wh100 p-f sys" @click="getScancode"></image>
+		<image src="../../static/images/sijiao-yuyue-img2.png" class="wh100 p-f sys" @click="getScancode"></image>
 	</view>
 </template>
 
@@ -56,6 +57,7 @@
 		onLoad(options) {
 			const self = this;
 			self.timeList = self.$Utils.getFutureDateList(13);
+			self.searchItem.coach_no = uni.getStorageSync('coach_info').user_no;
 			self.searchItem.book_time = ['between',[self.timeList[0].stime/1000,self.timeList[0].stime/1000+86400]];
 			self.$Utils.loadAll(['getMainData'], self);
 		},
@@ -69,7 +71,7 @@
 			            console.log('条码类型：' + res.scanType);
 			            console.log('条码内容：' + res.result);
 						if(res.result){
-							self.getOrderLog(res.result)
+							self.getOrderLog(Number(res.result))
 						}
 			        }
 			    });
@@ -89,7 +91,8 @@
 					if (res.info.data.length > 0) {
 						var c_postData = {
 							searchItem:{
-								id:id
+								id:id,
+								user_type:0
 							},
 							tokenFuncName : 'getCoachToken',
 							data:{
@@ -111,6 +114,7 @@
 			},
 			updateOrderLog(postData){
 				const self = this;
+				var postData = postData;
 				const callback = (res)=>{
 					if(res.solely_code=100000){
 						uni.showToast({
@@ -119,7 +123,7 @@
 						});
 					}else{
 						uni.showToast({
-						    title:msg,
+						    title:res.msg,
 						    duration: 2000,
 						});
 					};

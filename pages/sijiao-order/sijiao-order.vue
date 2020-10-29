@@ -8,7 +8,7 @@
 					<view class="px-2 py-3 flex-1">
 						<view class="font-30 font-w pb-1">{{mainData.title}}</view>
 						<view><text class="price font-w">{{mainData.price}}</text>/课时</view>
-						<view class="font-24 py-1 line-h-sm">{{mainData.coach[0].name}} | {{mainData.book_week_item}}~{{mainData.book_time_item}}</view>
+						<view class="font-24 py-1 line-h-sm">{{mainData.coach[0].name?mainData.coach[0].name:''}} | {{mainData.book_week_item}}~{{mainData.book_time_item}}</view>
 						<view class="flex">
 							<block v-for="(c_item,c_index) in mainData.description_change" :key="c_index">
 								<view class="tag">{{c_item}}</view>

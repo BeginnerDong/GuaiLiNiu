@@ -27,7 +27,8 @@
 						团操课
 					</view>
 					<view class="flex pl-2">
-						<view class="tag" v-for="(item,index) in mainData.description" :key="index">{{item}}</view>
+						<view class="tag" v-for="(item,index) in mainData.description" :key="index"
+						v-if="item">{{item}}</view>
 					</view>
 				</view>
 				
@@ -152,9 +153,15 @@
 		
 		
 		<view style="height: 200rpx;"></view>
-		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1">
-			<view class="font-26">已预约{{mainData.is_book}}/{{mainData.max}}人，还差<text class="colorR">{{mainData.standard-mainData.is_book}}</text>人开课</view>
-			<view class="criBtn" @click="goOrder">{{userData.info.behavior==0?'购买会员':'立即预约'}}</view>
+		<view class="bg-white p-f left-0 right-0 bottom-0 flex1 p-2 bT-e1 btnBox">
+			<view class="font-26">已预约{{mainData.is_book}}/{{mainData.max}}人，
+				<text v-if="mainData.standard-mainData.is_book>0">
+					还差<text class="colorR">{{mainData.standard-mainData.is_book}}</text>人开课
+				</text>
+				<text class="colorR" v-else>已达开课人数</text>
+			</view>
+			<view class="criBtn" :class="type==0&&mainData.is_book==mainData.max?'d-n':''"
+			@click="goOrder">{{userData.info.behavior==0?'购买会员':'立即预约'}}</view>
 		</view>
 		
 		
@@ -345,7 +352,9 @@
 .lcIcon5{width: 40rpx;height: 44rpx;margin-bottom: 30rpx;}
 .GZ::before{content: "";border-left: 1px solid #e1e1e1;position: absolute;left: 0;height: 60rpx;}
 
+.btnBox{min-height: 120rpx;}
 .criBtn{line-height: 80rpx;border-radius: 40rpx;margin: 0;width: 260rpx;}
+.d-n{display: none;}
 
 .noVip{width: 620rpx;margin-top: 65%;}
 </style>

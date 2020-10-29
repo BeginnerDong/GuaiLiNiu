@@ -29,7 +29,7 @@
 								<view class="tag">{{c_item}}</view>
 							</block>
 						</view>
-						<view class="colorR">{{item.coach.name}} |<text class="price"> {{item.product[0].price}}</text>/<!-- {{item.product[0].score}} -->课时</view>
+						<view class="colorR">{{item.coach.name?item.coach.name:''}} |<text class="price"> {{item.product[0].price}}</text>/<!-- {{item.product[0].score}} -->课时</view>
 					</view>
 				</view>
 				<view class="font-26 color6 py-3 bB-f5 flex1" v-show="item.transport_status==0">
@@ -49,11 +49,12 @@
 					<image :src="c_item.qrcode" class="wh80" 
 					@click="bigImg(c_item.qrcode)" v-show="c_item.qrcode&&c_item.is_use!=1&&c_item.removeBtn"></image>
 					<text class="flex-1 pl-1 line-h-md">预约时间：
-						{{c_item.book_time_change+' '}}
+						<text v-if="c_item.is_use==1">{{c_item.book_time+' '}}</text>
+						<text v-else>{{c_item.book_time_change+' '}}</text>
 						<text class="colorM">{{c_item.time}}</text> 
-						{{c_item.is_use==1?'已结束':''}}
+						{{c_item.is_use==1?'已使用':''}}
 					</text>
-					<view class="btn b-e1" @click="remove(c_item.id)" v-show="c_item.removeBtn">取消预约</view>
+					<view class="btn b-e1" @click="remove(c_item.id)" v-show="c_item.removeBtn&&c_item.is_use!=1">取消预约</view>
 					<view class="colorM" v-show="!c_item.removeBtn">课程已过期</view>
 				</view>
 				
@@ -87,7 +88,9 @@
 			const self = this;
 			self.page = 0;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
-			self.$Utils.loadAll(['getMainData'], self);
+			// self.$Utils.loadAll(['getMainData'], self);
+			self.changeNav(0);
+			// self.getMainData();
 		},
 		onReachBottom() {
 			const self = this;
@@ -244,6 +247,8 @@
 								}
 							}
 							self.mainData[i].orderLog[j]['book_time_change'] = book_time.split(' ')[0];
+							self.mainData[i].orderLog[j]['book_time'] = book_time;
+							console.log(self.mainData)
 						}
 					}
 					uni.setStorageSync('canClick', true);
@@ -263,6 +268,8 @@
 							course_type: 3,
 							pay_status:1
 						};
+						delete self.searchItem.transport_status;
+						delete self.searchItem.isremark;
 						break;
 					case 1:
 						self.searchItem = {

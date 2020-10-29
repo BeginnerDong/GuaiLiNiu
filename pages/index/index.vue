@@ -81,7 +81,12 @@
 								</view>
 								<view class="font-24 pt-3">授课教练：{{item.coach&&item.coach[0]?item.coach[0].name:''}}  </view><!-- 有效期：{{item.duration}}天 --><!-- {{item.start_time}}~{{item.end_time}} -->
 							</view>
-							<view class="font-20 colorf kcSgin" v-show="item.course_type!=3">差{{item.is_book?item.standard-item.is_book:item.standard}}个人开课</view>
+							<view class="font-20 colorf kcSgin" v-show="item.course_type!=3">
+								{{item.is_book?
+								(item.standard-item.is_book>0?
+								'差'+item.standard-item.is_book+'个人开课':'已达开课人数')
+								:'差'+item.standard+'个人开课'}}
+							</view>
 						</view>
 					</view>
 				</view>
@@ -107,7 +112,7 @@
 										</view>
 									</view>
 									<view class="flex py-4">
-										<view class="tag" v-for="(c_item,c_index) of item.expertise" :key="c_index">{{c_item}}</view>
+										<view class="tag" v-for="(c_item,c_index) of item.expertise" :key="c_index" v-if="c_item">{{c_item}}</view>
 									</view>
 									<view class="flex">
 										<view class="price font-26 pr-5">{{item.class&&item.class[0]?item.class[0].price:'0'}}/节</view>
@@ -125,15 +130,24 @@
 			</view>
 		</view>
 		
-		
-		<view v-if="is_show" class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;">
-			<view class="flex1"
-			 @click="Router.navigateTo({route:{path:'/pages/experienceCoupon/experienceCoupon'}})">
+		 <!-- v-if="is_show" -->
+		<view class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;">
+			<view class="flex1">
 				<image src="../../static/images/home-img4.png" class="Img80"></image>
-				<view class="pl-2 pr-5 flex-1">店长送你一份信任见面礼，如需到店使用请提前预约~</view>
-				<view class="criBtn criBtn1">去领取</view>
+				<view class="pl-2 pr-5 flex-1">店长送你一份新人见面礼，如需到店使用请提前预约~</view>
+				<view class="criBtn criBtn1"
+				@click="Router.navigateTo({route:{path:'/pages/experienceCoupon/experienceCoupon'}})">去领取</view>
 			</view>
 			<image src="../../static/images/my-class-icon1.png" class="x-icon1" @click="isShow"></image>
+		</view>
+		
+		<view class="bg-mask" style="z-index: 1001;" v-show="user_show">
+			<view class="bg-white w-100 bottom-0 p-aX radius20-T flex4 py-4">
+				<view class="py-4 font-30 mb-2">获取您的微信头像、昵称信息</view>
+				<button class="w-50" open-type="getUserInfo" @getuserinfo="Utils.stopMultiClick(agreen)">
+					<view class="btn80-c w-100 Mgb colorf">同意授权</view>
+				</button>
+			</view>
 		</view>
 		
 		
@@ -167,6 +181,8 @@
 				coachData:[],
 				classData:[],
 				behavior:0,
+				user_show:false,
+				Utils:this.$Utils
 			}
 		},
 		
@@ -176,6 +192,7 @@
 			if(!uni.getStorageSync('shopData')){
 				self.getLocation();
 			}
+			self.checkAuth();
 		},
 		
 		onShow() {
@@ -198,6 +215,43 @@
 		},
 		
 		methods: {
+			
+			goVip(){
+				const self = this;
+				if(!self.user_show){
+					self.Router.navigateTo({route:{path:'/pages/experienceCoupon/experienceCoupon'}})
+				}else{
+					
+				}
+			},
+			
+			agreen() {
+				const self = this;
+				uni.setStorageSync('canClick', false);	
+				const callback = (user, res) => {
+					console.log('user',user)
+					self.user_show = false;
+					// self.infoUpdate(user);
+				};
+				self.$Utils.getAuthSetting(callback);
+			},
+			
+			checkAuth(){
+			    const self = this;
+			    wx.getSetting({
+					success (res) {
+						console.log(res.authSetting)
+						if(res.authSetting['scope.userInfo']){
+							self.userInfoAuth = true;
+							self.user_show = false;
+							self.userData = uni.getStorageSync('user_info');
+						}else{
+							uni.removeStorageSync('user_token');
+							self.user_show = true;
+						};
+					}
+			    })
+			},
 			
 			goToDetail(item,type){
 				const self = this;

@@ -6,9 +6,10 @@
 				<image :src="mainData&&mainData.mainImg&&mainData.mainImg[0]&&mainData.mainImg[0].url" class="wh180 radius20"></image>
 				<view class="px-2 py-3 flex-1">
 					<view class="font-30 font-w">{{mainData.title}}</view>
-					<view class="font-24 py-2">{{mainData.coach[0].name}} <!-- | {{mainData.start_time}}~{{mainData.end_time}} --></view>
+					<view class="font-24 py-2">{{mainData.coach[0].name?mainData.coach[0].name:''}} <!-- | {{mainData.start_time}}~{{mainData.end_time}} --></view>
 					<view class="flex">
-						<view class="tag" v-for="(c_item,c_index) of mainData.description" :key="c_index">{{c_item}}</view>
+						<view class="tag" v-for="(c_item,c_index) of mainData.description" :key="c_index"
+						v-if="c_item">{{c_item}}</view>
 					</view>
 				</view>
 			</view>
@@ -120,6 +121,7 @@
 							course_type:self.mainData.course_type,
 							coach_no:self.mainData.coach_no,
 							shop_no:self.mainData.shop_no,
+							pay_status:1
 						}
 					});
 					self.addOrder(orderList)
@@ -158,6 +160,7 @@
 							title: res.msg,
 							duration: 2000
 						});
+						console.log(2222)
 						// uni.setStorageSync('canClick', true);
 					};		
 				};
@@ -235,6 +238,9 @@
 							title: res.msg,
 							duration: 2000
 						});
+						setTimeout(function() {
+							self.Router.navigateTo({route:{path:'/pages/user-leagueClass/user-leagueClass'}});
+						}, 1000);
 					};
 					// uni.setStorageSync('canClick', true);
 				};
