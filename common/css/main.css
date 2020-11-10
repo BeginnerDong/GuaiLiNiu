@@ -85,6 +85,7 @@ uni-button:after{border: 0;}
 .btn540{background-color: #FF633A;text-align: center;color: #fff;font-size: 30rpx;line-height: 60rpx;width: 540rpx;}
 .criBtn{background-color: #FF633A;line-height: 66rpx;width: 300rpx;text-align: center;color: #fff;margin: 20rpx auto;border-radius: 33rpx;}
 .carBtn{background-color: #FF633A;color: #fff;font-size: 30rpx;font-weight: 500;line-height: 100rpx;width: 240rpx;text-align: center;}
+.btn80{line-height: 80rpx;border-radius: 10rpx;text-align: center;font-size:32rpx}
 
 /* 列表导航 */
 .list{font-size: 30rpx;line-height: 100rpx;border-bottom: 1px solid #e1e1e1;display: flex;text-align: center;}

@@ -125,11 +125,11 @@
 						var nowTime = Date.parse(new Date());
 						if(self.userData.deadline!=0){
 							console.log(self.userData.deadline)
-							if(self.userData.deadline<nowTime){
+							if(self.userData.deadline<nowTime/1000){
 								self.userData.deadline = nowTime/1000;
 							}
 							self.mainData.deadline =self.userData.deadline+ parseInt(self.cardData.duration) *86400;
-							console.log(self.mainData.deadline,nowTime)
+							console.log(self.mainData.deadline,nowTime/1000)
 							// self.mainData.deadline =
 							// 	self.userData.deadline != 0 ? self.userData.deadline+ parseInt(self.cardData.duration) *
 							// 	86400 : Date.parse(new Date()) / 1000 + parseInt(self.cardData.duration) *
@@ -236,6 +236,7 @@
 			goPay() {
 				const self = this;
 				const postData = {};
+				self.mainData.behavior = 1;
 				console.log('self.price', self.price)
 				postData.wxPay = {
 					price: parseFloat(self.price)
@@ -246,7 +247,6 @@
 					id: self.orderId
 				};
 				// postData.payAfter = [];
-				self.mainData.behavior = 1;
 				postData.payAfter = [
 					{
 						tableName: 'UserInfo',
@@ -267,7 +267,7 @@
 						}
 					}
 				];
-
+				console.log('postData',postData)
 				const callback = (res) => {
 					if (res.solely_code == 100000) {
 						uni.setStorageSync('canClick', true);

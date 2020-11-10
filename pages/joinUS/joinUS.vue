@@ -8,7 +8,9 @@
 			<view class="flex0">
 				<view class="text" v-for="(v,index) in text" :key="index">{{v}}</view>
 			</view>
-			<image :src="mainData.mainImg&&mainData.mainImg[0]?mainData.mainImg[0].url:''" class="img1"></image>
+			<view class="py-4 img1">
+				<video :src="mainData.mainImg&&mainData.mainImg[0]?mainData.mainImg[0].url:''" class="w-100 h-100"></video>
+			</view>
 		</view>
 		
 		<view class="ru px-2 pb-5">
@@ -19,8 +21,8 @@
 			<view class="btnAuto" @click="successSubmit">确定</view>
 		</view>
 		
-		<view class="px-2">
-			<view class="font-36 line-h pt-5 pb-2 text-center p-r mb-4 tit">加盟条件</view>
+		<view class="">
+			<view class="px-2 font-36 line-h pt-5 pb-2 text-center p-r mb-4 tit">加盟条件</view>
 			<view   class="content ql-editor" style="padding:0;" v-html="mainData.content">
 				
 			</view>
@@ -121,7 +123,7 @@
 <style scoped>
 .logo{width: 196rpx;height: 52rpx;}
 .text{width: 50rpx;line-height: 50rpx;border-radius: 50%;color: #222;font-size: 30rpx;text-align: center;background-color: #FFCDC0;margin: 0 15rpx;}
-.img1{width: 413rpx;height: 463rpx;margin: auto;}
+.img1{width: 100%;height: 400rpx;margin: auto;}
 .ru{background-color: #FFF3EB;}
 .tit::before{content: '';background-color: #FF633A;width: 60rpx;height: 4rpx;position: absolute;bottom: 0;left: 50%;margin-left: -25rpx;}
 input{width: 710rpx;height: 80rpx;font-size: 26rpx;border: 1px solid #e1e1e1;background-color: #fff;border-radius: 10rpx;margin-bottom: 30rpx;padding: 0 20rpx;box-sizing: border-box;}

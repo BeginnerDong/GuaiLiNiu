@@ -164,6 +164,18 @@
 			@click="goOrder">{{userData.info.behavior==0?'购买会员':'立即预约'}}</view>
 		</view>
 		
+		<view class="bg-mask" style="z-index: 1001;" v-show="user_show">
+			<view class="bg-white w-100 bottom-0 p-aX radius20-T flex4 py-4">
+				<view class="py-4 font-30 mb-2">获取您的微信头像、昵称信息</view>
+				<view class="flex2 w-100">
+					<view class="btn80 w-45 colorM borderM">取消</view>
+					<button class="w-45" open-type="getUserInfo" @getuserinfo="Utils.stopMultiClick(agreen)">
+						<view class="btn80 w-100 Mgb colorf">同意授权</view>
+					</button>
+				</view>
+			</view>
+		</view>
+		
 		
 		
 		<!-- 不是会员弹框 -->
@@ -199,19 +211,30 @@
 				statusBar: app.globalData.statusBar,
 				userData:{},
 				week:['周日','周一','周二','周三','周四','周五','周六'],
-				changeTime:[]
+				changeTime:[],
+				user_show:false,
+				Utils:this.$Utils,
+				searchItem:{},
+				paginate:{
+					count: 0,
+					currentPage:1,
+					pagesize:10,
+					is_page:true,
+				}
 			}
 		},
 		onLoad(options){
 			const self = this;
-			self.userData = uni.getStorageSync('user_info');
+			// self.userData = uni.getStorageSync('user_info');
+			console.log(options)
 			if(options.id){
 				self.searchItem.id = options.id;
-				self.getMainData()
+				self.getMainData();
 			}else{
 				if(uni.getStorageSync('leagueClassDetail')){
 					self.mainData = uni.getStorageSync('leagueClassDetail');
 					self.weekTime(self.mainData.book_week_item);
+					self.mainData.coach[0].title = self.mainData.coach[0].title.split(',');
 				}else{
 					uni.showToast({
 						title:'课程信息不存在',
@@ -220,11 +243,12 @@
 					self.$Router.navigateTo({route:{path:'/pages/index/index'}})
 				}
 			}
-			self.mainData.coach[0].title = self.mainData.coach[0].title.split(',');
 			self.shopData = uni.getStorageSync('shopData');
 			self.type = options.type;
 			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
 			self.getMessageData();
+			self.checkAuth();
+			self.getUserData();
 		},
 		onReachBottom() {
 			const self = this;
@@ -234,6 +258,48 @@
 			};
 		},
 		methods: {
+			
+			agreen() {
+				const self = this;
+				uni.setStorageSync('canClick', false);	
+				const callback = (user, res) => {
+					console.log('user',callback)
+					self.user_show = false;
+					self.getUserData();
+				};
+				self.$Utils.getAuthSetting(callback);
+			},
+			
+			checkAuth(){
+			    const self = this;
+			    wx.getSetting({
+					success (res) {
+						console.log(res.authSetting)
+						if(res.authSetting['scope.userInfo']){
+							self.userInfoAuth = true;
+							self.user_show = false;
+						}else{
+							uni.removeStorageSync('user_token');
+							self.user_show = true;
+						};
+					}
+			    })
+			},
+			
+			getUserData() {
+				const self = this;
+				const postData = {};
+				postData.noLoading = true;
+				postData.tokenFuncName = 'getProjectToken';
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.userData = res.info.data[0];
+						uni.setStorageSync('user_info',res.info.data[0]);
+						console.log('self.userData',self.userData)
+					}
+				};
+				self.$apis.userGet(postData, callback);
+			},
 			
 			weekTime(time){
 				const self = this;
@@ -312,20 +378,42 @@
 					self.$apis.messageGet(postData, callback);
 			},
 			
-			getMainData(){
+			getMainData() {
 				const self = this;
+				self.searchItem.shop_no = uni.getStorageSync('shopData').user_no;
 				const postData = {};
 				//postData.tokenFuncName = 'getProjectToken';
-				postData.paginate = self.$Utils.cloneForm(self.paginate);
 				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
+				postData.order = {
+					listorder:'desc'
+				};
+				postData.getAfter = {
+					coach:{
+						tableName:'Coach',
+						middleKey:'coach_no',
+						key:'user_no',
+						searchItem:{
+							status:1
+						},
+						condition:'='
+					}
+				};
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
-						self.mainData.push.apply(self.mainData, res.info.data[0]);
+						self.mainData = res.info.data[0];
+						self.mainData.is_book = 0;
+						if(self.mainData.course && self.mainData.course[0] &&self.mainData.course[0].is_book){
+							self.mainData.is_book = self.mainData.course[0].is_book;
+						}
+						if(self.mainData.standard-self.mainData.is_book <= 0){
+							self.mainData.is_book = 0
+						}
 						self.mainData.description = self.mainData.description.split(',');
-						self.weekTime(self.mainData.book_week_item.split(','));
+						self.mainData.start_time = self.$Utils.timeto(parseInt(self.mainData.start_time),'ymd-hm')
+						self.mainData.end_time = self.$Utils.timeto(parseInt(self.mainData.end_time),'ymd-hm')
+					}else{
+						self.isLoadAll = true;
 					};
-					
-					
 					uni.setStorageSync('canClick', true);
 					self.$Utils.finishFunc('getMainData');
 				};
@@ -357,4 +445,6 @@
 .d-n{display: none;}
 
 .noVip{width: 620rpx;margin-top: 65%;}
+
+.w-45{width: 45%;}
 </style>

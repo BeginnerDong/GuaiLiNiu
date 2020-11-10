@@ -116,7 +116,8 @@
 						</view>
 						<view class="font-24 py-2">Alsue | {{item.start_time}}~{{item.end_time}}</view>
 						<view class="flex">
-							<view class="tag" v-for="(c_item,c_index) of item.description" :key="c_index">{{c_item}}</view>
+							<view class="tag" v-if="c_item"
+							v-for="(c_item,c_index) of item.description" :key="c_index">{{c_item}}</view>
 						</view>
 					</view>
 					<view class="font-20 colorf kcSgin">差{{item.standard}}个人开课</view>
@@ -240,8 +241,8 @@
 			
 			goToDetail(item){
 				const self = this;
-				uni.setStorageSync('leagueClassDetail',item);
-				self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0'}});
+				// uni.setStorageSync('leagueClassDetail',item);
+				self.Router.navigateTo({route:{path:'/pages/leagueClass-detail/leagueClass-detail?type=0&id='+item.id}});
 			},
 			
 			onShareAppMessage: function( options ){
@@ -300,7 +301,8 @@
 						searchItem:{
 							status:1,
 							type:1,
-							start_time:self.start_time
+							start_time:self.start_time,
+							course_type:1
 						},
 						condition:'='	
 					}

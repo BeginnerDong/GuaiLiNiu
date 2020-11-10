@@ -130,8 +130,8 @@
 			</view>
 		</view>
 		
-		 <!-- v-if="is_show" -->
-		<view class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;">
+		
+		<view v-if="is_show" class="homeBto mx-2 my-5 radius10 p-3 flex1 p-r" style="position: fixed;bottom: 80rpx;">
 			<view class="flex1">
 				<image src="../../static/images/home-img4.png" class="Img80"></image>
 				<view class="pl-2 pr-5 flex-1">店长送你一份新人见面礼，如需到店使用请提前预约~</view>
@@ -141,14 +141,6 @@
 			<image src="../../static/images/my-class-icon1.png" class="x-icon1" @click="isShow"></image>
 		</view>
 		
-		<view class="bg-mask" style="z-index: 1001;" v-show="user_show">
-			<view class="bg-white w-100 bottom-0 p-aX radius20-T flex4 py-4">
-				<view class="py-4 font-30 mb-2">获取您的微信头像、昵称信息</view>
-				<button class="w-50" open-type="getUserInfo" @getuserinfo="Utils.stopMultiClick(agreen)">
-					<view class="btn80-c w-100 Mgb colorf">同意授权</view>
-				</button>
-			</view>
-		</view>
 		
 		
 		<view style="height: 130rpx;"></view>
@@ -174,7 +166,7 @@
 		data() {
 			return {
 				Router:this.$Router,
-				is_show: true,
+				is_show: false,
 				sliderData:[],
 				shopData:{},
 				activeData:[],
@@ -192,7 +184,7 @@
 			if(!uni.getStorageSync('shopData')){
 				self.getLocation();
 			}
-			self.checkAuth();
+			
 		},
 		
 		onShow() {
@@ -202,10 +194,13 @@
 				self.getActiveData();
 				self.getCoachData();
 				self.getClassData();
-				self.behavior = uni.getStorageSync('user_info').info.behavior;
-				if(self.behavior==1){
-					self.is_show = false
-				}
+				self.getUserData();
+				// self.behavior = uni.getStorageSync('user_info').info.behavior;
+				// if(self.behavior==1){
+				// 	self.is_show = false;
+				// }else{
+				// 	self.is_show = true;
+				// }
 			}
 		},
 		
@@ -225,33 +220,6 @@
 				}
 			},
 			
-			agreen() {
-				const self = this;
-				uni.setStorageSync('canClick', false);	
-				const callback = (user, res) => {
-					console.log('user',user)
-					self.user_show = false;
-					// self.infoUpdate(user);
-				};
-				self.$Utils.getAuthSetting(callback);
-			},
-			
-			checkAuth(){
-			    const self = this;
-			    wx.getSetting({
-					success (res) {
-						console.log(res.authSetting)
-						if(res.authSetting['scope.userInfo']){
-							self.userInfoAuth = true;
-							self.user_show = false;
-							self.userData = uni.getStorageSync('user_info');
-						}else{
-							uni.removeStorageSync('user_token');
-							self.user_show = true;
-						};
-					}
-			    })
-			},
 			
 			goToDetail(item,type){
 				const self = this;
@@ -282,6 +250,26 @@
 						self.getShopData(res.longitude,res.latitude)
 					}
 				})
+			},
+			
+			getUserData() {
+				const self = this;
+				const postData = {};
+				
+				postData.tokenFuncName = 'getProjectToken';
+				
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.userData = res.info.data[0];
+						if(self.userData.info.behavior==1){
+							self.is_show = false;
+						}else{
+							self.is_show = true;
+						}
+					}
+					self.$Utils.finishFunc('getUserData');
+				};
+				self.$apis.userGet(postData, callback);
 			},
 			
 			getShopData(longitude,latitude) {
@@ -481,6 +469,8 @@ swiper{height: 250rpx;}
 .criBtn1{width: 110rpx;line-height: 40rpx;border-radius: 20rpx;}
 
 .sijiaoBox{min-height: 800rpx;}
+
+
 
 /* .x-icon1{width: 40rpx;height: 40rpx;} */
 
