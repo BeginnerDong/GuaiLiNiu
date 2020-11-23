@@ -11,7 +11,7 @@
 					</view>
 				</view>
 				
-				<view class="btnTxt p-aX" @click="Router.navigateTo({route:{path:'/pages/experienceInfor/experienceInfor'}})">立即激活</view>
+				<view class="btnTxt p-aX" @click="Router.navigateTo({route:{path:'/pages/experienceInfor/experienceInfor?day='+vipDay}})">立即激活</view>
 			</view>
 		</view>
 		
@@ -23,7 +23,8 @@
 		data() {
 			return {
 				Router:this.$Router,
-				articleData:{}
+				articleData:{},
+				vipDay:0
 			}
 		},
 		onLoad() {
@@ -44,6 +45,7 @@
 					const callback = (res) => {
 						if (res.info.data.length > 0) {
 							self.articleData = res.info.data[0];
+							self.vipDay = self.articleData.view_count;
 						}
 						self.$Utils.finishFunc('getArticleData');
 					};

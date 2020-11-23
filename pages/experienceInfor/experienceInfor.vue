@@ -55,6 +55,7 @@
 		data() {
 			return {
 				Router:this.$Router,
+				userData:{},
 				mainData:{
 					name:'',
 					gender:0,
@@ -69,7 +70,8 @@
 				submitData:{
 					photo:'',
 					mainImg:[]
-				}
+				},
+				vipDay:0
 			}
 		},
 		onLoad(options){
@@ -77,7 +79,11 @@
 			self.product_id = options.product_id;
 			self.price = options.price;
 			console.log('options',options)
-			self.mainData.deadline = Date.parse(new Date())/1000 + 7*86400;
+			if(options.day){
+				self.vipDay = parseInt(options.day);
+				console.log(self.vipDay)
+			}
+			self.mainData.deadline = Date.parse(new Date())/1000 + (self.vipDay*86400);
 			/* if(uni.getStorageSync('user_info').info.deadline>Date.parse(new Date())){
 				self.mainData.deadline = uni.getStorageSync('user_info').info.deadline + 7*86400;
 			}else{
@@ -134,13 +140,20 @@
 				} else {
 					var reg = /^1[3456789]\d{9}$/
 					if (reg.test(self.mainData.phone)) {
+						if(!self.userData.photo || self.userData.mainImg.length==0){
+							self.$Utils.showToast('请前往个人中心上传人脸识别照片后操作', 'none')
+							setTimeout(function(){
+								self.$Router.redirectTo({route:{path:'/pages/user/user'}});
+							},2000)
+							return;
+						}
 						self.submitData.name = self.mainData.name;
 						self.submitData.birthday = self.mainData.birthday;
 						self.submitData.phone = self.mainData.phone;
 						self.submitData.gender = self.mainData.gender;
-						self.submitData.id_free = 0;
+						self.submitData.id_free = 1;
 						self.submitData.behavior = 1;
-						self.submitData.deadline =Date.parse(new Date())/1000 + 7 *86400;
+						self.submitData.deadline =Date.parse(new Date())/1000 + (self.vipDay*86400);
 						console.log(self.submitData)
 						self.submit()
 					} else {

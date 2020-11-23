@@ -60,6 +60,7 @@
 			return {
 				product_id: 0,
 				Utils:this.$Utils,
+				userData:{},
 				mainData: {
 					name: '',
 					gender: 0,
@@ -180,6 +181,13 @@
 				}else {
 					var reg = /^1[3456789]\d{9}$/
 					if (reg.test(self.mainData.phone)) {
+						if(!self.userData.photo || self.userData.mainImg.length==0){
+							self.$Utils.showToast('请前往个人中心上传人脸识别照片后操作', 'none')
+							setTimeout(function(){
+								self.$Router.redirectTo({route:{path:'/pages/user/user'}});
+							},2000)
+							return;
+						}
 						self.Utils.stopMultiClick(self.submit);
 					} else {
 						self.$Utils.showToast('电话号码格式错误', 'none');

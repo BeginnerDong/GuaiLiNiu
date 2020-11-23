@@ -122,7 +122,7 @@
 								<view>4.评价</view>
 							</view>
 						</view>
-						<view class="flex4 colorM pl-5 p-r GZ" @click="Router.navigateTo({route:{path:'/pages/ruleDetail/ruleDetail'}})">
+						<view class="flex4 colorM pl-5 p-r GZ" @click="Router.navigateTo({route:{path:'/pages/ruleDetail/ruleDetail?type=0'}})">
 							<image src="../../static/images/pay-for-courses-icon9.png" class="lcIcon5"></image>
 							<view>规则详情</view>
 						</view>

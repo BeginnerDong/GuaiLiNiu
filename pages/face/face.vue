@@ -7,12 +7,12 @@
 		</view>
 		
 		<view class="photo p-r">
-			<image src="../../static/images/face recogontion-icon.png"></image>
+			<image src="../../static/images/face-recogontion-icon.png"></image>
 			<view class="p-aXY flex0" v-if="submitData.mainImg.length>0">
 				<image class="uploadImg" :src="submitData&&submitData.mainImg&&submitData.mainImg[0].url" @click="upLoadImg('mainImg')" mode="widthFix"></image>
 			</view>
 			<view v-else class="wh300 radius-5 Mgb p-aXY" @click="upLoadImg('mainImg')">
-				<image src="../../static/images/face recogontion-icon1.png" class="img"></image>
+				<image src="../../static/images/face-recogontion-icon1.png" class="img"></image>
 			</view>
 			<!-- <view >照片已上传</view> -->
 			<!-- <image v-else class="uploadImg p-aXY" :src="submitData.mainImg[0].url" @click="upLoadImg('mainImg')" mode="widthFix"></image> -->
@@ -117,6 +117,7 @@
 					console.log('res', res)
 					if (res) {
 						self.submitData.photo = res;
+						console.log(res,'硬件服务器上传成功')
 						console.log(self.submitData,'submitData')
 						self.$Utils.showToast('上传成功，请确认提交', 'none')
 					}else {
@@ -127,7 +128,7 @@
 					console.log('res', res)
 					if (res) {
 						self.submitData.mainImg = [{'url':res.info.url,'type':'image'}];
-						console.log(res.info,'本地服务器')
+						console.log(res.info,'本地服务器上传成功')
 						self.$Utils.showToast('数据更新成功', 'none')
 					}else {
 						self.$Utils.showToast('网络故障', 'none')

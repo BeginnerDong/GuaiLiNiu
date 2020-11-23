@@ -261,7 +261,7 @@
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
 						self.userData = res.info.data[0];
-						if(self.userData.info.behavior==1){
+						if(self.userData.info.behavior==1 || self.userData.info.id_free==1){
 							self.is_show = false;
 						}else{
 							self.is_show = true;

@@ -66,7 +66,7 @@
 					}
 				];
 				const callback = (res) => {
-					res = JSON.parse(res.slice(7));
+					// res = JSON.parse(res.slice(7));
 					uni.setStorageSync('canClick', true);
 					if (res.solely_code == 100000) {
 						uni.showToast({
@@ -79,7 +79,7 @@
 							});
 						},2000);
 					} else {
-						self.$Utils.showToast('网络故障', 'none')
+						// self.$Utils.showToast('网络故障', 'none')
 						console.log('3333333')
 					};
 				};
