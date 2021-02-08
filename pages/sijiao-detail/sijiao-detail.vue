@@ -147,7 +147,7 @@
 				item.coachName = self.mainData.name;
 				// item.description = item.description.split(',')
 				uni.setStorageSync('sijiaoCourseDetail',item);
-				self.Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail'}});
+				self.Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail?id='+item.id}});
 			},
 			
 			getMainData() {

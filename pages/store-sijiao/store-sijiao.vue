@@ -12,7 +12,7 @@
 					<view class="font-w py-2 txt">{{item.name}}</view>
 					<view class="flex">
 						<image src="../../static/images/sijiao-icon.png" class="bq-icon"></image>
-						<view class="font-22 color6 pl-1">{{item.expertise}}</view>
+						<view class="font-22 color6 pl-1 flex-1 avoidOverflow">{{item.expertise}}</view>
 					</view>
 					<view class="flex1 pb-2 pt-3">
 						<view class="font-26 colorR"><text class="price">{{item.class&&item.class[0]?item.class[0].price:'0'}}</text>/节</view>
@@ -122,8 +122,8 @@
 
 <style scoped>
 .sj{width: 340rpx;}
-.sjImg1{width: 340rpx;height: 200rpx;}
-.sjSgin{font-size: 22rpx;color: #fff;line-height: 36rpx;padding: 0 8rpx;background-color: rgba(0,0,0,0.3);display: inline-block;position: absolute;right: 10rpx;top: 154rpx;border-radius: 5rpx;}
+.sjImg1{width: 340rpx;height: 450rpx;}
+.sjSgin{font-size: 22rpx;color: #fff;line-height: 36rpx;padding: 0 8rpx;background-color: rgba(0,0,0,0.3);display: inline-block;position: absolute;right: 10rpx;top: 405rpx;border-radius: 5rpx;}
 
 .txt{min-height: 68rpx;}
 

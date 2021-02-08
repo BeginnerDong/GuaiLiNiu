@@ -34,9 +34,9 @@
 				<view @click="Router.navigateTo({route:{path:'/pages/storeDetail/storeDetail?id='+shopData.id}})">
 					<view class="flex py-3">
 						<view class="font-34">{{shopData.name?shopData.name:''}}</view>
-						<view class="font-20 colorf p-r sq">
+						<view class="font-20 colorf p-r sq" v-if="shopData.tag">
 							<image src="../../static/images/home-icon5.png" class="sq-icon"></image>
-							<view class="top-0 p-a t-indent10 line-h-md">社区店</view>
+							<view class="top-0 p-a t-indent10 line-h-md">{{shopData.tag}}</view>
 						</view>
 					</view>
 					<view class="flex1">
@@ -235,7 +235,7 @@
 					}else if(item.course_type == 3){
 						item.coachName = item.coach[0].name
 						uni.setStorageSync('sijiaoCourseDetail',item);
-						self.Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail'}});
+						self.Router.navigateTo({route:{path:'/pages/sijiao-classDetail/sijiao-classDetail?id='+item.id}});
 					}
 				}else{
 					self.Router.navigateTo({route:{path:'/pages/sijiao-detail/sijiao-detail?coach_no='+item.user_no}})
@@ -458,7 +458,7 @@ swiper{height: 250rpx;}
 .banner{width: 710rpx;height: 250rpx;border-radius:20rpx;overflow: hidden;}
 .banner image{width: 100%;height: 250rpx;border-radius:20rpx;}
 .home-icon{width: 112rpx;height: 112rpx;margin-bottom: 20rpx;}
-.homeBg{width: 722rpx;height: 1818rpx;position: absolute;top: 0;left: 0;right: 0;margin: 0 auto 280rpx;}
+.homeBg{width: 722rpx;position: absolute;top: 0;left: 0;right: 0;margin: 0 auto 280rpx;bottom: 0;}
 .sq{top: -10rpx;right: -10rpx;}
 .banner1{width: 650rpx;height: 200rpx;}
 .banner1 image{width: 650rpx;height: 200rpx;}

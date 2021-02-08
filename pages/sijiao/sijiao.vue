@@ -150,8 +150,8 @@
 .tan .on{color: #fff;}
 
 .sj{width: 340rpx;}
-.sjImg1{width: 340rpx;height: 200rpx;}
-.sjSgin{font-size: 22rpx;color: #fff;line-height: 36rpx;padding: 0 8rpx;background-color: rgba(0,0,0,0.3);display: inline-block;position: absolute;right: 10rpx;top: 154rpx;border-radius: 5rpx;}
+.sjImg1{width: 340rpx;height: 430rpx;}
+.sjSgin{font-size: 22rpx;color: #fff;line-height: 36rpx;padding: 0 8rpx;background-color: rgba(0,0,0,0.3);display: inline-block;position: absolute;right: 10rpx;top: 384rpx;border-radius: 5rpx;}
 
 .bq-icon{width: 25rpx;height: 27rpx;}
 </style>

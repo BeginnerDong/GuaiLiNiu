@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<block v-for="(item,index) in mainData" :key="index">
-			<view class="shadow radius20 m-a p-r mb-3 tkBox" @click="goToDetail(item)">
+			<view class="shadow radius20 m-a p-r mb-3 tkBox overflow-h" @click="goToDetail(item)">
 				<image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" class="kcImg"></image>
 				<view class="px-2 py-3 font-30 line-h">
 					<view class="font-w pb-3">{{item.title}}</view>

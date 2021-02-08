@@ -4,7 +4,7 @@
 			<image src="../../static/images/back-icon.png" class="back"></image>
 		</view>
 		<!-- banner -->
-		<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" indicator-active-color="#fff" class="banner">
+		<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" indicator-active-color="#fff" class="banner" circular="true">
 			<swiper-item v-for="(item,index) in mainData.bannerImg" :key="index">
 				<image :src="item.url" ></image>
 			</swiper-item>
@@ -140,7 +140,7 @@
 						<image src="../../static/images/stores-details-icon19.png" class="wh50 mx-3"></image>
 					</view>
 					<view class="mx-3 mb-5 px-3 py-2 kfBg radius10 line-h-lg">
-						<view>联系方式：<br/>欢迎来到怪力牛运动{{mainData.name}}，本店24小时营业，疫情期间请做好个人防护，如有问题请联系微店长  {{mainData.phone}}（微信同号）</view>
+						<view>联系方式：<br/>欢迎来到怪力牛运动{{mainData.name}}，疫情期间请做好个人防护，如有问题请联系微店长  {{mainData.phone}}（微信同号）</view>
 					</view>
 				</view>
 				<image src="../../static/images/stores-details-icon20.png" class="wh30 m-4 xx" @click="isShow(1)"></image>
@@ -354,6 +354,6 @@
 .xx{margin: 100rpx auto;}
 
 .storeAll{height: 90%;width: 100%;}
-.bb{margin-right: 85rpx;}
+.bb{margin-right: 83rpx;}
 .bb:nth-child(4n){margin-right: 0;}
 </style>

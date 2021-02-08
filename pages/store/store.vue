@@ -9,9 +9,9 @@
 						<view class="flex3 pl-2 flex-1">
 							<view class="flex">
 								<view class="font-34">{{item.name}}</view>
-								<view class="font-20 colorf p-r sq">
+								<view class="font-20 colorf p-r sq" v-if="item.tag">
 									<image src="../../static/images/home-icon5.png" class="sq-icon"></image>
-									<view class="top-0 p-a t-indent10 line-h-md">社区店</view>
+									<view class="top-0 p-a t-indent10 line-h-md">{{item.tag}}</view>
 								</view>
 							</view>
 							<view class="color6 avoidOverflow dz">{{item.address}}</view>

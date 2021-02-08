@@ -36,7 +36,7 @@
 				</view>
 				<view class="d-flex a-start pb-4">
 					<image src="../../static/images/members-icon6.png" class="fw-icon mt"></image>
-					<view class="flex-1 pl-2">服务教练：{{mainData.coachName}}</view>
+					<view class="flex-1 pl-2">服务教练：{{mainData.coach.name}}</view>
 				</view>
 			</view>
 		</view>
@@ -228,11 +228,22 @@
 				const self = this;
 				const postData = {};
 				//postData.tokenFuncName = 'getProjectToken';
-				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.getAfter = {
+					coach:{
+						tableName:'Coach',
+						middleKey:'coach_no',
+						key:'user_no',
+						searchItem:{
+							status:1
+						},
+						condition:'=',
+						info:['name']
+					}
+				};
 				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
-						self.mainData.push.apply(self.mainData, res.info.data[0]);
+						self.mainData = res.info.data[0];
 						self.mainData.description = self.mainData.description.split(',');
 					};
 					uni.setStorageSync('canClick', true);

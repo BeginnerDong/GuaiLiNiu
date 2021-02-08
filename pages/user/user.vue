@@ -25,7 +25,7 @@
 								<view v-if="type==0">{{userData.info.behavior==1?'会员':'VIP会员'}}</view>
 								<view v-else>会员已过期</view>
 							</view>
-							<view class="pt-4 font-24" v-if="userData.info.deadline>0">{{type==0?'有效期':'过期时间'}}：{{userData.info.deadline_change}}</view>
+							<view class="pt-3 font-24" v-if="userData.info.deadline>0">{{type==0?'有效期':'过期时间'}}：{{userData.info.deadline_change}}</view>
 							<view class="pt-4 font-24" v-else>享受更多的优惠权益</view>
 						</view>
 						<view class="criBtn" @click="Router.navigateTo({route:{path:'/pages/VIP/VIP?vip=0'}})">{{userData.info.behavior==1?'立即续费':'立即开通'}}</view>
@@ -63,7 +63,7 @@
 				</view>
 				<view class="flex4 itt" @click="Router.navigateTo({route:{path:'/pages/face/face'}})">
 					<image src="../../static/images/about-icon4.png" class="userIcon5"></image>
-					<view>人脸录入</view>
+					<view>上传头像</view>
 				</view>
 				<view class="flex4 itt" @click="Router.navigateTo({route:{path:'/pages/user-sijiaoEntrance/user-sijiaoEntrance'}})">
 					<image src="../../static/images/about-icon6.png" class="userIcon6"></image>

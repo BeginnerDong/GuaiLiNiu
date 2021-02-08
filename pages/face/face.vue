@@ -7,12 +7,13 @@
 		</view>
 		
 		<view class="photo p-r">
-			<image src="../../static/images/face-recogontion-icon.png"></image>
+			<!-- <image src="../../static/images/face-recogontion-icon.png"></image> -->
 			<view class="p-aXY flex0" v-if="submitData.mainImg.length>0">
 				<image class="uploadImg" :src="submitData&&submitData.mainImg&&submitData.mainImg[0].url" @click="upLoadImg('mainImg')" mode="widthFix"></image>
 			</view>
-			<view v-else class="wh300 radius-5 Mgb p-aXY" @click="upLoadImg('mainImg')">
-				<image src="../../static/images/face-recogontion-icon1.png" class="img"></image>
+			<view v-else class="wh300 radius-5 Mgb p-aXY flex0" @click="upLoadImg('mainImg')">
+				<view class="colorf">点击上传</view>
+				<!-- <image src="../../static/images/face-recogontion-icon1.png" class="img"></image> -->
 			</view>
 			<!-- <view >照片已上传</view> -->
 			<!-- <image v-else class="uploadImg p-aXY" :src="submitData.mainImg[0].url" @click="upLoadImg('mainImg')" mode="widthFix"></image> -->
